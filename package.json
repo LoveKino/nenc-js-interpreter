@@ -2,7 +2,7 @@
   "name": "nenc-js-interpreter",
   "version": "0.0.1",
   "description": "js interpreter for nenc language",
-  "main": "system.js",
+  "main": "index.js",
   "scripts": {
     "test": "mocha test/**/*.js"
   },
