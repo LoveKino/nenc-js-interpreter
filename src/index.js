@@ -25,6 +25,8 @@ var Void = dataContainer.Void,
     Variable = dataContainer.Variable,
     Pair = dataContainer.Pair,
 
+    MetaMethod = dataContainer.MetaMethod,
+
     isType = dataContainer.isType,
     getPairValueList = dataContainer.getPairValueList;
 
@@ -102,5 +104,7 @@ module.exports = {
 
     sys_string: function(v) {
         return v;
-    }
+    },
+
+    MetaMethod
 };
