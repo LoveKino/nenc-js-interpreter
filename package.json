@@ -1,0 +1,19 @@
+{
+  "name": "nenc-js-interpreter",
+  "version": "0.0.1",
+  "description": "js interpreter for nenc language",
+  "main": "system.js",
+  "scripts": {
+    "test": "mocha test/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+http://github.com/LoveKino/nenc-js-interpreter.git"
+  },
+  "keywords": [
+    "interpreter",
+    "nenc"
+  ],
+  "author": "ddchen",
+  "license": "MIT"
+}
