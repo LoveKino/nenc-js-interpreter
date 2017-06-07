@@ -1,8 +1,18 @@
 'use strict';
 
 var hostLangApis = require('./hostLangApis');
+var CONSTANTS = require('./constants');
+
 var concat = hostLangApis.concat,
     push = hostLangApis.push;
+
+var PAIR = CONSTANTS.PAIR,
+    VOID = CONSTANTS.VOID,
+    DATA = CONSTANTS.DATA,
+    META_METHOD = CONSTANTS.META_METHOD,
+    APPLICATION = CONSTANTS.APPLICATION,
+    ABSTRACTION = CONSTANTS.ABSTRACTION,
+    VARIABLE = CONSTANTS.VARIABLE;
 
 /**************************************************************
  * basic data container
@@ -13,14 +23,6 @@ var concat = hostLangApis.concat,
  * }
  *
  **************************************************************/
-var PAIR = 'pair',
-    VOID = 'void',
-    DATA = 'data',
-    META_METHOD = 'metaMethod',
-    APPLICATION = 'application',
-    ABSTRACTION = 'abstraction',
-    VARIABLE = 'variable';
-
 var isType = function(v, type) {
     return v.type === type;
 };
@@ -158,6 +160,5 @@ module.exports = {
     getPairValueList,
     fillAbstractionVariable,
     isAbstractionReducible,
-    isType,
-    PAIR, VOID, DATA, META_METHOD, APPLICATION, ABSTRACTION, VARIABLE
+    isType
 };
