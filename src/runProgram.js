@@ -15,11 +15,11 @@ var dataContainer = require('./dataContainer');
 var applyMethod = hostLangApis.applyMethod;
 
 var DATA = CONSTANTS.DATA,
+    VOID = CONSTANTS.VOID,
     META_METHOD = CONSTANTS.META_METHOD,
     APPLICATION = CONSTANTS.APPLICATION,
     ABSTRACTION = CONSTANTS.ABSTRACTION,
     VARIABLE = CONSTANTS.VARIABLE;
-
 
 var Abstraction = dataContainer.Abstraction,
     Context = dataContainer.Context,
@@ -33,7 +33,9 @@ var Abstraction = dataContainer.Abstraction,
  * run program
  *****************************************************/
 var runProgram = function(program, ctx) {
-    if (isType(program, VARIABLE)) {
+    if (isType(program, VOID)) {
+        return null;
+    } else if (isType(program, VARIABLE)) {
         return lookupVariable(ctx, program.content.variableName);
     } else if (isType(program, ABSTRACTION)) {
         program.content.context = ctx;
