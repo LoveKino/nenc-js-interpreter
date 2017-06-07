@@ -106,5 +106,7 @@ module.exports = {
         return v;
     },
 
-    MetaMethod
+    addMetaMethod: function (name, fun) {
+        systemContextMap[name] = MetaMethod(fun);
+    }
 };
