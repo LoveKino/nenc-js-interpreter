@@ -1,6 +1,6 @@
 'use strict';
 
-var dataContainer = require('./dataContainer');
+var dataContainer = require('../dataContainer');
 
 let MetaMethod = dataContainer.MetaMethod;
 
