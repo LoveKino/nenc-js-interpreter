@@ -13,22 +13,28 @@ var dataContainer = require('./dataContainer');
 
 var applyMethod = hostLangApis.applyMethod;
 
-var {
-    PAIR, VOID, DATA, META_METHOD, APPLICATION, ABSTRACTION, VARIABLE,
-    Void,
-    Pair,
-    Variable,
-    Abstraction,
-    Application,
-    MetaMethod,
-    Data,
-    Context,
-    lookupVariable,
-    getPairValueList,
-    fillAbstractionVariable,
-    isAbstractionReducible,
-    isType
-} = dataContainer;
+var DATA = dataContainer.DATA,
+    META_METHOD = dataContainer.META_METHOD,
+    APPLICATION = dataContainer.APPLICATION,
+    ABSTRACTION = dataContainer.ABSTRACTION,
+    VOID = dataContainer.VOID,
+    PAIR = dataContainer.PAIR,
+    VARIABLE = dataContainer.VARIABLE,
+
+    Void = dataContainer.Void,
+    Data = dataContainer.Data,
+    Abstraction = dataContainer.Abstraction,
+    Context = dataContainer.Context,
+    MetaMethod = dataContainer.MetaMethod,
+    Application = dataContainer.Application,
+    Variable = dataContainer.Variable,
+    Pair = dataContainer.Pair,
+
+    lookupVariable = dataContainer.lookupVariable,
+    fillAbstractionVariable = dataContainer.fillAbstractionVariable,
+    isAbstractionReducible = dataContainer.isAbstractionReducible,
+    isType = dataContainer.isType,
+    getPairValueList = dataContainer.getPairValueList;
 
 /****************************************************
  * run program
