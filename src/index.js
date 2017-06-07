@@ -98,5 +98,9 @@ module.exports = {
 
     sys_runProgram: function(program) {
         return runProgram(program, new Context(systemContextMap, null));
+    },
+
+    sys_string: function(v) {
+        return v;
     }
 };
