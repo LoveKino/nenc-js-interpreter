@@ -8,9 +8,9 @@
  * provide basic js functions support for pfc middle code
  **************************************************************/
 
-var CONSTANTS = require('./constants');
-var hostLangApis = require('./hostLangApis');
-var dataContainer = require('./dataContainer');
+var CONSTANTS = require('../constants');
+var hostLangApis = require('../hostLangApis');
+var dataContainer = require('../dataContainer');
 
 var applyMethod = hostLangApis.applyMethod;
 
@@ -21,6 +21,7 @@ var DATA = CONSTANTS.DATA,
     APPLICATION = CONSTANTS.APPLICATION,
     ABSTRACTION = CONSTANTS.ABSTRACTION,
     VARIABLE = CONSTANTS.VARIABLE,
+    STATEMENTS = CONSTANTS.STATEMENTS,
     EXPRESSION = CONSTANTS.EXPRESSION;
 
 var Abstraction = dataContainer.Abstraction,
@@ -106,7 +107,7 @@ var runMetaMethod = function(metaMethod, paramsRet) {
 
 var runAbstraction = function(source, paramsRet) {
     // create a new abstraction
-    var abstraction = Abstraction(source.content.variables, source.content.bodyExp, source.content.context);
+    var abstraction = Abstraction(source.content.variables, source.content.body, source.content.context);
     // fill with some params
     for (var i = 0; i < paramsRet.length; i++) {
         fillAbstractionVariable(abstraction, i, paramsRet[i]);
@@ -123,8 +124,14 @@ var runAbstraction = function(source, paramsRet) {
         }
         // attach variables to context
         var newCtx = new Context(variableMap, source.content.context);
+
         // run body expression with new context
-        return runExp(abstraction.content.bodyExp, newCtx);
+        var body = abstraction.content.body;
+        if (isType(body, STATEMENTS)) {
+            return runProgram(body, newCtx);
+        } else {
+            return runExp(body, newCtx);
+        }
     }
     return abstraction;
 };

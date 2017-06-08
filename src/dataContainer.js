@@ -77,8 +77,8 @@ function Abstraction(variables, bodyExp, context) {
         content: {
             fillMap: {},
             context: context || null,
-            variables,
-            bodyExp,
+            variables: variables,
+            body: bodyExp,
             indexMap: {},
             fillCount: 0
         }
