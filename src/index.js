@@ -19,10 +19,13 @@ var PAIR = CONSTANTS.PAIR,
 
 var Void = dataContainer.Void,
     Data = dataContainer.Data,
+
     Abstraction = dataContainer.Abstraction,
     Context = dataContainer.Context,
     Application = dataContainer.Application,
     Variable = dataContainer.Variable,
+    Expression = dataContainer.Expression,
+
     Pair = dataContainer.Pair,
 
     MetaMethod = dataContainer.MetaMethod,
@@ -104,6 +107,10 @@ module.exports = {
 
     sys_string: function(v) {
         return v;
+    },
+
+    sys_exp: function(v) {
+        return Expression(v);
     },
 
     addMetaMethod: function (name, fun) {

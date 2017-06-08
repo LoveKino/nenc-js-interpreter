@@ -16,10 +16,12 @@ var applyMethod = hostLangApis.applyMethod;
 
 var DATA = CONSTANTS.DATA,
     VOID = CONSTANTS.VOID,
+
     META_METHOD = CONSTANTS.META_METHOD,
     APPLICATION = CONSTANTS.APPLICATION,
     ABSTRACTION = CONSTANTS.ABSTRACTION,
-    VARIABLE = CONSTANTS.VARIABLE;
+    VARIABLE = CONSTANTS.VARIABLE,
+    EXPRESSION = CONSTANTS.EXPRESSION;
 
 var Abstraction = dataContainer.Abstraction,
     Context = dataContainer.Context,
@@ -35,15 +37,21 @@ var Abstraction = dataContainer.Abstraction,
 var runProgram = function(program, ctx) {
     if (isType(program, VOID)) {
         return null;
-    } else if (isType(program, VARIABLE)) {
-        return lookupVariable(ctx, program.content.variableName);
-    } else if (isType(program, ABSTRACTION)) {
-        program.content.context = ctx;
-        return program;
-    } else if (isType(program, APPLICATION)) {
-        return runApplication(program, ctx);
-    } else if (isType(program, DATA)) {
-        return program.content.data;
+    } else if (isType(program, EXPRESSION)) {
+        return runExp(program, ctx);
+    }
+};
+
+let runExp = (exp, ctx) => {
+    if (isType(exp, VARIABLE)) {
+        return lookupVariable(ctx, exp.content.variableName);
+    } else if (isType(exp, ABSTRACTION)) {
+        exp.content.context = ctx;
+        return exp;
+    } else if (isType(exp, APPLICATION)) {
+        return runApplication(exp, ctx);
+    } else if (isType(exp, DATA)) {
+        return exp.content.data;
     } else {
         throw new Error('impossible situation');
     }

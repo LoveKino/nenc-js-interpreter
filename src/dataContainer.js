@@ -9,10 +9,12 @@ var concat = hostLangApis.concat,
 var PAIR = CONSTANTS.PAIR,
     VOID = CONSTANTS.VOID,
     DATA = CONSTANTS.DATA,
+
     META_METHOD = CONSTANTS.META_METHOD,
     APPLICATION = CONSTANTS.APPLICATION,
     ABSTRACTION = CONSTANTS.ABSTRACTION,
-    VARIABLE = CONSTANTS.VARIABLE;
+    VARIABLE = CONSTANTS.VARIABLE,
+    EXPRESSION = CONSTANTS.EXPRESSION;
 
 /**************************************************************
  * basic data container
@@ -30,6 +32,15 @@ var isType = function(v, type) {
 var Void = {
     type: VOID
 };
+
+function Expression (v) {
+    return {
+        type: EXPRESSION,
+        content: {
+            expression: v
+        }
+    };
+}
 
 function Pair(v1, v2) {
     return {
@@ -150,10 +161,13 @@ var lookupVariable = function(ctx, variableName) {
 module.exports = {
     Void,
     Pair,
+
+    Expression,
     Variable,
     Abstraction,
     Application,
     MetaMethod,
+
     Data,
     Context,
     lookupVariable,
