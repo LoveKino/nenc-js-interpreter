@@ -38,9 +38,12 @@ var runProgram = function(program, ctx) {
     var statements = program.content.statements;
 
     var value = null;
-    for (let i = 0; i < statements.length; i++) {
-        let statement = statements[i];
-        value = runStatement(statement, ctx);
+    for (var i = 0; i < statements.length; i++) {
+        var statement = statements[i];
+        var ret = runStatement(statement, ctx);
+        if (!isType(statement, VOID)) {
+            value = ret;
+        }
     }
 
     return value;
@@ -54,7 +57,6 @@ var runStatement = function(statement, ctx) {
     } else {
         throw new Error('unrecognized statement');
     }
-
 };
 
 let runExp = (exp, ctx) => {
