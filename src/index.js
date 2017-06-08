@@ -115,7 +115,18 @@ module.exports = {
         return Expression(v);
     },
 
-    sys_let_binding: function(v) {},
+    sys_letBinding: function(v) {
+        var list = getPairValueList(v);
+        var bindings = [];
+        for (var i = 0; i < list.length; i = i + 2) {
+            var key = list[i];
+            var value = list[i + 1];
+
+            bindings.push([key, value]);
+        }
+
+        return LetBingdingStatement(bindings);
+    },
 
     sys_statements: function(v) {
         var statements = [];

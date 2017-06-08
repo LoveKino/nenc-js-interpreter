@@ -27,6 +27,7 @@ var DATA = CONSTANTS.DATA,
 
 var Abstraction = dataContainer.Abstraction,
     Context = dataContainer.Context,
+    Statements = dataContainer.Statements,
 
     lookupVariable = dataContainer.lookupVariable,
     fillAbstractionVariable = dataContainer.fillAbstractionVariable,
@@ -46,7 +47,7 @@ var runProgram = function(program, ctx) {
 
         if (isType(statement, LET_BINDING_STATEMENT)) {
             // re-arrange rest statements
-            break;
+            return letBindingArrangement(statements, i, ctx);
         } else {
             var ret = runStatement(statement, ctx);
             if (!isType(statement, VOID)) {
@@ -64,14 +65,20 @@ var letBindingArrangement = function(statements, letStatementIndex, ctx) {
 
     var nextStatements = [];
     for (var i = letStatementIndex + 1; i < statements.length; i++) {
-        nextStatements[i - letStatement - 1] = statements[i];
+        nextStatements[i - letStatementIndex - 1] = statements[i];
     }
 
     var variables = [],
         bodys = [];
-    for (var i = 0; i < bindings.length; i++) {}
+    for (var j = 0; j < bindings.length; j++) {
+        var binding = bindings[j];
+        variables[j] = binding[0];
+        bodys[j] = binding[1];
+    }
 
-    Abstraction(variables, Statements(nextStatements), ctx);
+    var abstraction = Abstraction(variables, Statements(nextStatements), ctx);
+
+    return runAbstraction(abstraction, resolveExpList(bodys, ctx));
 };
 
 var runStatement = function(statement, ctx) {
@@ -109,12 +116,8 @@ var runApplication = function(application, ctx) {
         throw new Error('Expect function to run application, but got ' + callerRet);
     }
 
-    var paramsRet = [];
     var params = application.content.params;
-    var len = params.length;
-    for (var i = 0; i < len; i++) {
-        paramsRet.push(runExp(params[i], ctx));
-    }
+    var paramsRet = resolveExpList(params, ctx);
 
     // run abstraction
     if (isType(callerRet, ABSTRACTION)) {
@@ -129,9 +132,20 @@ var runMetaMethod = function(metaMethod, paramsRet) {
     return applyMethod(metaMethod.content.method, paramsRet);
 };
 
+var resolveExpList = function(params, ctx) {
+    var paramsRet = [];
+    var len = params.length;
+    for (var i = 0; i < len; i++) {
+        paramsRet.push(runExp(params[i], ctx));
+    }
+
+    return paramsRet;
+};
+
 var runAbstraction = function(source, paramsRet) {
     // create a new abstraction
     var abstraction = Abstraction(source.content.variables, source.content.body, source.content.context);
+
     // fill with some params
     for (var i = 0; i < paramsRet.length; i++) {
         fillAbstractionVariable(abstraction, i, paramsRet[i]);
@@ -157,6 +171,7 @@ var runAbstraction = function(source, paramsRet) {
             return runExp(body, newCtx);
         }
     }
+
     return abstraction;
 };
 
