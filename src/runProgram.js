@@ -35,13 +35,26 @@ var Abstraction = dataContainer.Abstraction,
  * run program
  *****************************************************/
 var runProgram = function(program, ctx) {
-    if (isType(program, VOID)) {
-        return null;
-    } else if (isType(program, EXPRESSION)) {
-        return runExp(program.content.expression, ctx);
-    } else {
-        throw new Error('unrecognized program');
+    var statements = program.content.statements;
+
+    var value = null;
+    for (let i = 0; i < statements.length; i++) {
+        let statement = statements[i];
+        value = runStatement(statement, ctx);
     }
+
+    return value;
+};
+
+var runStatement = function(statement, ctx) {
+    if (isType(statement, VOID)) {
+        return null;
+    } else if (isType(statement, EXPRESSION)) {
+        return runExp(statement.content.expression, ctx);
+    } else {
+        throw new Error('unrecognized statement');
+    }
+
 };
 
 let runExp = (exp, ctx) => {

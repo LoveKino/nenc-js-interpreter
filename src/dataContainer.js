@@ -14,7 +14,8 @@ var PAIR = CONSTANTS.PAIR,
     APPLICATION = CONSTANTS.APPLICATION,
     ABSTRACTION = CONSTANTS.ABSTRACTION,
     VARIABLE = CONSTANTS.VARIABLE,
-    EXPRESSION = CONSTANTS.EXPRESSION;
+    EXPRESSION = CONSTANTS.EXPRESSION,
+    STATEMENTS = CONSTANTS.STATEMENTS;
 
 /**************************************************************
  * basic data container
@@ -33,7 +34,16 @@ var Void = {
     type: VOID
 };
 
-function Expression (v) {
+function Statements(statements) {
+    return {
+        type: STATEMENTS,
+        content: {
+            statements: statements
+        }
+    };
+}
+
+function Expression(v) {
     return {
         type: EXPRESSION,
         content: {
@@ -55,7 +65,7 @@ function Variable(variableName) {
     return {
         type: VARIABLE,
         content: {
-            variableName
+            variableName: variableName
         }
     };
 }
@@ -79,8 +89,8 @@ function Application(caller, params) {
     return {
         type: APPLICATION,
         content: {
-            caller,
-            params
+            caller: caller,
+            params: params
         }
     };
 }
@@ -89,7 +99,7 @@ function MetaMethod(method) {
     return {
         type: META_METHOD,
         content: {
-            method
+            method: method
         }
     };
 }
@@ -98,7 +108,7 @@ function Data(data) {
     return {
         type: DATA,
         content: {
-            data
+            data: data
         }
     };
 }
@@ -159,20 +169,22 @@ var lookupVariable = function(ctx, variableName) {
 };
 
 module.exports = {
-    Void,
-    Pair,
+    Void: Void,
+    Pair: Pair,
 
-    Expression,
-    Variable,
-    Abstraction,
-    Application,
-    MetaMethod,
+    Expression: Expression,
+    Variable: Variable,
+    Abstraction: Abstraction,
+    Application: Application,
+    MetaMethod: MetaMethod,
+    Statements: Statements,
 
-    Data,
-    Context,
-    lookupVariable,
-    getPairValueList,
-    fillAbstractionVariable,
-    isAbstractionReducible,
-    isType
+    Data: Data,
+    Context: Context,
+
+    lookupVariable: lookupVariable,
+    getPairValueList: getPairValueList,
+    fillAbstractionVariable: fillAbstractionVariable,
+    isAbstractionReducible: isAbstractionReducible,
+    isType: isType
 };

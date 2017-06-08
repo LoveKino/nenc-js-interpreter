@@ -25,6 +25,7 @@ var Void = dataContainer.Void,
     Application = dataContainer.Application,
     Variable = dataContainer.Variable,
     Expression = dataContainer.Expression,
+    Statements = dataContainer.Statements,
 
     Pair = dataContainer.Pair,
 
@@ -111,6 +112,17 @@ module.exports = {
 
     sys_exp: function(v) {
         return Expression(v);
+    },
+
+    sys_statements: function(v) {
+        let statements = [];
+        if(isType(v, PAIR)) {
+            statements = getPairValueList(v);
+        } else {
+            statements = [v];
+        }
+
+        return Statements(statements);
     },
 
     addMetaMethod: function (name, fun) {
