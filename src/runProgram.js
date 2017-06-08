@@ -38,7 +38,9 @@ var runProgram = function(program, ctx) {
     if (isType(program, VOID)) {
         return null;
     } else if (isType(program, EXPRESSION)) {
-        return runExp(program, ctx);
+        return runExp(program.content.expression, ctx);
+    } else {
+        throw new Error('impossible situation');
     }
 };
 
