@@ -40,7 +40,7 @@ var runProgram = function(program, ctx) {
     } else if (isType(program, EXPRESSION)) {
         return runExp(program.content.expression, ctx);
     } else {
-        throw new Error('impossible situation');
+        throw new Error('unrecognized program');
     }
 };
 
@@ -60,7 +60,7 @@ let runExp = (exp, ctx) => {
 };
 
 var runApplication = function(application, ctx) {
-    var callerRet = runProgram(application.content.caller, ctx);
+    var callerRet = runExp(application.content.caller, ctx);
 
     // TODO system methods
     if (!isType(callerRet, ABSTRACTION) &&
@@ -73,7 +73,7 @@ var runApplication = function(application, ctx) {
     var params = application.content.params;
     var len = params.length;
     for (var i = 0; i < len; i++) {
-        paramsRet.push(runProgram(params[i], ctx));
+        paramsRet.push(runExp(params[i], ctx));
     }
 
     // run abstraction
@@ -109,7 +109,7 @@ var runAbstraction = function(source, paramsRet) {
         // attach variables to context
         var newCtx = new Context(variableMap, source.content.context);
         // run body expression with new context
-        return runProgram(abstraction.content.bodyExp, newCtx);
+        return runExp(abstraction.content.bodyExp, newCtx);
     }
     return abstraction;
 };
