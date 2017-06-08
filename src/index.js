@@ -26,6 +26,7 @@ var Void = dataContainer.Void,
     Variable = dataContainer.Variable,
     Expression = dataContainer.Expression,
     Statements = dataContainer.Statements,
+    LetBingdingStatement = dataContainer.LetBingdingStatement,
 
     Pair = dataContainer.Pair,
 
@@ -114,9 +115,11 @@ module.exports = {
         return Expression(v);
     },
 
+    sys_let_binding: function(v) {},
+
     sys_statements: function(v) {
-        let statements = [];
-        if(isType(v, PAIR)) {
+        var statements = [];
+        if (isType(v, PAIR)) {
             statements = getPairValueList(v);
         } else {
             statements = [v];
@@ -125,7 +128,7 @@ module.exports = {
         return Statements(statements);
     },
 
-    addMetaMethod: function (name, fun) {
+    addMetaMethod: function(name, fun) {
         systemContextMap[name] = MetaMethod(fun);
     }
 };

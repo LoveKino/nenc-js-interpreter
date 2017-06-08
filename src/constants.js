@@ -9,5 +9,6 @@ module.exports = {
     ABSTRACTION: 'abstraction',
     VARIABLE: 'variable',
     EXPRESSION: 'expression',
-    STATEMENTS: 'statements'
+    STATEMENTS: 'statements',
+    LET_BINDING_STATEMENT: 'let_binding_statement'
 };

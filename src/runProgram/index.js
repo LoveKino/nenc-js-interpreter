@@ -22,7 +22,8 @@ var DATA = CONSTANTS.DATA,
     ABSTRACTION = CONSTANTS.ABSTRACTION,
     VARIABLE = CONSTANTS.VARIABLE,
     STATEMENTS = CONSTANTS.STATEMENTS,
-    EXPRESSION = CONSTANTS.EXPRESSION;
+    EXPRESSION = CONSTANTS.EXPRESSION,
+    LET_BINDING_STATEMENT = CONSTANTS.LET_BINDING_STATEMENT;
 
 var Abstraction = dataContainer.Abstraction,
     Context = dataContainer.Context,
@@ -39,15 +40,38 @@ var runProgram = function(program, ctx) {
     var statements = program.content.statements;
 
     var value = null;
+
     for (var i = 0; i < statements.length; i++) {
         var statement = statements[i];
-        var ret = runStatement(statement, ctx);
-        if (!isType(statement, VOID)) {
-            value = ret;
+
+        if (isType(statement, LET_BINDING_STATEMENT)) {
+            // re-arrange rest statements
+            break;
+        } else {
+            var ret = runStatement(statement, ctx);
+            if (!isType(statement, VOID)) {
+                value = ret;
+            }
         }
     }
 
     return value;
+};
+
+var letBindingArrangement = function(statements, letStatementIndex, ctx) {
+    var letStatement = statements[letStatementIndex];
+    var bindings = letStatement.content.bindings;
+
+    var nextStatements = [];
+    for (var i = letStatementIndex + 1; i < statements.length; i++) {
+        nextStatements[i - letStatement - 1] = statements[i];
+    }
+
+    var variables = [],
+        bodys = [];
+    for (var i = 0; i < bindings.length; i++) {}
+
+    Abstraction(variables, Statements(nextStatements), ctx);
 };
 
 var runStatement = function(statement, ctx) {

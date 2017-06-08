@@ -15,7 +15,8 @@ var PAIR = CONSTANTS.PAIR,
     ABSTRACTION = CONSTANTS.ABSTRACTION,
     VARIABLE = CONSTANTS.VARIABLE,
     EXPRESSION = CONSTANTS.EXPRESSION,
-    STATEMENTS = CONSTANTS.STATEMENTS;
+    STATEMENTS = CONSTANTS.STATEMENTS,
+    LET_BINDING_STATEMENT = CONSTANTS.LET_BINDING_STATEMENT;
 
 /**************************************************************
  * basic data container
@@ -39,6 +40,15 @@ function Statements(statements) {
         type: STATEMENTS,
         content: {
             statements: statements
+        }
+    };
+}
+
+function LetBingdingStatement(bindings) {
+    return {
+        type: LET_BINDING_STATEMENT,
+        content: {
+            bindings
         }
     };
 }
@@ -178,6 +188,7 @@ module.exports = {
     Application: Application,
     MetaMethod: MetaMethod,
     Statements: Statements,
+    LetBingdingStatement: LetBingdingStatement,
 
     Data: Data,
     Context: Context,
