@@ -35,6 +35,8 @@ var Void = dataContainer.Void,
     isType = dataContainer.isType,
     getPairValueList = dataContainer.getPairValueList;
 
+let nencModules = {};
+
 module.exports = {
     sys_void: function() {
         return Void;
@@ -137,6 +139,17 @@ module.exports = {
         }
 
         return Statements(statements);
+    },
+
+    sys_module: function(name, module) {
+        nencModules[name] = module();
+    },
+
+    sys_import: function(name) {
+        if (!nencModules[name]) {
+            throw new Error(`missing module ${name}`);
+        }
+        return nencModules[name];
     },
 
     addMetaMethod: function(name, fun) {
