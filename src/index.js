@@ -142,14 +142,16 @@ module.exports = {
     },
 
     sys_module: function(name, module) {
-        nencModules[name] = module();
+        nencModules[name] = {
+            module: module
+        };
     },
 
     sys_import: function(name) {
         if (!nencModules[name]) {
             throw new Error(`missing module ${name}`);
         }
-        return nencModules[name];
+        return nencModules[name].module;
     },
 
     addMetaMethod: function(name, fun) {
