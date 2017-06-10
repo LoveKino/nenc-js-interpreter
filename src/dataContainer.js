@@ -8,16 +8,8 @@ var concat = hostLangApis.concat,
 
 var PAIR = CONSTANTS.PAIR,
     VOID = CONSTANTS.VOID,
-    DATA = CONSTANTS.DATA,
 
-    META_METHOD = CONSTANTS.META_METHOD,
-    APPLICATION = CONSTANTS.APPLICATION,
-    ABSTRACTION = CONSTANTS.ABSTRACTION,
-    VARIABLE = CONSTANTS.VARIABLE,
-    EXPRESSION = CONSTANTS.EXPRESSION,
-    STATEMENTS = CONSTANTS.STATEMENTS,
-    LET_BINDING_STATEMENT = CONSTANTS.LET_BINDING_STATEMENT,
-    IMPORT_STATEMENT = CONSTANTS.IMPORT_STATEMENT;
+    ABSTRACTION = CONSTANTS.ABSTRACTION;
 
 /**************************************************************
  * basic data container
@@ -36,102 +28,22 @@ var Void = {
     type: VOID
 };
 
-function Statements(statements) {
+function BasicContainer(type, content) {
     return {
-        type: STATEMENTS,
-        content: {
-            statements: statements
-        }
-    };
-}
-
-function ImportantStatement(modulePath, variable) {
-    return {
-        type: IMPORT_STATEMENT,
-        content: {
-            modulePath: modulePath,
-            variable: variable
-        }
-    };
-}
-
-function LetBingdingStatement(bindings) {
-    return {
-        type: LET_BINDING_STATEMENT,
-        content: {
-            bindings
-        }
-    };
-}
-
-function Expression(v) {
-    return {
-        type: EXPRESSION,
-        content: {
-            expression: v
-        }
-    };
-}
-
-function Pair(v1, v2) {
-    return {
-        type: PAIR,
-        content: {
-            v1, v2
-        }
-    };
-}
-
-function Variable(variableName) {
-    return {
-        type: VARIABLE,
-        content: {
-            variableName: variableName
-        }
+        type: type,
+        content: content
     };
 }
 
 function Abstraction(variables, bodyExp, context) {
-    // TODO check, avoid repeated variable names
-    return {
-        type: ABSTRACTION,
-        content: {
-            fillMap: {},
-            context: context || null,
-            variables: variables,
-            body: bodyExp,
-            indexMap: {},
-            fillCount: 0
-        }
-    };
-}
-
-function Application(caller, params) {
-    return {
-        type: APPLICATION,
-        content: {
-            caller: caller,
-            params: params
-        }
-    };
-}
-
-function MetaMethod(method) {
-    return {
-        type: META_METHOD,
-        content: {
-            method: method
-        }
-    };
-}
-
-function Data(data) {
-    return {
-        type: DATA,
-        content: {
-            data: data
-        }
-    };
+    return BasicContainer(ABSTRACTION, {
+        fillMap: {},
+        context: context || null,
+        variables: variables,
+        body: bodyExp,
+        indexMap: {},
+        fillCount: 0
+    });
 }
 
 function Context(variableMap, parent) {
@@ -191,18 +103,10 @@ var lookupVariable = function(ctx, variableName) {
 
 module.exports = {
     Void: Void,
-    Pair: Pair,
 
-    Expression: Expression,
-    Variable: Variable,
+    BasicContainer: BasicContainer,
     Abstraction: Abstraction,
-    Application: Application,
-    MetaMethod: MetaMethod,
-    Statements: Statements,
-    LetBingdingStatement: LetBingdingStatement,
-    ImportantStatement: ImportantStatement,
 
-    Data: Data,
     Context: Context,
 
     lookupVariable: lookupVariable,

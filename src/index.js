@@ -17,22 +17,19 @@ var defineModule = runProgram.defineModule;
 
 var PAIR = CONSTANTS.PAIR,
     VOID = CONSTANTS.VOID,
+    DATA = CONSTANTS.DATA,
+    EXPRESSION = CONSTANTS.EXPRESSION,
+    APPLICATION = CONSTANTS.APPLICATION,
+    STATEMENTS = CONSTANTS.STATEMENTS,
+    LET_BINDING_STATEMENT = CONSTANTS.LET_BINDING_STATEMENT,
+    IMPORT_STATEMENT = CONSTANTS.IMPORT_STATEMENT,
+    META_METHOD = CONSTANTS.META_METHOD,
     VARIABLE = CONSTANTS.VARIABLE;
 
 var Void = dataContainer.Void,
-    Data = dataContainer.Data,
 
+    BasicContainer = dataContainer.BasicContainer,
     Abstraction = dataContainer.Abstraction,
-    Application = dataContainer.Application,
-    Variable = dataContainer.Variable,
-    Expression = dataContainer.Expression,
-    Statements = dataContainer.Statements,
-    LetBingdingStatement = dataContainer.LetBingdingStatement,
-    ImportantStatement = dataContainer.ImportantStatement,
-
-    Pair = dataContainer.Pair,
-
-    MetaMethod = dataContainer.MetaMethod,
 
     isType = dataContainer.isType,
     getPairValueList = dataContainer.getPairValueList;
@@ -43,11 +40,16 @@ module.exports = {
     },
 
     sys_pair: function(v1, v2) {
-        return Pair(v1, v2);
+        return BasicContainer(PAIR, {
+            v1: v1,
+            v2: v2
+        });
     },
 
-    sys_variable: function(varName) {
-        return Variable(varName);
+    sys_variable: function(variableName) {
+        return BasicContainer(VARIABLE, {
+            variableName: variableName
+        });
     },
 
     sys_abstraction: function(params, body) {
@@ -62,8 +64,10 @@ module.exports = {
         return Abstraction(variables, body);
     },
 
-    sys_data: function(v) {
-        return Data(v);
+    sys_data: function(data) {
+        return BasicContainer(DATA, {
+            data: data
+        });
     },
 
     sys_object: function(v) {
@@ -102,7 +106,10 @@ module.exports = {
             }
         }
 
-        return Application(caller, params);
+        return BasicContainer(APPLICATION, {
+            caller: caller,
+            params: params
+        });
     },
 
     sys_string: function(v) {
@@ -110,7 +117,9 @@ module.exports = {
     },
 
     sys_exp: function(v) {
-        return Expression(v);
+        return BasicContainer(EXPRESSION, {
+            expression: v
+        });
     },
 
     sys_letBinding: function(v) {
@@ -123,7 +132,9 @@ module.exports = {
             bindings.push([key, value]);
         }
 
-        return LetBingdingStatement(bindings);
+        return BasicContainer(LET_BINDING_STATEMENT, {
+            bindings: bindings
+        });
     },
 
     sys_statements: function(v) {
@@ -134,7 +145,9 @@ module.exports = {
             statements = [v];
         }
 
-        return Statements(statements);
+        return BasicContainer(STATEMENTS, {
+            statements: statements
+        });
     },
 
     sys_runProgram: function(name) {
@@ -146,10 +159,15 @@ module.exports = {
     },
 
     sys_import: function(modulePath, variable) {
-        return ImportantStatement(modulePath, variable);
+        return BasicContainer(IMPORT_STATEMENT, {
+            modulePath: modulePath,
+            variable: variable
+        });
     },
 
-    addMetaMethod: function(name, fun) {
-        systemContextMap[name] = MetaMethod(fun);
+    addMetaMethod: function(name, method) {
+        systemContextMap[name] = BasicContainer(META_METHOD, {
+            method: method
+        });
     }
 };

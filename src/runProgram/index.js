@@ -30,7 +30,8 @@ var DATA = CONSTANTS.DATA,
 
 var Abstraction = dataContainer.Abstraction,
     Context = dataContainer.Context,
-    Statements = dataContainer.Statements,
+
+    BasicContainer = dataContainer.BasicContainer,
 
     lookupVariable = dataContainer.lookupVariable,
     fillAbstractionVariable = dataContainer.fillAbstractionVariable,
@@ -88,7 +89,11 @@ var runImportStatement = (statement, nextStatements, ctx) => {
     var modulePath = statement.content.modulePath;
     var variable = statement.content.variable;
 
-    var abstraction = Abstraction([variable], Statements(nextStatements), ctx);
+    var abstraction = Abstraction([variable],
+        BasicContainer(STATEMENTS, {
+            statements: nextStatements
+        }),
+        ctx);
 
     return runAbstraction(abstraction, [importModule(modulePath)]);
 };
@@ -104,7 +109,12 @@ var letBindingArrangement = function(letStatement, nextStatements, ctx) {
         bodys[j] = binding[1];
     }
 
-    var abstraction = Abstraction(variables, Statements(nextStatements), ctx);
+    var abstraction = Abstraction(variables,
+        BasicContainer(STATEMENTS, {
+            statements: nextStatements
+        }),
+
+        ctx);
 
     return runAbstraction(abstraction, resolveExpList(bodys, ctx));
 };

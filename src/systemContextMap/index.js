@@ -1,8 +1,16 @@
 'use strict';
 
 var dataContainer = require('../dataContainer');
+var CONSTANTS = require('../constants');
 
-let MetaMethod = dataContainer.MetaMethod;
+var BasicContainer = dataContainer.BasicContainer;
+var META_METHOD = CONSTANTS.META_METHOD;
+
+var MetaMethod = function(method) {
+    return BasicContainer(META_METHOD, {
+        method: method
+    });
+};
 
 // TODO system methods
 module.exports = {
