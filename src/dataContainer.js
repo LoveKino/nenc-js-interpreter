@@ -16,7 +16,8 @@ var PAIR = CONSTANTS.PAIR,
     VARIABLE = CONSTANTS.VARIABLE,
     EXPRESSION = CONSTANTS.EXPRESSION,
     STATEMENTS = CONSTANTS.STATEMENTS,
-    LET_BINDING_STATEMENT = CONSTANTS.LET_BINDING_STATEMENT;
+    LET_BINDING_STATEMENT = CONSTANTS.LET_BINDING_STATEMENT,
+    IMPORT_STATEMENT = CONSTANTS.IMPORT_STATEMENT;
 
 /**************************************************************
  * basic data container
@@ -40,6 +41,16 @@ function Statements(statements) {
         type: STATEMENTS,
         content: {
             statements: statements
+        }
+    };
+}
+
+function ImportantStatement(modulePath, variable) {
+    return {
+        type: IMPORT_STATEMENT,
+        content: {
+            modulePath: modulePath,
+            variable: variable
         }
     };
 }
@@ -189,6 +200,7 @@ module.exports = {
     MetaMethod: MetaMethod,
     Statements: Statements,
     LetBingdingStatement: LetBingdingStatement,
+    ImportantStatement: ImportantStatement,
 
     Data: Data,
     Context: Context,

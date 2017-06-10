@@ -10,8 +10,10 @@
 
 var CONSTANTS = require('./constants');
 var dataContainer = require('./dataContainer');
-var runProgram = require('./runProgram');
 var systemContextMap = require('./systemContextMap');
+var runProgram = require('./runProgram');
+var importModule = runProgram.importModule;
+var defineModule = runProgram.defineModule;
 
 var PAIR = CONSTANTS.PAIR,
     VOID = CONSTANTS.VOID,
@@ -21,12 +23,12 @@ var Void = dataContainer.Void,
     Data = dataContainer.Data,
 
     Abstraction = dataContainer.Abstraction,
-    Context = dataContainer.Context,
     Application = dataContainer.Application,
     Variable = dataContainer.Variable,
     Expression = dataContainer.Expression,
     Statements = dataContainer.Statements,
     LetBingdingStatement = dataContainer.LetBingdingStatement,
+    ImportantStatement = dataContainer.ImportantStatement,
 
     Pair = dataContainer.Pair,
 
@@ -34,8 +36,6 @@ var Void = dataContainer.Void,
 
     isType = dataContainer.isType,
     getPairValueList = dataContainer.getPairValueList;
-
-let nencModules = {};
 
 module.exports = {
     sys_void: function() {
@@ -142,34 +142,14 @@ module.exports = {
     },
 
     sys_module: function(name, moduleCode) {
-        nencModules[name] = {
-            moduleCode: moduleCode,
-            resolved: false
-        };
+        defineModule(name, moduleCode);
     },
 
-    sys_import: function(name) {
-        return importModule(name);
+    sys_import: function(modulePath, variable) {
+        return ImportantStatement(modulePath, variable);
     },
 
     addMetaMethod: function(name, fun) {
         systemContextMap[name] = MetaMethod(fun);
-    }
-};
-
-let importModule = (name) => {
-    if (!nencModules[name]) {
-        throw new Error(`missing module ${name}`);
-    }
-    if (!nencModules[name].resolved) {
-        var moduleCode = nencModules[name].moduleCode;
-        var module = runProgram(moduleCode, new Context(systemContextMap, null));
-
-        nencModules[name].module = module;
-        nencModules[name].resolved = true;
-
-        return module;
-    } else {
-        return nencModules[name].module;
     }
 };

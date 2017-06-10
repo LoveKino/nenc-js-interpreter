@@ -10,5 +10,6 @@ module.exports = {
     VARIABLE: 'variable',
     EXPRESSION: 'expression',
     STATEMENTS: 'statements',
-    LET_BINDING_STATEMENT: 'let_binding_statement'
+    LET_BINDING_STATEMENT: 'let_binding_statement',
+    IMPORT_STATEMENT: 'import_statement'
 };

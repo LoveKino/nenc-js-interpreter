@@ -14,5 +14,8 @@ module.exports = {
     },
     applyMethod: function(method, params) {
         return method.apply(undefined, params);
+    },
+    slice: function(arr, start, end) {
+        return arr.slice(start, end);
     }
 };

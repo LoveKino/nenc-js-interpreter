@@ -2,7 +2,7 @@
 
 let {
     sys_runProgram, sys_data, sys_exp, sys_application, sys_variable, sys_pair, sys_statements,
-    sys_abstraction, sys_letBinding, sys_module
+    sys_abstraction, sys_letBinding, sys_module, sys_import
 } = require('..');
 let assert = require('assert');
 
@@ -49,5 +49,15 @@ describe('index', () => {
         assert.equal(runCode(
             sys_statements(sys_pair(sys_letBinding(sys_pair(sys_variable('x'), sys_data(1))), sys_exp(sys_application(sys_variable('+'), sys_pair(sys_variable('x'), sys_data(1))))))
         ), 2);
+    });
+
+    it('import', () => {
+        sys_module('test1', sys_statements(sys_exp(sys_data(false))));
+        sys_module('test2',
+            sys_statements(sys_pair(sys_import('test1', sys_variable('A')), sys_exp(sys_variable('A'))))
+        );
+        let ret = sys_runProgram('test2');
+
+        assert.equal(ret, false);
     });
 });

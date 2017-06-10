@@ -7,12 +7,14 @@
 /**************************************************************
  * provide basic js functions support for pfc middle code
  **************************************************************/
+var systemContextMap = require('../systemContextMap');
 
 var CONSTANTS = require('../constants');
 var hostLangApis = require('../hostLangApis');
 var dataContainer = require('../dataContainer');
 
 var applyMethod = hostLangApis.applyMethod;
+var slice = hostLangApis.slice;
 
 var DATA = CONSTANTS.DATA,
     VOID = CONSTANTS.VOID,
@@ -23,7 +25,8 @@ var DATA = CONSTANTS.DATA,
     VARIABLE = CONSTANTS.VARIABLE,
     STATEMENTS = CONSTANTS.STATEMENTS,
     EXPRESSION = CONSTANTS.EXPRESSION,
-    LET_BINDING_STATEMENT = CONSTANTS.LET_BINDING_STATEMENT;
+    LET_BINDING_STATEMENT = CONSTANTS.LET_BINDING_STATEMENT,
+    IMPORT_STATEMENT = CONSTANTS.IMPORT_STATEMENT;
 
 var Abstraction = dataContainer.Abstraction,
     Context = dataContainer.Context,
@@ -33,6 +36,25 @@ var Abstraction = dataContainer.Abstraction,
     fillAbstractionVariable = dataContainer.fillAbstractionVariable,
     isAbstractionReducible = dataContainer.isAbstractionReducible,
     isType = dataContainer.isType;
+
+var nencModules = {};
+
+let importModule = (name) => {
+    if (!nencModules[name]) {
+        throw new Error(`missing module ${name}`);
+    }
+    if (!nencModules[name].resolved) {
+        var moduleCode = nencModules[name].moduleCode;
+        var module = runProgram(moduleCode, new Context(systemContextMap, null));
+
+        nencModules[name].module = module;
+        nencModules[name].resolved = true;
+
+        return module;
+    } else {
+        return nencModules[name].module;
+    }
+};
 
 /****************************************************
  * run program
@@ -45,9 +67,12 @@ var runProgram = function(program, ctx) {
     for (var i = 0; i < statements.length; i++) {
         var statement = statements[i];
 
-        if (isType(statement, LET_BINDING_STATEMENT)) {
+        if (isType(statement, IMPORT_STATEMENT)) {
+            return runImportStatement(statement, slice(statements, i + 1), ctx);
+            //
+        } else if (isType(statement, LET_BINDING_STATEMENT)) {
             // re-arrange rest statements
-            return letBindingArrangement(statements, i, ctx);
+            return letBindingArrangement(statement, slice(statements, i + 1), ctx);
         } else {
             var ret = runStatement(statement, ctx);
             if (!isType(statement, VOID)) {
@@ -59,14 +84,17 @@ var runProgram = function(program, ctx) {
     return value;
 };
 
-var letBindingArrangement = function(statements, letStatementIndex, ctx) {
-    var letStatement = statements[letStatementIndex];
-    var bindings = letStatement.content.bindings;
+var runImportStatement = (statement, nextStatements, ctx) => {
+    var modulePath = statement.content.modulePath;
+    var variable = statement.content.variable;
 
-    var nextStatements = [];
-    for (var i = letStatementIndex + 1; i < statements.length; i++) {
-        nextStatements[i - letStatementIndex - 1] = statements[i];
-    }
+    var abstraction = Abstraction([variable], Statements(nextStatements), ctx);
+
+    return runAbstraction(abstraction, [importModule(modulePath)]);
+};
+
+var letBindingArrangement = function(letStatement, nextStatements, ctx) {
+    var bindings = letStatement.content.bindings;
 
     var variables = [],
         bodys = [];
@@ -175,4 +203,14 @@ var runAbstraction = function(source, paramsRet) {
     return abstraction;
 };
 
-module.exports = runProgram;
+var defineModule = function(name, moduleCode) {
+    nencModules[name] = {
+        moduleCode: moduleCode,
+        resolved: false
+    };
+};
+
+module.exports = {
+    importModule: importModule,
+    defineModule: defineModule
+};
