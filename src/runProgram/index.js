@@ -40,7 +40,7 @@ var Abstraction = dataContainer.Abstraction,
 
 var nencModules = {};
 
-let importModule = (name) => {
+var importModule = function(name) {
     if (!nencModules[name]) {
         throw new Error(`missing module ${name}`);
     }
