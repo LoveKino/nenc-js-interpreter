@@ -105,10 +105,6 @@ module.exports = {
         return Application(caller, params);
     },
 
-    sys_runProgram: function(program) {
-        return runProgram(program, new Context(systemContextMap, null));
-    },
-
     sys_string: function(v) {
         return v;
     },
@@ -141,20 +137,39 @@ module.exports = {
         return Statements(statements);
     },
 
-    sys_module: function(name, module) {
+    sys_runProgram: function(name) {
+        return importModule(name);
+    },
+
+    sys_module: function(name, moduleCode) {
         nencModules[name] = {
-            module: module
+            moduleCode: moduleCode,
+            resolved: false
         };
     },
 
     sys_import: function(name) {
-        if (!nencModules[name]) {
-            throw new Error(`missing module ${name}`);
-        }
-        return nencModules[name].module;
+        return importModule(name);
     },
 
     addMetaMethod: function(name, fun) {
         systemContextMap[name] = MetaMethod(fun);
+    }
+};
+
+let importModule = (name) => {
+    if (!nencModules[name]) {
+        throw new Error(`missing module ${name}`);
+    }
+    if (!nencModules[name].resolved) {
+        var moduleCode = nencModules[name].moduleCode;
+        var module = runProgram(moduleCode, new Context(systemContextMap, null));
+
+        nencModules[name].module = module;
+        nencModules[name].resolved = true;
+
+        return module;
+    } else {
+        return nencModules[name].module;
     }
 };
