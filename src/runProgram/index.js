@@ -12,6 +12,7 @@ var systemContextMap = require('../systemContextMap');
 var CONSTANTS = require('../constants');
 var hostLangApis = require('../hostLangApis');
 var dataContainer = require('../dataContainer');
+var abstractionData = require('../abstractionData');
 
 var applyMethod = hostLangApis.applyMethod;
 var slice = hostLangApis.slice;
@@ -28,14 +29,13 @@ var DATA = CONSTANTS.DATA,
     LET_BINDING_STATEMENT = CONSTANTS.LET_BINDING_STATEMENT,
     IMPORT_STATEMENT = CONSTANTS.IMPORT_STATEMENT;
 
-var Abstraction = dataContainer.Abstraction,
-    Context = dataContainer.Context,
+var Abstraction = abstractionData.Abstraction,
+    fillAbstractionVariable = abstractionData.fillAbstractionVariable,
+    isAbstractionReducible = abstractionData.isAbstractionReducible;
 
+var Context = dataContainer.Context,
     BasicContainer = dataContainer.BasicContainer,
-
     lookupVariable = dataContainer.lookupVariable,
-    fillAbstractionVariable = dataContainer.fillAbstractionVariable,
-    isAbstractionReducible = dataContainer.isAbstractionReducible,
     isType = dataContainer.isType;
 
 var nencModules = {};
@@ -55,6 +55,13 @@ var importModule = function(name) {
     } else {
         return nencModules[name].module;
     }
+};
+
+var defineModule = function(name, moduleCode) {
+    nencModules[name] = {
+        moduleCode: moduleCode,
+        resolved: false
+    };
 };
 
 /****************************************************
@@ -211,13 +218,6 @@ var runAbstraction = function(source, paramsRet) {
     }
 
     return abstraction;
-};
-
-var defineModule = function(name, moduleCode) {
-    nencModules[name] = {
-        moduleCode: moduleCode,
-        resolved: false
-    };
 };
 
 module.exports = {

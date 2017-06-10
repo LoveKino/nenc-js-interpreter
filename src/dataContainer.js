@@ -7,9 +7,7 @@ var concat = hostLangApis.concat,
     push = hostLangApis.push;
 
 var PAIR = CONSTANTS.PAIR,
-    VOID = CONSTANTS.VOID,
-
-    ABSTRACTION = CONSTANTS.ABSTRACTION;
+    VOID = CONSTANTS.VOID;
 
 /**************************************************************
  * basic data container
@@ -35,17 +33,6 @@ function BasicContainer(type, content) {
     };
 }
 
-function Abstraction(variables, bodyExp, context) {
-    return BasicContainer(ABSTRACTION, {
-        fillMap: {},
-        context: context || null,
-        variables: variables,
-        body: bodyExp,
-        indexMap: {},
-        fillCount: 0
-    });
-}
-
 function Context(variableMap, parent) {
     this.parent = parent;
     this.variableMap = variableMap;
@@ -69,23 +56,8 @@ var getPairValueList = function(pair) {
 };
 
 /**
- * fill param value at specific position
- */
-var fillAbstractionVariable = function(abstraction, index, value) {
-    abstraction.content.fillMap[index] = value;
-    if (!abstraction.content.indexMap[index]) {
-        abstraction.content.indexMap[index] = true;
-        abstraction.content.fillCount++;
-    }
-};
-
-/**
  * when all variables are assigned, this abstraction will become reducible
  */
-var isAbstractionReducible = function(abstraction) {
-    return abstraction.content.variables.length <= abstraction.content.fillCount;
-};
-
 var lookupVariable = function(ctx, variableName) {
     var variableMap = ctx.variableMap;
     // lookup variable map
@@ -105,13 +77,10 @@ module.exports = {
     Void: Void,
 
     BasicContainer: BasicContainer,
-    Abstraction: Abstraction,
 
     Context: Context,
 
     lookupVariable: lookupVariable,
     getPairValueList: getPairValueList,
-    fillAbstractionVariable: fillAbstractionVariable,
-    isAbstractionReducible: isAbstractionReducible,
     isType: isType
 };

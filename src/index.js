@@ -12,6 +12,8 @@ var CONSTANTS = require('./constants');
 var dataContainer = require('./dataContainer');
 var systemContextMap = require('./systemContextMap');
 var runProgram = require('./runProgram');
+var abstractionData = require('./abstractionData');
+
 var importModule = runProgram.importModule;
 var defineModule = runProgram.defineModule;
 
@@ -26,10 +28,11 @@ var PAIR = CONSTANTS.PAIR,
     META_METHOD = CONSTANTS.META_METHOD,
     VARIABLE = CONSTANTS.VARIABLE;
 
+var Abstraction = abstractionData.Abstraction;
+
 var Void = dataContainer.Void,
 
     BasicContainer = dataContainer.BasicContainer,
-    Abstraction = dataContainer.Abstraction,
 
     isType = dataContainer.isType,
     getPairValueList = dataContainer.getPairValueList;
