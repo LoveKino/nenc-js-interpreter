@@ -26,6 +26,7 @@ var PAIR = CONSTANTS.PAIR,
     LET_BINDING_STATEMENT = CONSTANTS.LET_BINDING_STATEMENT,
     IMPORT_STATEMENT = CONSTANTS.IMPORT_STATEMENT,
     META_METHOD = CONSTANTS.META_METHOD,
+    CONDITION_EXP = CONSTANTS.CONDITION_EXP,
     VARIABLE = CONSTANTS.VARIABLE;
 
 var Abstraction = abstractionData.Abstraction;
@@ -165,6 +166,14 @@ module.exports = {
         return BasicContainer(IMPORT_STATEMENT, {
             modulePath: modulePath,
             variable: variable
+        });
+    },
+
+    sys_condition: function(conditionExp, option1Exp, option2Exp) {
+        return BasicContainer(CONDITION_EXP, {
+            conditionExp: conditionExp,
+            option1Exp: option1Exp,
+            option2Exp: option2Exp
         });
     },
 

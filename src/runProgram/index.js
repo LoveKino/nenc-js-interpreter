@@ -27,6 +27,7 @@ var DATA = CONSTANTS.DATA,
     STATEMENTS = CONSTANTS.STATEMENTS,
     EXPRESSION = CONSTANTS.EXPRESSION,
     LET_BINDING_STATEMENT = CONSTANTS.LET_BINDING_STATEMENT,
+    CONDITION_EXP = CONSTANTS.CONDITION_EXP,
     IMPORT_STATEMENT = CONSTANTS.IMPORT_STATEMENT;
 
 var Abstraction = abstractionData.Abstraction,
@@ -146,8 +147,24 @@ var runExp = (exp, ctx) => {
         return runApplication(exp, ctx);
     } else if (isType(exp, DATA)) {
         return exp.content.data;
+    } else if (isType(exp, CONDITION_EXP)) {
+        return runConditionExp(exp, ctx);
     } else {
         throw new Error('impossible situation');
+    }
+};
+
+var runConditionExp = function(exp, ctx) {
+    var conditionExp = exp.content.conditionExp;
+    var option1Exp = exp.content.option1Exp;
+    var option2Exp = exp.content.option2Exp;
+
+    var conditionResult = runExp(conditionExp, ctx);
+
+    if(conditionResult) {
+        return runExp(option1Exp, ctx);
+    } else {
+        return runExp(option2Exp, ctx);
     }
 };
 
