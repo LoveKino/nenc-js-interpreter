@@ -136,7 +136,7 @@ var runStatement = function(statement, ctx) {
     }
 };
 
-let runExp = (exp, ctx) => {
+var runExp = (exp, ctx) => {
     if (isType(exp, VARIABLE)) {
         return lookupVariable(ctx, exp.content.variableName);
     } else if (isType(exp, ABSTRACTION)) {
