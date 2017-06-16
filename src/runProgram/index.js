@@ -186,10 +186,15 @@ var runApplication = function(application, ctx) {
     var paramsRet = resolveExpList(params, ctx);
 
     // run abstraction
-    if (isType(callerRet, GUARDED_ABSTRACTION)) {
-        return runGuardedAbstraction(callerRet, paramsRet);
-    } else { // meta method
-        return runMetaMethod(callerRet, paramsRet);
+    switch (getType(callerRet)) {
+        case GUARDED_ABSTRACTION:
+            return runGuardedAbstraction(callerRet, paramsRet);
+        case ORDINARY_ABSTRACTION:
+            return runOrdinaryAbstraction(callerRet, paramsRet);
+        case META_METHOD:
+            return runMetaMethod(callerRet, paramsRet);
+        default:
+            throw new Error('Expect function to run application, but got ' + callerRet);
     }
 };
 
