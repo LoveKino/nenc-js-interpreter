@@ -207,6 +207,9 @@ var runGuardedAbstraction = function(callerRet, paramsRet) {
     var ctx = absContent.context;
     var guardLines = absContent.guardLines;
     var len = guardLines.length;
+    var ordinaryAbstraction = guardLineContent.ordinaryAbstraction;
+    var variables = ordinaryAbstraction.content.variables;
+    var varLen = variables.length;
 
     for (var i = 0; i < len; i++) {
         var guardLine = guardLines[i];
@@ -217,15 +220,22 @@ var runGuardedAbstraction = function(callerRet, paramsRet) {
         var finded = true;
         for (var j = 0; j < guardLen; j++) {
             var guard = guards[j];
-            var ret = runExp(guard, ctx);
-            if (ret === false) {
+            var curContext = {};
+
+            for (var k = 0; k < varLen; k++) {
+                var paramRet = paramsRet[k];
+                curContext[variables[k]] = paramRet === undefined ? null : paramRet;
+            }
+
+            var ret = runExp(guard, new Context(curContext, ctx));
+
+            if (ret === false || ret === null || ret === 0 || ret === undefined) {
                 finded = false;
                 break;
             }
         }
 
         if (finded) {
-            var ordinaryAbstraction = guardLineContent.ordinaryAbstraction;
             updateAbstractionContext(ordinaryAbstraction, ctx);
             return runOrdinaryAbstraction(ordinaryAbstraction, paramsRet);
         }
@@ -281,7 +291,6 @@ var runOrdinaryAbstraction = function(sourceAbstraction, paramsRet) {
 
     return abstraction;
 };
-
 
 module.exports = {
     importModule: importModule,
