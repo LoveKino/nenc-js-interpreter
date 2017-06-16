@@ -136,7 +136,7 @@ var runStatement = function(statement, ctx) {
     } else if (isType(statement, EXPRESSION)) {
         return runExp(statement.content.expression, ctx);
     } else {
-        throw new Error('unrecognized statement');
+        throw new Error('unrecognized statement: ' + JSON.stringify(statement));
     }
 };
 
@@ -153,7 +153,7 @@ var runExp = (exp, ctx) => {
         case CONDITION_EXP:
             return runConditionExp(exp, ctx);
         default:
-            throw new Error('unrecognized expression');
+            throw new Error('unrecognized expression: ' + JSON.stringify(exp));
     }
 };
 
