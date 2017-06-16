@@ -40,9 +40,17 @@ var updateAbstractionContext = function(abstraction, ctx) {
     return abstraction;
 };
 
+var cloneOrdinaryAbstraction = function(source) {
+    var content = source.content;
+    return ordinaryAbstraction(content.variables,
+        content.body,
+        content.context);
+};
+
 module.exports = {
     ordinaryAbstraction: ordinaryAbstraction,
     fillOrdinaryAbstractionVariable: fillOrdinaryAbstractionVariable,
     isOrdinaryAbstractionReducible: isOrdinaryAbstractionReducible,
-    updateAbstractionContext: updateAbstractionContext
+    updateAbstractionContext: updateAbstractionContext,
+    cloneOrdinaryAbstraction: cloneOrdinaryAbstraction
 };

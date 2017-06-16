@@ -1,9 +1,14 @@
 'use strict';
 
 let {
-    sys_runProgram, sys_data, sys_exp, sys_application, sys_variable, sys_pair, sys_statements,
-    sys_ordinary_abstraction, sys_letBinding, sys_module, sys_import
+    sys_runProgram, sys_module, sys_programDSL
 } = require('..');
+
+let {
+    sys_data, sys_exp, sys_application, sys_variable, sys_pair, sys_statements,
+    sys_ordinary_abstraction, sys_letBinding, sys_import
+} = sys_programDSL;
+
 let assert = require('assert');
 
 let runCode = (code) => {

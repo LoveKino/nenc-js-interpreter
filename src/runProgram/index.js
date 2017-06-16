@@ -34,7 +34,8 @@ var DATA = CONSTANTS.DATA,
 var ordinaryAbstraction = abstractionData.ordinaryAbstraction,
     fillOrdinaryAbstractionVariable = abstractionData.fillOrdinaryAbstractionVariable,
     isOrdinaryAbstractionReducible = abstractionData.isOrdinaryAbstractionReducible,
-    updateAbstractionContext = abstractionData.updateAbstractionContext;
+    updateAbstractionContext = abstractionData.updateAbstractionContext,
+    cloneOrdinaryAbstraction = abstractionData.cloneOrdinaryAbstraction;
 
 var Context = dataContainer.Context,
     BasicContainer = dataContainer.BasicContainer,
@@ -131,12 +132,13 @@ var letBindingArrangement = function(letStatement, nextStatements, ctx) {
 };
 
 var runStatement = function(statement, ctx) {
-    if (isType(statement, VOID)) {
-        return null;
-    } else if (isType(statement, EXPRESSION)) {
-        return runExp(statement.content.expression, ctx);
-    } else {
-        throw new Error('unrecognized statement: ' + JSON.stringify(statement));
+    switch (getType(statement)) {
+        case VOID:
+            return null;
+        case EXPRESSION:
+            return runExp(statement.content.expression, ctx);
+        default:
+            throw new Error('unrecognized statement: ' + JSON.stringify(statement));
     }
 };
 
@@ -177,7 +179,6 @@ var runConditionExp = function(exp, ctx) {
 var runApplication = function(application, ctx) {
     var callerRet = runExp(application.content.caller, ctx);
 
-    // TODO system methods
     if (!isCallerType(callerRet)) {
         throw new Error('Expect function to run application, but got ' + callerRet);
     }
@@ -199,7 +200,9 @@ var runApplication = function(application, ctx) {
 };
 
 var isCallerType = function(v) {
-    return isType(v, GUARDED_ABSTRACTION) || isType(v, META_METHOD) || isType(v, ORDINARY_ABSTRACTION);
+    return isType(v, GUARDED_ABSTRACTION) ||
+        isType(v, META_METHOD) ||
+        isType(v, ORDINARY_ABSTRACTION);
 };
 
 var runGuardedAbstraction = function(callerRet, paramsRet) {
@@ -263,7 +266,7 @@ var resolveExpList = function(params, ctx) {
 
 var runOrdinaryAbstraction = function(sourceAbstraction, paramsRet) {
     // create a new abstraction
-    var abstraction = ordinaryAbstraction(sourceAbstraction.content.variables, sourceAbstraction.content.body, sourceAbstraction.content.context);
+    var abstraction = cloneOrdinaryAbstraction(sourceAbstraction);
 
     // fill with some params
     for (var i = 0; i < paramsRet.length; i++) {
