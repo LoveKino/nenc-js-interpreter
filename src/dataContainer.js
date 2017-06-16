@@ -22,6 +22,10 @@ var isType = function(v, type) {
     return v.type === type;
 };
 
+var getType = function(v) {
+    return v.type;
+};
+
 var Void = {
     type: VOID
 };
@@ -82,5 +86,7 @@ module.exports = {
 
     lookupVariable: lookupVariable,
     getPairValueList: getPairValueList,
-    isType: isType
+    isType: isType,
+
+    getType: getType
 };

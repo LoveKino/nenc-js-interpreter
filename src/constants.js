@@ -12,5 +12,8 @@ module.exports = {
     STATEMENTS: 'statements',
     LET_BINDING_STATEMENT: 'let_binding_statement',
     IMPORT_STATEMENT: 'import_statement',
-    CONDITION_EXP: 'condition_expression'
+    ABSTRACTION: 'abstraction',
+    CONDITION_EXP: 'condition_expression',
+    GUARDED_ABSTRACTION_LINE: 'guarded_abstraction_line',
+    GUARDED_ABSTRACTION: 'guarded_abstraction'
 };

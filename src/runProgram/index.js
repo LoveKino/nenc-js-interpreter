@@ -26,18 +26,21 @@ var DATA = CONSTANTS.DATA,
     VARIABLE = CONSTANTS.VARIABLE,
     STATEMENTS = CONSTANTS.STATEMENTS,
     EXPRESSION = CONSTANTS.EXPRESSION,
+    GUARDED_ABSTRACTION = CONSTANTS.GUARDED_ABSTRACTION,
     LET_BINDING_STATEMENT = CONSTANTS.LET_BINDING_STATEMENT,
     CONDITION_EXP = CONSTANTS.CONDITION_EXP,
     IMPORT_STATEMENT = CONSTANTS.IMPORT_STATEMENT;
 
 var ordinaryAbstraction = abstractionData.ordinaryAbstraction,
     fillOrdinaryAbstractionVariable = abstractionData.fillOrdinaryAbstractionVariable,
-    isOrdinaryAbstractionReducible = abstractionData.isOrdinaryAbstractionReducible;
+    isOrdinaryAbstractionReducible = abstractionData.isOrdinaryAbstractionReducible,
+    updateGuardedAbstractionContext = abstractionData.updateGuardedAbstractionContext;
 
 var Context = dataContainer.Context,
     BasicContainer = dataContainer.BasicContainer,
     lookupVariable = dataContainer.lookupVariable,
-    isType = dataContainer.isType;
+    isType = dataContainer.isType,
+    getType = dataContainer.getType;
 
 var nencModules = {};
 
@@ -76,17 +79,17 @@ var runProgram = function(program, ctx) {
     for (var i = 0; i < statements.length; i++) {
         var statement = statements[i];
 
-        if (isType(statement, IMPORT_STATEMENT)) {
-            return runImportStatement(statement, slice(statements, i + 1), ctx);
-            //
-        } else if (isType(statement, LET_BINDING_STATEMENT)) {
-            // re-arrange rest statements
-            return letBindingArrangement(statement, slice(statements, i + 1), ctx);
-        } else {
-            var ret = runStatement(statement, ctx);
-            if (!isType(statement, VOID)) {
-                value = ret;
-            }
+        switch (getType(statement)) {
+            case IMPORT_STATEMENT:
+                return runImportStatement(statement, slice(statements, i + 1), ctx); // re-arrange rest statements
+            case LET_BINDING_STATEMENT:
+                return letBindingArrangement(statement, slice(statements, i + 1), ctx); // re-arrange rest statements
+        }
+
+        var ret = runStatement(statement, ctx);
+
+        if (!isType(statement, VOID)) {
+            value = ret;
         }
     }
 
@@ -103,7 +106,7 @@ var runImportStatement = (statement, nextStatements, ctx) => {
         }),
         ctx);
 
-    return runordinaryAbstraction(abstraction, [importModule(modulePath)]);
+    return runOrdinaryAbstraction(abstraction, [importModule(modulePath)]);
 };
 
 var letBindingArrangement = function(letStatement, nextStatements, ctx) {
@@ -124,7 +127,7 @@ var letBindingArrangement = function(letStatement, nextStatements, ctx) {
 
         ctx);
 
-    return runordinaryAbstraction(abstraction, resolveExpList(bodys, ctx));
+    return runOrdinaryAbstraction(abstraction, resolveExpList(bodys, ctx));
 };
 
 var runStatement = function(statement, ctx) {
@@ -138,30 +141,31 @@ var runStatement = function(statement, ctx) {
 };
 
 var runExp = (exp, ctx) => {
-    if (isType(exp, VARIABLE)) {
-        return lookupVariable(ctx, exp.content.variableName);
-    } else if (isType(exp, ORDINARY_ABSTRACTION)) {
-        exp.content.context = ctx;
-        return exp;
-    } else if (isType(exp, APPLICATION)) {
-        return runApplication(exp, ctx);
-    } else if (isType(exp, DATA)) {
-        return exp.content.data;
-    } else if (isType(exp, CONDITION_EXP)) {
-        return runConditionExp(exp, ctx);
-    } else {
-        throw new Error('impossible situation');
+    switch (getType(exp)) {
+        case VARIABLE:
+            return lookupVariable(ctx, exp.content.variableName);
+        case GUARDED_ABSTRACTION:
+            return updateGuardedAbstractionContext(exp, ctx);
+        case APPLICATION:
+            return runApplication(exp, ctx);
+        case DATA:
+            return exp.content.data;
+        case CONDITION_EXP:
+            return runConditionExp(exp, ctx);
+        default:
+            throw new Error('unrecognized expression');
     }
 };
 
 var runConditionExp = function(exp, ctx) {
-    var conditionExp = exp.content.conditionExp;
-    var option1Exp = exp.content.option1Exp;
-    var option2Exp = exp.content.option2Exp;
+    var expContent = exp.content;
+    var conditionExp = expContent.conditionExp;
+    var option1Exp = expContent.option1Exp;
+    var option2Exp = expContent.option2Exp;
 
     var conditionResult = runExp(conditionExp, ctx);
 
-    if(conditionResult) {
+    if (conditionResult) {
         return runExp(option1Exp, ctx);
     } else {
         return runExp(option2Exp, ctx);
@@ -172,9 +176,7 @@ var runApplication = function(application, ctx) {
     var callerRet = runExp(application.content.caller, ctx);
 
     // TODO system methods
-    if (!isType(callerRet, ORDINARY_ABSTRACTION) &&
-        !isType(callerRet, META_METHOD)
-    ) {
+    if (!isCallerType(callerRet)) {
         throw new Error('Expect function to run application, but got ' + callerRet);
     }
 
@@ -182,11 +184,47 @@ var runApplication = function(application, ctx) {
     var paramsRet = resolveExpList(params, ctx);
 
     // run abstraction
-    if (isType(callerRet, ORDINARY_ABSTRACTION)) {
-        return runordinaryAbstraction(callerRet, paramsRet);
+    if (isType(callerRet, GUARDED_ABSTRACTION)) {
+        return runGuardedAbstraction(callerRet, paramsRet);
     } else { // meta method
         return runMetaMethod(callerRet, paramsRet);
     }
+};
+
+var isCallerType = function(v) {
+    return isType(v, ORDINARY_ABSTRACTION) || isType(v, META_METHOD);
+};
+
+var runGuardedAbstraction = function(callerRet, paramsRet) {
+    var absContent = callerRet.content;
+    var ctx = absContent.context;
+    var guardLines = absContent.guardLines;
+    var len = guardLines.length;
+
+    for (var i = 0; i < len; i++) {
+        var guardLine = guardLines[i];
+        var guardLineContent = guardLine.content;
+        var guards = guardLineContent.guards || [];
+        var guardLen = guards.length;
+
+        var finded = true;
+        for (var j = 0; j < guardLen; j++) {
+            var guard = guards[j];
+            var ret = runExp(guard, ctx);
+            if (ret === false) {
+                finded = false;
+                break;
+            }
+        }
+
+        if (finded) {
+            var ordinaryAbstraction = guardLineContent.ordinaryAbstraction;
+            ordinaryAbstraction.content.context = ctx;
+            return runOrdinaryAbstraction(ordinaryAbstraction, paramsRet);
+        }
+    }
+
+    throw new Error('could not find guard for params');
 };
 
 var runMetaMethod = function(metaMethod, paramsRet) {
@@ -204,9 +242,9 @@ var resolveExpList = function(params, ctx) {
     return paramsRet;
 };
 
-var runordinaryAbstraction = function(source, paramsRet) {
+var runOrdinaryAbstraction = function(sourceAbstraction, paramsRet) {
     // create a new abstraction
-    var abstraction = ordinaryAbstraction(source.content.variables, source.content.body, source.content.context);
+    var abstraction = ordinaryAbstraction(sourceAbstraction.content.variables, sourceAbstraction.content.body, sourceAbstraction.content.context);
 
     // fill with some params
     for (var i = 0; i < paramsRet.length; i++) {
@@ -223,7 +261,7 @@ var runordinaryAbstraction = function(source, paramsRet) {
             variableMap[variableName] = fillMap[j];
         }
         // attach variables to context
-        var newCtx = new Context(variableMap, source.content.context);
+        var newCtx = new Context(variableMap, sourceAbstraction.content.context);
 
         // run body expression with new context
         var body = abstraction.content.body;
@@ -236,6 +274,7 @@ var runordinaryAbstraction = function(source, paramsRet) {
 
     return abstraction;
 };
+
 
 module.exports = {
     importModule: importModule,

@@ -27,6 +27,8 @@ var PAIR = CONSTANTS.PAIR,
     IMPORT_STATEMENT = CONSTANTS.IMPORT_STATEMENT,
     META_METHOD = CONSTANTS.META_METHOD,
     CONDITION_EXP = CONSTANTS.CONDITION_EXP,
+    GUARDED_ABSTRACTION = CONSTANTS.GUARDED_ABSTRACTION,
+    GUARDED_ABSTRACTION_LINE = CONSTANTS.GUARDED_ABSTRACTION_LINE,
     VARIABLE = CONSTANTS.VARIABLE;
 
 var ordinaryAbstraction = abstractionData.ordinaryAbstraction;
@@ -53,6 +55,26 @@ module.exports = {
     sys_variable: function(variableName) {
         return BasicContainer(VARIABLE, {
             variableName: variableName
+        });
+    },
+
+    sys_guarded_abstraction: function(v) {
+        let lines = [];
+        if (isType(v, PAIR)) {
+            lines = getPairValueList(v);
+        } else {
+            lines = [v];
+        }
+
+        return BasicContainer(GUARDED_ABSTRACTION, {
+            guardLines: lines
+        });
+    },
+
+    sys_guarded_abstraction_line: function(ordinaryAbstraction, guards) {
+        return BasicContainer(GUARDED_ABSTRACTION_LINE, {
+            ordinaryAbstraction: ordinaryAbstraction,
+            guards: guards
         });
     },
 
