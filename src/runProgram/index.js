@@ -192,7 +192,7 @@ var runApplication = function(application, ctx) {
 };
 
 var isCallerType = function(v) {
-    return isType(v, ORDINARY_ABSTRACTION) || isType(v, META_METHOD);
+    return isType(v, GUARDED_ABSTRACTION) || isType(v, META_METHOD) || isType(v, ORDINARY_ABSTRACTION);
 };
 
 var runGuardedAbstraction = function(callerRet, paramsRet) {
