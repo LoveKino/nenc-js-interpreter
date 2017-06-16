@@ -35,7 +35,7 @@ var isOrdinaryAbstractionReducible = function(abstraction) {
     return abstraction.content.variables.length <= abstraction.content.fillCount;
 };
 
-var updateGuardedAbstractionContext = function(abstraction, ctx) {
+var updateAbstractionContext = function(abstraction, ctx) {
     abstraction.content.context = ctx;
     return abstraction;
 };
@@ -44,5 +44,5 @@ module.exports = {
     ordinaryAbstraction: ordinaryAbstraction,
     fillOrdinaryAbstractionVariable: fillOrdinaryAbstractionVariable,
     isOrdinaryAbstractionReducible: isOrdinaryAbstractionReducible,
-    updateGuardedAbstractionContext: updateGuardedAbstractionContext
+    updateAbstractionContext: updateAbstractionContext
 };

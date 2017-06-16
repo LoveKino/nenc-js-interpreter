@@ -34,7 +34,7 @@ var DATA = CONSTANTS.DATA,
 var ordinaryAbstraction = abstractionData.ordinaryAbstraction,
     fillOrdinaryAbstractionVariable = abstractionData.fillOrdinaryAbstractionVariable,
     isOrdinaryAbstractionReducible = abstractionData.isOrdinaryAbstractionReducible,
-    updateGuardedAbstractionContext = abstractionData.updateGuardedAbstractionContext;
+    updateAbstractionContext = abstractionData.updateAbstractionContext;
 
 var Context = dataContainer.Context,
     BasicContainer = dataContainer.BasicContainer,
@@ -145,7 +145,9 @@ var runExp = (exp, ctx) => {
         case VARIABLE:
             return lookupVariable(ctx, exp.content.variableName);
         case GUARDED_ABSTRACTION:
-            return updateGuardedAbstractionContext(exp, ctx);
+            return updateAbstractionContext(exp, ctx);
+        case ORDINARY_ABSTRACTION:
+            return updateAbstractionContext(exp, ctx);
         case APPLICATION:
             return runApplication(exp, ctx);
         case DATA:
@@ -219,7 +221,7 @@ var runGuardedAbstraction = function(callerRet, paramsRet) {
 
         if (finded) {
             var ordinaryAbstraction = guardLineContent.ordinaryAbstraction;
-            ordinaryAbstraction.content.context = ctx;
+            updateAbstractionContext(ordinaryAbstraction, ctx);
             return runOrdinaryAbstraction(ordinaryAbstraction, paramsRet);
         }
     }
