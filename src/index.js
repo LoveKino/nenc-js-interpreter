@@ -71,7 +71,17 @@ module.exports = {
         });
     },
 
-    sys_guarded_abstraction_line: function(ordinaryAbstraction, guards) {
+    sys_guarded_abstraction_line: function(ordinaryAbstraction, expList) {
+        var guards = [];
+
+        if (!isType(expList, VOID)) {
+            if (isType(expList, PAIR)) {
+                guards = getPairValueList(expList);
+            } else {
+                guards = [expList];
+            }
+        }
+
         return BasicContainer(GUARDED_ABSTRACTION_LINE, {
             ordinaryAbstraction: ordinaryAbstraction,
             guards: guards

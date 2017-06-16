@@ -225,7 +225,8 @@ var runGuardedAbstraction = function(callerRet, paramsRet) {
 
             for (var k = 0; k < varLen; k++) {
                 var paramRet = paramsRet[k];
-                curContext[variables[k]] = paramRet === undefined ? null : paramRet;
+                var variableName = variables[k].content.variableName;
+                curContext[variableName] = paramRet === undefined ? null : paramRet;
             }
 
             var ret = runExp(guard, new Context(curContext, ctx));
