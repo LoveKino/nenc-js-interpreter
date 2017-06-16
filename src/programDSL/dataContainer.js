@@ -1,7 +1,7 @@
 'use strict';
 
-var hostLangApis = require('./hostLangApis');
-var CONSTANTS = require('./constants');
+var hostLangApis = require('../util/hostLangApis');
+var CONSTANTS = require('../constants');
 
 var concat = hostLangApis.concat,
     push = hostLangApis.push;

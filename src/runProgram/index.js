@@ -10,8 +10,8 @@
 var systemContextMap = require('../systemContextMap');
 
 var CONSTANTS = require('../constants');
-var hostLangApis = require('../hostLangApis');
-var dataContainer = require('../dataContainer');
+var hostLangApis = require('../util/hostLangApis');
+var dataContainer = require('../programDSL/dataContainer');
 var abstractionData = require('../abstractionData');
 
 var applyMethod = hostLangApis.applyMethod;

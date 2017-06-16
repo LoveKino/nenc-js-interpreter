@@ -9,7 +9,7 @@
  **************************************************************/
 
 var programDSL = require('./programDSL/dsl');
-var dataContainer = require('./dataContainer');
+var dataContainer = require('./programDSL/dataContainer');
 var systemContextMap = require('./systemContextMap');
 var runProgram = require('./runProgram');
 var CONSTANTS = require('./constants');

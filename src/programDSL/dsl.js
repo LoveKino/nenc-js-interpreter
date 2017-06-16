@@ -5,7 +5,7 @@
  */
 
 var CONSTANTS = require('../constants');
-var dataContainer = require('../dataContainer');
+var dataContainer = require('./dataContainer');
 var abstractionData = require('../abstractionData');
 
 var PAIR = CONSTANTS.PAIR,

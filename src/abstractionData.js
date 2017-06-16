@@ -2,7 +2,7 @@
 
 var CONSTANTS = require('./constants');
 var ORDINARY_ABSTRACTION = CONSTANTS.ORDINARY_ABSTRACTION;
-var dataContainer = require('./dataContainer');
+var dataContainer = require('./programDSL/dataContainer');
 
 var BasicContainer = dataContainer.BasicContainer;
 

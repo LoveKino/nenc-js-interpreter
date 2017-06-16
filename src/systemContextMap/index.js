@@ -1,6 +1,6 @@
 'use strict';
 
-var dataContainer = require('../dataContainer');
+var dataContainer = require('../programDSL/dataContainer');
 var CONSTANTS = require('../constants');
 
 var BasicContainer = dataContainer.BasicContainer;
