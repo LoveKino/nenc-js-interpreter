@@ -207,13 +207,13 @@ var runGuardedAbstraction = function(callerRet, paramsRet) {
     var ctx = absContent.context;
     var guardLines = absContent.guardLines;
     var len = guardLines.length;
-    var varLen = variables.length;
 
     for (var i = 0; i < len; i++) {
         var guardLine = guardLines[i];
         var guardLineContent = guardLine.content;
         var ordinaryAbstraction = guardLineContent.ordinaryAbstraction;
         var variables = ordinaryAbstraction.content.variables;
+        var varLen = variables.length;
 
         var guards = guardLineContent.guards || [];
         var guardLen = guards.length;
