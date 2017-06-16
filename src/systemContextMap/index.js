@@ -28,5 +28,13 @@ module.exports = {
 
     '/': MetaMethod(function(v1, v2) {
         return v1 / v2;
+    }),
+
+    '>': MetaMethod(function(v1, v2) {
+        return v1 > v2;
+    }),
+
+    '<': MetaMethod(function(v1, v2) {
+        return v1 < v2;
     })
 };
