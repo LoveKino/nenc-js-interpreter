@@ -6,7 +6,7 @@ module.exports = {
     DATA: 'data',
     META_METHOD: 'metaMethod',
     APPLICATION: 'application',
-    ABSTRACTION: 'abstraction',
+    ORDINARY_ABSTRACTION: 'ordinary_abstraction',
     VARIABLE: 'variable',
     EXPRESSION: 'expression',
     STATEMENTS: 'statements',

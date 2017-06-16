@@ -2,7 +2,7 @@
 
 let {
     sys_runProgram, sys_data, sys_exp, sys_application, sys_variable, sys_pair, sys_statements,
-    sys_abstraction, sys_letBinding, sys_module, sys_import
+    sys_ordinary_abstraction, sys_letBinding, sys_module, sys_import
 } = require('..');
 let assert = require('assert');
 
@@ -37,11 +37,11 @@ describe('index', () => {
 
     it('abstraction', () => {
         assert.equal(runCode(
-            sys_statements(sys_exp(sys_application(sys_abstraction(sys_variable('a'), sys_statements(sys_exp(sys_application(sys_variable('+'), sys_pair(sys_variable('a'), sys_data(1)))))), sys_data(1))))
+            sys_statements(sys_exp(sys_application(sys_ordinary_abstraction(sys_variable('a'), sys_statements(sys_exp(sys_application(sys_variable('+'), sys_pair(sys_variable('a'), sys_data(1)))))), sys_data(1))))
         ), 2);
 
         assert.equal(runCode(
-            sys_statements(sys_exp(sys_application(sys_abstraction(sys_variable('a'), sys_application(sys_variable('+'), sys_pair(sys_variable('a'), sys_data(1)))), sys_data(1))))
+            sys_statements(sys_exp(sys_application(sys_ordinary_abstraction(sys_variable('a'), sys_application(sys_variable('+'), sys_pair(sys_variable('a'), sys_data(1)))), sys_data(1))))
         ), 2);
     });
 

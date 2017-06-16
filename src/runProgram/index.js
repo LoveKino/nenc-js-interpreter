@@ -22,7 +22,7 @@ var DATA = CONSTANTS.DATA,
 
     META_METHOD = CONSTANTS.META_METHOD,
     APPLICATION = CONSTANTS.APPLICATION,
-    ABSTRACTION = CONSTANTS.ABSTRACTION,
+    ORDINARY_ABSTRACTION = CONSTANTS.ORDINARY_ABSTRACTION,
     VARIABLE = CONSTANTS.VARIABLE,
     STATEMENTS = CONSTANTS.STATEMENTS,
     EXPRESSION = CONSTANTS.EXPRESSION,
@@ -30,9 +30,9 @@ var DATA = CONSTANTS.DATA,
     CONDITION_EXP = CONSTANTS.CONDITION_EXP,
     IMPORT_STATEMENT = CONSTANTS.IMPORT_STATEMENT;
 
-var Abstraction = abstractionData.Abstraction,
-    fillAbstractionVariable = abstractionData.fillAbstractionVariable,
-    isAbstractionReducible = abstractionData.isAbstractionReducible;
+var ordinaryAbstraction = abstractionData.ordinaryAbstraction,
+    fillOrdinaryAbstractionVariable = abstractionData.fillOrdinaryAbstractionVariable,
+    isOrdinaryAbstractionReducible = abstractionData.isOrdinaryAbstractionReducible;
 
 var Context = dataContainer.Context,
     BasicContainer = dataContainer.BasicContainer,
@@ -97,13 +97,13 @@ var runImportStatement = (statement, nextStatements, ctx) => {
     var modulePath = statement.content.modulePath;
     var variable = statement.content.variable;
 
-    var abstraction = Abstraction([variable],
+    var abstraction = ordinaryAbstraction([variable],
         BasicContainer(STATEMENTS, {
             statements: nextStatements
         }),
         ctx);
 
-    return runAbstraction(abstraction, [importModule(modulePath)]);
+    return runordinaryAbstraction(abstraction, [importModule(modulePath)]);
 };
 
 var letBindingArrangement = function(letStatement, nextStatements, ctx) {
@@ -117,14 +117,14 @@ var letBindingArrangement = function(letStatement, nextStatements, ctx) {
         bodys[j] = binding[1];
     }
 
-    var abstraction = Abstraction(variables,
+    var abstraction = ordinaryAbstraction(variables,
         BasicContainer(STATEMENTS, {
             statements: nextStatements
         }),
 
         ctx);
 
-    return runAbstraction(abstraction, resolveExpList(bodys, ctx));
+    return runordinaryAbstraction(abstraction, resolveExpList(bodys, ctx));
 };
 
 var runStatement = function(statement, ctx) {
@@ -140,7 +140,7 @@ var runStatement = function(statement, ctx) {
 var runExp = (exp, ctx) => {
     if (isType(exp, VARIABLE)) {
         return lookupVariable(ctx, exp.content.variableName);
-    } else if (isType(exp, ABSTRACTION)) {
+    } else if (isType(exp, ORDINARY_ABSTRACTION)) {
         exp.content.context = ctx;
         return exp;
     } else if (isType(exp, APPLICATION)) {
@@ -172,7 +172,7 @@ var runApplication = function(application, ctx) {
     var callerRet = runExp(application.content.caller, ctx);
 
     // TODO system methods
-    if (!isType(callerRet, ABSTRACTION) &&
+    if (!isType(callerRet, ORDINARY_ABSTRACTION) &&
         !isType(callerRet, META_METHOD)
     ) {
         throw new Error('Expect function to run application, but got ' + callerRet);
@@ -182,8 +182,8 @@ var runApplication = function(application, ctx) {
     var paramsRet = resolveExpList(params, ctx);
 
     // run abstraction
-    if (isType(callerRet, ABSTRACTION)) {
-        return runAbstraction(callerRet, paramsRet);
+    if (isType(callerRet, ORDINARY_ABSTRACTION)) {
+        return runordinaryAbstraction(callerRet, paramsRet);
     } else { // meta method
         return runMetaMethod(callerRet, paramsRet);
     }
@@ -204,16 +204,16 @@ var resolveExpList = function(params, ctx) {
     return paramsRet;
 };
 
-var runAbstraction = function(source, paramsRet) {
+var runordinaryAbstraction = function(source, paramsRet) {
     // create a new abstraction
-    var abstraction = Abstraction(source.content.variables, source.content.body, source.content.context);
+    var abstraction = ordinaryAbstraction(source.content.variables, source.content.body, source.content.context);
 
     // fill with some params
     for (var i = 0; i < paramsRet.length; i++) {
-        fillAbstractionVariable(abstraction, i, paramsRet[i]);
+        fillOrdinaryAbstractionVariable(abstraction, i, paramsRet[i]);
     }
 
-    if (isAbstractionReducible(abstraction)) {
+    if (isOrdinaryAbstractionReducible(abstraction)) {
         // take out all variables
         var variables = abstraction.content.variables;
         var fillMap = abstraction.content.fillMap;

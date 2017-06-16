@@ -29,7 +29,7 @@ var PAIR = CONSTANTS.PAIR,
     CONDITION_EXP = CONSTANTS.CONDITION_EXP,
     VARIABLE = CONSTANTS.VARIABLE;
 
-var Abstraction = abstractionData.Abstraction;
+var ordinaryAbstraction = abstractionData.ordinaryAbstraction;
 
 var Void = dataContainer.Void,
 
@@ -56,7 +56,7 @@ module.exports = {
         });
     },
 
-    sys_abstraction: function(params, body) {
+    sys_ordinary_abstraction: function(params, body) {
         var variables = [];
         if (!isType(params, VOID)) {
             if (isType(params, VARIABLE)) {
@@ -65,7 +65,7 @@ module.exports = {
                 variables = getPairValueList(params);
             }
         }
-        return Abstraction(variables, body);
+        return ordinaryAbstraction(variables, body);
     },
 
     sys_data: function(data) {
