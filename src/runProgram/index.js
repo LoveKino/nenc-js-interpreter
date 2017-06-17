@@ -9,10 +9,10 @@
  **************************************************************/
 var systemContextMap = require('../systemContextMap');
 
-var CONSTANTS = require('../constants');
+var CONSTANTS = require('../programDSL/constants');
 var hostLangApis = require('../util/hostLangApis');
 var dataContainer = require('../programDSL/dataContainer');
-var abstractionData = require('../abstractionData');
+var abstractionUtil = require('./abstractionUtil');
 
 var applyMethod = hostLangApis.applyMethod;
 var slice = hostLangApis.slice;
@@ -31,15 +31,15 @@ var DATA = CONSTANTS.DATA,
     CONDITION_EXP = CONSTANTS.CONDITION_EXP,
     IMPORT_STATEMENT = CONSTANTS.IMPORT_STATEMENT;
 
-var ordinaryAbstraction = abstractionData.ordinaryAbstraction,
-    fillOrdinaryAbstractionVariable = abstractionData.fillOrdinaryAbstractionVariable,
-    isOrdinaryAbstractionReducible = abstractionData.isOrdinaryAbstractionReducible,
-    updateAbstractionContext = abstractionData.updateAbstractionContext,
-    cloneOrdinaryAbstraction = abstractionData.cloneOrdinaryAbstraction;
+var fillOrdinaryAbstractionVariable = abstractionUtil.fillOrdinaryAbstractionVariable,
+    isOrdinaryAbstractionReducible = abstractionUtil.isOrdinaryAbstractionReducible,
+    updateAbstractionContext = abstractionUtil.updateAbstractionContext,
+    cloneOrdinaryAbstraction = abstractionUtil.cloneOrdinaryAbstraction;
 
 var Context = dataContainer.Context,
     BasicContainer = dataContainer.BasicContainer,
     lookupVariable = dataContainer.lookupVariable,
+    ordinaryAbstraction = dataContainer.ordinaryAbstraction,
     isType = dataContainer.isType,
     getType = dataContainer.getType;
 
@@ -81,10 +81,10 @@ var runProgram = function(program, ctx) {
         var statement = statements[i];
 
         switch (getType(statement)) {
-            case IMPORT_STATEMENT:
-                return runImportStatement(statement, slice(statements, i + 1), ctx); // re-arrange rest statements
-            case LET_BINDING_STATEMENT:
-                return letBindingArrangement(statement, slice(statements, i + 1), ctx); // re-arrange rest statements
+        case IMPORT_STATEMENT:
+            return runImportStatement(statement, slice(statements, i + 1), ctx); // re-arrange rest statements
+        case LET_BINDING_STATEMENT:
+            return letBindingArrangement(statement, slice(statements, i + 1), ctx); // re-arrange rest statements
         }
 
         var ret = runStatement(statement, ctx);
@@ -133,31 +133,31 @@ var letBindingArrangement = function(letStatement, nextStatements, ctx) {
 
 var runStatement = function(statement, ctx) {
     switch (getType(statement)) {
-        case VOID:
-            return null;
-        case EXPRESSION:
-            return runExp(statement.content.expression, ctx);
-        default:
-            throw new Error('unrecognized statement: ' + JSON.stringify(statement));
+    case VOID:
+        return null;
+    case EXPRESSION:
+        return runExp(statement.content.expression, ctx);
+    default:
+        throw new Error('unrecognized statement: ' + JSON.stringify(statement));
     }
 };
 
 var runExp = (exp, ctx) => {
     switch (getType(exp)) {
-        case VARIABLE:
-            return lookupVariable(ctx, exp.content.variableName);
-        case GUARDED_ABSTRACTION:
-            return updateAbstractionContext(exp, ctx);
-        case ORDINARY_ABSTRACTION:
-            return updateAbstractionContext(exp, ctx);
-        case APPLICATION:
-            return runApplication(exp, ctx);
-        case DATA:
-            return exp.content.data;
-        case CONDITION_EXP:
-            return runConditionExp(exp, ctx);
-        default:
-            throw new Error('unrecognized expression: ' + JSON.stringify(exp));
+    case VARIABLE:
+        return lookupVariable(ctx, exp.content.variableName);
+    case GUARDED_ABSTRACTION:
+        return updateAbstractionContext(exp, ctx);
+    case ORDINARY_ABSTRACTION:
+        return updateAbstractionContext(exp, ctx);
+    case APPLICATION:
+        return runApplication(exp, ctx);
+    case DATA:
+        return exp.content.data;
+    case CONDITION_EXP:
+        return runConditionExp(exp, ctx);
+    default:
+        throw new Error('unrecognized expression: ' + JSON.stringify(exp));
     }
 };
 
@@ -188,14 +188,14 @@ var runApplication = function(application, ctx) {
 
     // run abstraction
     switch (getType(callerRet)) {
-        case GUARDED_ABSTRACTION:
-            return runGuardedAbstraction(callerRet, paramsRet);
-        case ORDINARY_ABSTRACTION:
-            return runOrdinaryAbstraction(callerRet, paramsRet);
-        case META_METHOD:
-            return runMetaMethod(callerRet, paramsRet);
-        default:
-            throw new Error('Expect function to run application, but got ' + callerRet);
+    case GUARDED_ABSTRACTION:
+        return runGuardedAbstraction(callerRet, paramsRet);
+    case ORDINARY_ABSTRACTION:
+        return runOrdinaryAbstraction(callerRet, paramsRet);
+    case META_METHOD:
+        return runMetaMethod(callerRet, paramsRet);
+    default:
+        throw new Error('Expect function to run application, but got ' + callerRet);
     }
 };
 

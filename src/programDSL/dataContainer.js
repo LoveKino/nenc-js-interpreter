@@ -1,12 +1,13 @@
 'use strict';
 
 var hostLangApis = require('../util/hostLangApis');
-var CONSTANTS = require('../constants');
+var CONSTANTS = require('./constants');
 
 var concat = hostLangApis.concat,
     push = hostLangApis.push;
 
 var PAIR = CONSTANTS.PAIR,
+    ORDINARY_ABSTRACTION = CONSTANTS.ORDINARY_ABSTRACTION,
     VOID = CONSTANTS.VOID;
 
 /**************************************************************
@@ -77,6 +78,17 @@ var lookupVariable = function(ctx, variableName) {
     }
 };
 
+function ordinaryAbstraction(variables, bodyExp, context) {
+    return BasicContainer(ORDINARY_ABSTRACTION, {
+        fillMap: {},
+        context: context || null,
+        variables: variables,
+        body: bodyExp,
+        indexMap: {},
+        fillCount: 0
+    });
+}
+
 module.exports = {
     Void: Void,
 
@@ -88,5 +100,7 @@ module.exports = {
     getPairValueList: getPairValueList,
     isType: isType,
 
-    getType: getType
+    getType: getType,
+
+    ordinaryAbstraction: ordinaryAbstraction
 };

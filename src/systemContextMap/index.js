@@ -1,7 +1,7 @@
 'use strict';
 
 var dataContainer = require('../programDSL/dataContainer');
-var CONSTANTS = require('../constants');
+var CONSTANTS = require('../programDSL/constants');
 
 var BasicContainer = dataContainer.BasicContainer;
 var META_METHOD = CONSTANTS.META_METHOD;

@@ -1,12 +1,10 @@
-'use strict';
 
 /**
  * define DSL, used to contruct program
  */
 
-var CONSTANTS = require('../constants');
+var CONSTANTS = require('./constants');
 var dataContainer = require('./dataContainer');
-var abstractionData = require('../abstractionData');
 
 var PAIR = CONSTANTS.PAIR,
     VOID = CONSTANTS.VOID,
@@ -21,7 +19,7 @@ var PAIR = CONSTANTS.PAIR,
     GUARDED_ABSTRACTION_LINE = CONSTANTS.GUARDED_ABSTRACTION_LINE,
     VARIABLE = CONSTANTS.VARIABLE;
 
-var ordinaryAbstraction = abstractionData.ordinaryAbstraction;
+var ordinaryAbstraction = dataContainer.ordinaryAbstraction;
 
 var Void = dataContainer.Void,
 

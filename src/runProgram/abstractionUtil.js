@@ -1,21 +1,8 @@
 'use strict';
 
-var CONSTANTS = require('./constants');
-var ORDINARY_ABSTRACTION = CONSTANTS.ORDINARY_ABSTRACTION;
-var dataContainer = require('./programDSL/dataContainer');
+var dataContainer = require('../programDSL/dataContainer');
 
-var BasicContainer = dataContainer.BasicContainer;
-
-function ordinaryAbstraction(variables, bodyExp, context) {
-    return BasicContainer(ORDINARY_ABSTRACTION, {
-        fillMap: {},
-        context: context || null,
-        variables: variables,
-        body: bodyExp,
-        indexMap: {},
-        fillCount: 0
-    });
-}
+var ordinaryAbstraction = dataContainer.ordinaryAbstraction;
 
 /**
  * fill param value at specific position
@@ -48,7 +35,6 @@ var cloneOrdinaryAbstraction = function(source) {
 };
 
 module.exports = {
-    ordinaryAbstraction: ordinaryAbstraction,
     fillOrdinaryAbstractionVariable: fillOrdinaryAbstractionVariable,
     isOrdinaryAbstractionReducible: isOrdinaryAbstractionReducible,
     updateAbstractionContext: updateAbstractionContext,

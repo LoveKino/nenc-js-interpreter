@@ -12,7 +12,7 @@ var programDSL = require('./programDSL/dsl');
 var dataContainer = require('./programDSL/dataContainer');
 var systemContextMap = require('./systemContextMap');
 var runProgram = require('./runProgram');
-var CONSTANTS = require('./constants');
+var CONSTANTS = require('./programDSL/constants');
 
 var importModule = runProgram.importModule;
 var defineModule = runProgram.defineModule;
