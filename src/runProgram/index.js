@@ -12,7 +12,7 @@ var systemContextMap = require('../systemContextMap');
 var CONSTANTS = require('../programDSL/constants');
 var hostLangApis = require('../util/hostLangApis');
 var dataContainer = require('../programDSL/dataContainer');
-var abstractionUtil = require('./abstractionUtil');
+var dslBehavior = require('../dslBehavior');
 
 var applyMethod = hostLangApis.applyMethod;
 var slice = hostLangApis.slice;
@@ -31,17 +31,17 @@ var DATA = CONSTANTS.DATA,
     CONDITION_EXP = CONSTANTS.CONDITION_EXP,
     IMPORT_STATEMENT = CONSTANTS.IMPORT_STATEMENT;
 
-var fillOrdinaryAbstractionVariable = abstractionUtil.fillOrdinaryAbstractionVariable,
-    isOrdinaryAbstractionReducible = abstractionUtil.isOrdinaryAbstractionReducible,
-    updateAbstractionContext = abstractionUtil.updateAbstractionContext,
-    cloneOrdinaryAbstraction = abstractionUtil.cloneOrdinaryAbstraction;
+var fillOrdinaryAbstractionVariable = dslBehavior.fillOrdinaryAbstractionVariable,
+    isOrdinaryAbstractionReducible = dslBehavior.isOrdinaryAbstractionReducible,
+    lookupVariable = dslBehavior.lookupVariable,
+    updateAbstractionContext = dslBehavior.updateAbstractionContext,
+    isType = dslBehavior.isType,
+    getType = dslBehavior.getType,
+    cloneOrdinaryAbstraction = dslBehavior.cloneOrdinaryAbstraction;
 
 var Context = dataContainer.Context,
     BasicContainer = dataContainer.BasicContainer,
-    lookupVariable = dataContainer.lookupVariable,
-    ordinaryAbstraction = dataContainer.ordinaryAbstraction,
-    isType = dataContainer.isType,
-    getType = dataContainer.getType;
+    ordinaryAbstraction = dataContainer.ordinaryAbstraction;
 
 var nencModules = {};
 

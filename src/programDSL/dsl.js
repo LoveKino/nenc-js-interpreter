@@ -5,6 +5,7 @@
 
 var CONSTANTS = require('./constants');
 var dataContainer = require('./dataContainer');
+var dslBehavior = require('../dslBehavior');
 
 var PAIR = CONSTANTS.PAIR,
     VOID = CONSTANTS.VOID,
@@ -22,11 +23,10 @@ var PAIR = CONSTANTS.PAIR,
 var ordinaryAbstraction = dataContainer.ordinaryAbstraction;
 
 var Void = dataContainer.Void,
+    BasicContainer = dataContainer.BasicContainer;
 
-    BasicContainer = dataContainer.BasicContainer,
-
-    isType = dataContainer.isType,
-    getPairValueList = dataContainer.getPairValueList;
+var isType = dslBehavior.isType,
+    getPairValueList = dslBehavior.getPairValueList;
 
 module.exports = {
     sys_void: function() {
