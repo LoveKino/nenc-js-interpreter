@@ -37,6 +37,7 @@ var fillOrdinaryAbstractionVariable = dslBehavior.fillOrdinaryAbstractionVariabl
     updateAbstractionContext = dslBehavior.updateAbstractionContext,
     isType = dslBehavior.isType,
     getType = dslBehavior.getType,
+    isCallerType = dslBehavior.isCallerType,
     cloneOrdinaryAbstraction = dslBehavior.cloneOrdinaryAbstraction;
 
 var Context = dataContainer.Context,
@@ -197,12 +198,6 @@ var runApplication = function(application, ctx) {
     default:
         throw new Error('Expect function to run application, but got ' + callerRet);
     }
-};
-
-var isCallerType = function(v) {
-    return isType(v, GUARDED_ABSTRACTION) ||
-        isType(v, META_METHOD) ||
-        isType(v, ORDINARY_ABSTRACTION);
 };
 
 var runGuardedAbstraction = function(callerRet, paramsRet) {

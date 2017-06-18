@@ -7,7 +7,10 @@ var hostLangApis = require('../util/hostLangApis');
 var concat = hostLangApis.concat,
     push = hostLangApis.push;
 
-var PAIR = CONSTANTS.PAIR;
+var PAIR = CONSTANTS.PAIR,
+    GUARDED_ABSTRACTION = CONSTANTS.GUARDED_ABSTRACTION,
+    META_METHOD = CONSTANTS.META_METHOD,
+    ORDINARY_ABSTRACTION = CONSTANTS.ORDINARY_ABSTRACTION;
 
 var ordinaryAbstraction = dataContainer.ordinaryAbstraction;
 
@@ -81,6 +84,12 @@ var getType = function(v) {
     return v.type;
 };
 
+var isCallerType = function(v) {
+    return isType(v, GUARDED_ABSTRACTION) ||
+        isType(v, META_METHOD) ||
+        isType(v, ORDINARY_ABSTRACTION);
+};
+
 module.exports = {
     fillOrdinaryAbstractionVariable: fillOrdinaryAbstractionVariable,
     isOrdinaryAbstractionReducible: isOrdinaryAbstractionReducible,
@@ -89,5 +98,6 @@ module.exports = {
     lookupVariable: lookupVariable,
     getPairValueList: getPairValueList,
     isType: isType,
-    getType: getType
+    getType: getType,
+    isCallerType: isCallerType
 };
