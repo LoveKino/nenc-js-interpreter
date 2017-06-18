@@ -2,30 +2,15 @@
  * define DSL, used to contruct program
  */
 
-var CONSTANTS = require('./constants');
-var dataContainer = require('./dataContainer');
-var dslBehavior = require('../dslBehavior');
-
-var PAIR = CONSTANTS.PAIR,
-    VOID = CONSTANTS.VOID,
-    DATA = CONSTANTS.DATA,
-    EXPRESSION = CONSTANTS.EXPRESSION,
-    APPLICATION = CONSTANTS.APPLICATION,
-    STATEMENTS = CONSTANTS.STATEMENTS,
-    LET_BINDING_STATEMENT = CONSTANTS.LET_BINDING_STATEMENT,
-    IMPORT_STATEMENT = CONSTANTS.IMPORT_STATEMENT,
-    CONDITION_EXP = CONSTANTS.CONDITION_EXP,
-    GUARDED_ABSTRACTION = CONSTANTS.GUARDED_ABSTRACTION,
-    GUARDED_ABSTRACTION_LINE = CONSTANTS.GUARDED_ABSTRACTION_LINE,
-    VARIABLE = CONSTANTS.VARIABLE;
-
-var ordinaryAbstraction = dataContainer.ordinaryAbstraction;
-
-var Void = dataContainer.Void,
-    BasicContainer = dataContainer.BasicContainer;
-
-var isType = dslBehavior.isType,
-    getPairValueList = dslBehavior.getPairValueList;
+var {
+    PAIR, VOID, DATA, EXPRESSION, APPLICATION, STATEMENTS, LET_BINDING_STATEMENT, IMPORT_STATEMENT, CONDITION_EXP, GUARDED_ABSTRACTION, GUARDED_ABSTRACTION_LINE, VARIABLE
+} = require('./constants');
+var {
+    ordinaryAbstraction, Void, BasicContainer
+} = require('./dataContainer');
+var {
+    isType, getPairValueList
+} = require('../dslBehavior');
 
 module.exports = {
     sys_void: function() {

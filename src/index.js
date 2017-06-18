@@ -9,17 +9,10 @@
  **************************************************************/
 
 var programDSL = require('./programDSL/dsl');
-var dataContainer = require('./programDSL/dataContainer');
+var {BasicContainer}= require('./programDSL/dataContainer');
 var systemContextMap = require('./systemContextMap');
-var runProgram = require('./runProgram');
-var CONSTANTS = require('./programDSL/constants');
-
-var importModule = runProgram.importModule;
-var defineModule = runProgram.defineModule;
-
-var BasicContainer = dataContainer.BasicContainer;
-
-var META_METHOD = CONSTANTS.META_METHOD;
+var {importModule, defineModule}= require('./runProgram');
+var {META_METHOD}= require('./programDSL/constants');
 
 module.exports = {
     sys_runProgram: function(name) {

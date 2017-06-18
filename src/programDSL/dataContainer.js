@@ -1,9 +1,8 @@
 'use strict';
 
-var CONSTANTS = require('./constants');
-
-var ORDINARY_ABSTRACTION = CONSTANTS.ORDINARY_ABSTRACTION,
-    VOID = CONSTANTS.VOID;
+let {
+    ORDINARY_ABSTRACTION, VOID
+} = require('./constants');
 
 /**************************************************************
  * basic data container
@@ -14,7 +13,7 @@ var ORDINARY_ABSTRACTION = CONSTANTS.ORDINARY_ABSTRACTION,
  * }
  *
  **************************************************************/
-var Void = {
+let Void = {
     type: VOID
 };
 
@@ -34,7 +33,7 @@ function ordinaryAbstraction(variables, bodyExp, context) {
     return BasicContainer(ORDINARY_ABSTRACTION, {
         fillMap: {},
         context: context || null,
-        variables: variables,
+        variables,
         body: bodyExp,
         indexMap: {},
         fillCount: 0
@@ -42,11 +41,11 @@ function ordinaryAbstraction(variables, bodyExp, context) {
 }
 
 module.exports = {
-    Void: Void,
+    Void,
 
-    BasicContainer: BasicContainer,
+    BasicContainer,
 
-    Context: Context,
+    Context,
 
-    ordinaryAbstraction: ordinaryAbstraction
+    ordinaryAbstraction
 };

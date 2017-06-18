@@ -9,40 +9,15 @@
  **************************************************************/
 var systemContextMap = require('../systemContextMap');
 
-var CONSTANTS = require('../programDSL/constants');
-var hostLangApis = require('../util/hostLangApis');
-var dataContainer = require('../programDSL/dataContainer');
-var dslBehavior = require('../dslBehavior');
+var {
+    DATA, VOID, META_METHOD, APPLICATION, ORDINARY_ABSTRACTION, VARIABLE, STATEMENTS, EXPRESSION, GUARDED_ABSTRACTION, LET_BINDING_STATEMENT, CONDITION_EXP, IMPORT_STATEMENT
+}= require('../programDSL/constants');
 
-var applyMethod = hostLangApis.applyMethod;
-var slice = hostLangApis.slice;
-
-var DATA = CONSTANTS.DATA,
-    VOID = CONSTANTS.VOID,
-
-    META_METHOD = CONSTANTS.META_METHOD,
-    APPLICATION = CONSTANTS.APPLICATION,
-    ORDINARY_ABSTRACTION = CONSTANTS.ORDINARY_ABSTRACTION,
-    VARIABLE = CONSTANTS.VARIABLE,
-    STATEMENTS = CONSTANTS.STATEMENTS,
-    EXPRESSION = CONSTANTS.EXPRESSION,
-    GUARDED_ABSTRACTION = CONSTANTS.GUARDED_ABSTRACTION,
-    LET_BINDING_STATEMENT = CONSTANTS.LET_BINDING_STATEMENT,
-    CONDITION_EXP = CONSTANTS.CONDITION_EXP,
-    IMPORT_STATEMENT = CONSTANTS.IMPORT_STATEMENT;
-
-var fillOrdinaryAbstractionVariable = dslBehavior.fillOrdinaryAbstractionVariable,
-    isOrdinaryAbstractionReducible = dslBehavior.isOrdinaryAbstractionReducible,
-    lookupVariable = dslBehavior.lookupVariable,
-    updateAbstractionContext = dslBehavior.updateAbstractionContext,
-    isType = dslBehavior.isType,
-    getType = dslBehavior.getType,
-    isCallerType = dslBehavior.isCallerType,
-    cloneOrdinaryAbstraction = dslBehavior.cloneOrdinaryAbstraction;
-
-var Context = dataContainer.Context,
-    BasicContainer = dataContainer.BasicContainer,
-    ordinaryAbstraction = dataContainer.ordinaryAbstraction;
+var {applyMethod, slice}= require('../util/hostLangApis');
+var {Context, BasicContainer, ordinaryAbstraction}= require('../programDSL/dataContainer');
+var {
+    fillOrdinaryAbstractionVariable, isOrdinaryAbstractionReducible, lookupVariable, updateAbstractionContext, isType, getType, isCallerType, cloneOrdinaryAbstraction
+}= require('../dslBehavior');
 
 var nencModules = {};
 
@@ -293,6 +268,6 @@ var runOrdinaryAbstraction = function(sourceAbstraction, paramsRet) {
 };
 
 module.exports = {
-    importModule: importModule,
-    defineModule: defineModule
+    importModule,
+    defineModule
 };
