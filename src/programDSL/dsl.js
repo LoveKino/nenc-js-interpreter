@@ -2,13 +2,13 @@
  * define DSL, used to contruct program
  */
 
-var {
-    PAIR, VOID, DATA, EXPRESSION, APPLICATION, STATEMENTS, LET_BINDING_STATEMENT, IMPORT_STATEMENT, CONDITION_EXP, GUARDED_ABSTRACTION, GUARDED_ABSTRACTION_LINE, VARIABLE
+let {
+    PAIR, VOID, DATA, EXPRESSION, APPLICATION, STATEMENTS, LET_BINDING_STATEMENT, IMPORT_STATEMENT, CONDITION_EXP, GUARDED_ABSTRACTION, GUARDED_ABSTRACTION_LINE, VARIABLE, STRING, NULL, TRUE, FALSE, NUMBER, ARRAY, OBJECT
 } = require('./constants');
-var {
+let {
     ordinaryAbstraction, Void, BasicContainer
 } = require('./dataContainer');
-var {
+let {
     isType, getPairValueList
 } = require('../dslBehavior');
 
@@ -78,29 +78,40 @@ module.exports = {
         });
     },
 
-    sys_object: function(v) {
-        if (isType(v, VOID)) return {};
-        // get list of values
-        // join to map
-        var result = {};
-        var list = getPairValueList(v);
-        var i = 0,
-            len = list.length;
-        while (i < len) {
-            var key = list[i];
-            var value = list[i + 1];
-            result[key] = value;
-            i += 2;
-        }
+    sys_string: function(v) {
+        return BasicContainer(STRING, {
+            data: v
+        });
+    },
 
-        return result;
+    sys_null: function() {
+        return BasicContainer(NULL)
+    },
+
+    sys_number: function(v) {
+        return BasicContainer(NUMBER, {
+            data: v
+        });
+    },
+
+    sys_true: function() {
+        return BasicContainer(TRUE)
+    },
+
+    sys_false: function() {
+        return BasicContainer(FALSE)
+    },
+
+    sys_object: function(v) {
+        return BasicContainer(OBJECT, {
+            list: isType(v, VOID) ? [] : getPairValueList(v)
+        });
     },
 
     sys_array: function(v) {
-        if (isType(v, VOID)) return [];
-        // get list of values
-        // join to list
-        return getPairValueList(v);
+        return BasicContainer(ARRAY, {
+            list: isType(v, VOID) ? [] : getPairValueList(v)
+        });
     },
 
     sys_application: function(caller, rest) {
@@ -118,10 +129,6 @@ module.exports = {
             caller: caller,
             params: params
         });
-    },
-
-    sys_string: function(v) {
-        return v;
     },
 
     sys_exp: function(v) {
@@ -171,20 +178,5 @@ module.exports = {
             option1Exp: option1Exp,
             option2Exp: option2Exp
         });
-    },
-
-    sys_null: function() {
-        return null;
-    },
-    sys_number: function(v) {
-        return Number(v);
-    },
-
-    sys_true: function() {
-        return true;
-    },
-
-    sys_false: function() {
-        return false;
     }
 };

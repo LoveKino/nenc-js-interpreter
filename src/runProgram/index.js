@@ -10,7 +10,8 @@
 var systemContextMap = require('../systemContextMap');
 
 var {
-    DATA, VOID, META_METHOD, APPLICATION, ORDINARY_ABSTRACTION, VARIABLE, STATEMENTS, EXPRESSION, GUARDED_ABSTRACTION, LET_BINDING_STATEMENT, CONDITION_EXP, IMPORT_STATEMENT
+    DATA, VOID, META_METHOD, APPLICATION, ORDINARY_ABSTRACTION, VARIABLE, STATEMENTS, EXPRESSION, GUARDED_ABSTRACTION, LET_BINDING_STATEMENT, CONDITION_EXP, IMPORT_STATEMENT,
+    NULL, ARRAY, OBJECT, NUMBER, STRING, TRUE, FALSE, STRING
 }= require('../programDSL/constants');
 
 var {applyMethod, slice}= require('../util/hostLangApis');
@@ -139,7 +140,35 @@ var runExp = (exp, ctx) => {
 
 var runDataExp = function(exp, ctx) {
     var data = exp.content.data;
-    return data;
+    var content = data.content;
+    switch(getType(data)) {
+    case NULL:
+        return null;
+    case TRUE:
+        return true;
+    case FALSE:
+        return false;
+    case NUMBER:
+        return Number(content.data);
+    case ARRAY:
+        return content.list;
+    case STRING:
+        return content.data;
+    case OBJECT:
+        var list = content.data;
+        if(!list.length) return {};
+        var result = {};
+        var i = 0, len = list.length;
+        while(i < len) {
+            var key = list[i];
+            var value = list[i + 1];
+            result[key] = value;
+            i += 2;
+        }
+        return result;
+    default:
+        throw new Error(`unexpect data type ${getType(data)}`)
+    }
 };
 
 var runConditionExp = function(exp, ctx) {
