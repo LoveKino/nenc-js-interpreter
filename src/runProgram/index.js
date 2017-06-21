@@ -167,7 +167,7 @@ var runDataExp = function(exp, ctx) {
         while(i < len) {
             let key = list[i];
             let value = list[i + 1];
-            result[key.content.value] = runProgram(value, ctx);
+            result[key.content.data] = runProgram(value, ctx);
             i += 2;
         }
         return result;
