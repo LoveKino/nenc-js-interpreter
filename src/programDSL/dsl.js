@@ -177,12 +177,13 @@ module.exports = {
         return null;
     },
     sys_number: function(v) {
-        return v;
+        return Number(v);
     },
 
     sys_true: function() {
         return true;
     },
+
     sys_false: function() {
         return false;
     }
