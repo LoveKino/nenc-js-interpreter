@@ -129,12 +129,17 @@ var runExp = (exp, ctx) => {
     case APPLICATION:
         return runApplication(exp, ctx);
     case DATA:
-        return exp.content.data;
+        return runDataExp(exp, ctx);
     case CONDITION_EXP:
         return runConditionExp(exp, ctx);
     default:
         throw new Error('unrecognized expression: ' + JSON.stringify(exp));
     }
+};
+
+var runDataExp = function(exp, ctx) {
+    var data = exp.content.data;
+    return data;
 };
 
 var runConditionExp = function(exp, ctx) {

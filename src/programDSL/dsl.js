@@ -171,5 +171,19 @@ module.exports = {
             option1Exp: option1Exp,
             option2Exp: option2Exp
         });
+    },
+
+    sys_null: function() {
+        return null;
+    },
+    sys_number: function(v) {
+        return v;
+    },
+
+    sys_true: function() {
+        return true;
+    },
+    sys_false: function() {
+        return false;
     }
 };

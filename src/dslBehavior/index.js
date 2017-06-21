@@ -77,11 +77,11 @@ var getPairValueList = function(pair) {
 };
 
 var isType = function(v, type) {
-    return v.type === type;
+    return v && typeof v === 'object' && v.type === type;
 };
 
 var getType = function(v) {
-    return v.type;
+    return v && typeof v === 'object' && v.type;
 };
 
 var isCallerType = function(v) {
