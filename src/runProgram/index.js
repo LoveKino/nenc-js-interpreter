@@ -160,7 +160,7 @@ var runDataExp = function(exp, ctx) {
     case STRING:
         return content.data;
     case OBJECT:
-        let list = content.data;
+        let list = content.list;
         if(!list.length) return {};
         let result = {};
         let i = 0, len = list.length;
