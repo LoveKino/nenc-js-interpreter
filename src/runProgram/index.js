@@ -151,18 +151,23 @@ var runDataExp = function(exp, ctx) {
     case NUMBER:
         return Number(content.data);
     case ARRAY:
-        return content.list;
+        let arrList = content.list;
+        let array = [], arrLen = arrList.length;
+        for(let j = 0; j < arrLen; j++) {
+            array[j] = runProgram(arrList[j], ctx);
+        }
+        return array;
     case STRING:
         return content.data;
     case OBJECT:
-        var list = content.data;
+        let list = content.data;
         if(!list.length) return {};
-        var result = {};
-        var i = 0, len = list.length;
+        let result = {};
+        let i = 0, len = list.length;
         while(i < len) {
-            var key = list[i];
-            var value = list[i + 1];
-            result[key] = value;
+            let key = list[i];
+            let value = list[i + 1];
+            result[key] = runProgram(value, ctx);
             i += 2;
         }
         return result;
