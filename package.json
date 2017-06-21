@@ -1,6 +1,6 @@
 {
   "name": "nenc-js-interpreter",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "js interpreter for nenc language",
   "main": "index.js",
   "scripts": {
