@@ -120,6 +120,7 @@ var runExp = (exp, ctx) => {
     case VARIABLE:
         return lookupVariable(ctx, getContentValue(exp, 'variableName'));
     case GUARDED_ABSTRACTION:
+        // update context
         return updateAbstractionContext(exp, ctx);
     case ORDINARY_ABSTRACTION:
         return updateAbstractionContext(exp, ctx);
@@ -211,19 +212,18 @@ var runApplication = function(application, ctx) {
 };
 
 var runGuardedAbstraction = function(callerRet, paramsRet) {
-    var absContent = callerRet.content;
-    var ctx = absContent.context;
-    var guardLines = absContent.guardLines;
+    var ctx = getContentValue(callerRet, 'ctx');
+    var guardLines = getContentValue(callerRet, 'guardLines');
     var len = guardLines.length;
 
     for (var i = 0; i < len; i++) {
         var guardLine = guardLines[i];
         var guardLineContent = guardLine.content;
-        var ordinaryAbstraction = guardLineContent.ordinaryAbstraction;
+        var ordinaryAbstraction = getContentValue(guardLine, 'ordinaryAbstraction');
+        var guards = getContentValue(guardLine, 'guards') || [];
+
         var variables = getContentValue(ordinaryAbstraction, 'variables');
         var varLen = variables.length;
-
-        var guards = guardLineContent.guards || [];
         var guardLen = guards.length;
 
         var finded = true;

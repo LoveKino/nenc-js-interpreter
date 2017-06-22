@@ -142,6 +142,21 @@ module.exports = {
             name: 'option2Exp'
         }]
     },
-    [GUARDED_ABSTRACTION_LINE]: {},
-    [GUARDED_ABSTRACTION]: {}
+    [GUARDED_ABSTRACTION_LINE]: {
+        content: [{
+            name: 'ordinaryAbstraction'
+        }, {
+            name: 'guards',
+            type: 'collection'
+        }]
+    },
+    [GUARDED_ABSTRACTION]: {
+        content: [{
+            name: 'guardLines',
+            type: 'collection'
+        }, {
+            name: 'context',
+            def: null
+        }]
+    }
 };

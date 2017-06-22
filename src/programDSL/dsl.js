@@ -88,18 +88,9 @@ module.exports = {
 
     sys_condition: typeDsl(CONDITION_EXP),
 
-    sys_guarded_abstraction: function(v) {
-        return BasicContainer(GUARDED_ABSTRACTION, {
-            guardLines: getParamList(v)
-        });
-    },
+    sys_guarded_abstraction: typeDsl(GUARDED_ABSTRACTION),
 
-    sys_guarded_abstraction_line: function(ordinaryAbstraction, expList) {
-        return BasicContainer(GUARDED_ABSTRACTION_LINE, {
-            ordinaryAbstraction,
-            guards: getParamList(expList)
-        });
-    },
+    sys_guarded_abstraction_line: typeDsl(GUARDED_ABSTRACTION_LINE),
 
     sys_ordinary_abstraction: typeDsl(ORDINARY_ABSTRACTION)
 };
