@@ -11,7 +11,7 @@ var systemContextMap = require('../systemContextMap');
 
 var {
     DATA, VOID, META_METHOD, APPLICATION, ORDINARY_ABSTRACTION, VARIABLE, STATEMENTS, EXPRESSION, GUARDED_ABSTRACTION, LET_BINDING_STATEMENT, CONDITION_EXP, IMPORT_STATEMENT,
-    NULL, ARRAY, OBJECT, NUMBER, STRING, TRUE, FALSE, STRING
+    NULL, ARRAY, OBJECT, NUMBER, STRING, TRUE, FALSE
 }= require('../programDSL/constants');
 
 var {applyMethod, slice}= require('../util/hostLangApis');
@@ -138,7 +138,10 @@ var runExp = (exp, ctx) => {
 var runDataExp = function(exp, ctx) {
     var data = getContentValue(exp, 'data');
 
-    var content = data.content;
+    let arrList = null, array = null, arrLen = 0, j = 0;
+
+    let list = null, result = null, i = 0, len = 0;
+
     switch(getType(data)) {
     case NULL:
         return null;
@@ -149,19 +152,20 @@ var runDataExp = function(exp, ctx) {
     case NUMBER:
         return Number(getContentValue(data, 'data'));
     case ARRAY:
-        let arrList = getContentValue(data, 'list');
-        let array = [], arrLen = arrList.length;
-        for(let j = 0; j < arrLen; j++) {
+        arrList = getContentValue(data, 'list');
+        array = [];
+        arrLen = arrList.length;
+        for(j = 0; j < arrLen; j++) {
             array[j] = runProgram(arrList[j], ctx);
         }
         return array;
     case STRING:
         return getContentValue(data, 'data');
     case OBJECT:
-        let list = getContentValue(data, 'list');
+        list = getContentValue(data, 'list');
         if(!list.length) return {};
-        let result = {};
-        let i = 0, len = list.length;
+        result = {};
+        len = list.length;
         while(i < len) {
             let key = list[i];
             let value = list[i + 1];
@@ -170,7 +174,7 @@ var runDataExp = function(exp, ctx) {
         }
         return result;
     default:
-        throw new Error(`unexpect data type ${getType(data)}`)
+        throw new Error(`unexpect data type ${getType(data)}`);
     }
 };
 
@@ -218,11 +222,10 @@ var runGuardedAbstraction = function(callerRet, paramsRet) {
 
     for (var i = 0; i < len; i++) {
         var guardLine = guardLines[i];
-        var guardLineContent = guardLine.content;
         var ordinaryAbstraction = getContentValue(guardLine, 'ordinaryAbstraction');
         var guards = getContentValue(guardLine, 'guards') || [];
-
         var variables = getContentValue(ordinaryAbstraction, 'variables');
+
         var varLen = variables.length;
         var guardLen = guards.length;
 

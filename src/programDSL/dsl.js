@@ -5,7 +5,7 @@
  */
 
 let {
-    PAIR, VOID, DATA, EXPRESSION, APPLICATION, STATEMENTS, LET_BINDING_STATEMENT, IMPORT_STATEMENT, CONDITION_EXP, GUARDED_ABSTRACTION, GUARDED_ABSTRACTION_LINE, VARIABLE, STRING, NULL, TRUE, FALSE, NUMBER, ARRAY, OBJECT, ORDINARY_ABSTRACTION
+    VOID, PAIR
 } = require('./constants');
 let {
     ordinaryAbstraction, Void, BasicContainer
@@ -53,44 +53,9 @@ let typeDsl = (type) => {
     };
 };
 
-module.exports = {
-    sys_void: typeDsl(VOID),
+let dslApi = {};
+for(let type in dataTypes) {
+    dslApi['sys_' + type] = typeDsl(type);
+}
 
-    sys_pair: typeDsl(PAIR),
-
-    sys_variable: typeDsl(VARIABLE),
-
-    sys_data: typeDsl(DATA),
-
-    sys_string: typeDsl(STRING),
-
-    sys_null: typeDsl(NULL),
-
-    sys_number: typeDsl(NUMBER),
-
-    sys_true: typeDsl(TRUE),
-
-    sys_false: typeDsl(FALSE),
-
-    sys_object: typeDsl(OBJECT),
-
-    sys_array: typeDsl(ARRAY),
-
-    sys_application: typeDsl(APPLICATION),
-
-    sys_exp: typeDsl(EXPRESSION),
-
-    sys_letBinding: typeDsl(LET_BINDING_STATEMENT),
-
-    sys_statements: typeDsl(STATEMENTS),
-
-    sys_import: typeDsl(IMPORT_STATEMENT),
-
-    sys_condition: typeDsl(CONDITION_EXP),
-
-    sys_guarded_abstraction: typeDsl(GUARDED_ABSTRACTION),
-
-    sys_guarded_abstraction_line: typeDsl(GUARDED_ABSTRACTION_LINE),
-
-    sys_ordinary_abstraction: typeDsl(ORDINARY_ABSTRACTION)
-};
+module.exports = dslApi;

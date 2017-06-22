@@ -20,7 +20,6 @@ let {
     STATEMENTS,
     LET_BINDING_STATEMENT,
     IMPORT_STATEMENT,
-    ABSTRACTION,
     CONDITION_EXP,
     GUARDED_ABSTRACTION_LINE,
     GUARDED_ABSTRACTION
@@ -132,7 +131,6 @@ module.exports = {
             name: 'variable'
         }]
     },
-    [ABSTRACTION]: {},
     [CONDITION_EXP]: {
         content: [{
             name: 'conditionExp'

@@ -16,12 +16,12 @@ module.exports = {
     APPLICATION: 'application',
     ORDINARY_ABSTRACTION: 'ordinary_abstraction',
     VARIABLE: 'variable',
-    EXPRESSION: 'expression',
+    EXPRESSION: 'exp',
     STATEMENTS: 'statements',
-    LET_BINDING_STATEMENT: 'let_binding_statement',
-    IMPORT_STATEMENT: 'import_statement',
+    LET_BINDING_STATEMENT: 'letBinding',
+    IMPORT_STATEMENT: 'import',
     ABSTRACTION: 'abstraction',
-    CONDITION_EXP: 'condition_expression',
+    CONDITION_EXP: 'condition',
     GUARDED_ABSTRACTION_LINE: 'guarded_abstraction_line',
     GUARDED_ABSTRACTION: 'guarded_abstraction'
 };
