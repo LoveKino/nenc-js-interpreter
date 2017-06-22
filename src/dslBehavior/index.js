@@ -61,16 +61,20 @@ var lookupVariable = function(ctx, variableName) {
 
 var getPairValueList = function(pair) {
     var result = [];
-    if (isType(pair.content.v1, PAIR)) {
-        result = getPairValueList(pair.content.v1);
+    var content = pair.content;
+    var v1 = content[0],
+        v2 = content[1];
+
+    if (isType(v1, PAIR)) {
+        result = getPairValueList(v1);
     } else {
-        result = [pair.content.v1];
+        result = [v1];
     }
 
-    if (isType(pair.content.v2, PAIR)) {
-        result = concat(result, getPairValueList(pair.content.v2));
+    if (isType(v2, PAIR)) {
+        result = concat(result, getPairValueList(v2));
     } else {
-        result = push(result, pair.content.v2);
+        result = push(result, v2);
     }
 
     return result;
@@ -90,14 +94,34 @@ var isCallerType = function(v) {
         isType(v, ORDINARY_ABSTRACTION);
 };
 
+var dataTypes = require('../programDSL/dataTypes');
+
+let getContentValue = (v, prop) => {
+    let type = v.type;
+    let content = v.content;
+    let typeContents = dataTypes[type].content;
+
+    for (let i = 0; i < typeContents.length; i++) {
+        let {
+            name
+        } = typeContents[i];
+        if (name === prop) {
+            return content[i];
+        }
+    }
+
+    throw new Error(`unexpected prop ${prop}`);
+};
+
 module.exports = {
-    fillOrdinaryAbstractionVariable: fillOrdinaryAbstractionVariable,
-    isOrdinaryAbstractionReducible: isOrdinaryAbstractionReducible,
-    updateAbstractionContext: updateAbstractionContext,
-    cloneOrdinaryAbstraction: cloneOrdinaryAbstraction,
-    lookupVariable: lookupVariable,
-    getPairValueList: getPairValueList,
-    isType: isType,
-    getType: getType,
-    isCallerType: isCallerType
+    fillOrdinaryAbstractionVariable,
+    isOrdinaryAbstractionReducible,
+    updateAbstractionContext,
+    cloneOrdinaryAbstraction,
+    lookupVariable,
+    getPairValueList,
+    isType,
+    getType,
+    isCallerType,
+    getContentValue
 };
