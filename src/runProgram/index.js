@@ -220,7 +220,7 @@ var runGuardedAbstraction = function(callerRet, paramsRet) {
         var guardLine = guardLines[i];
         var guardLineContent = guardLine.content;
         var ordinaryAbstraction = guardLineContent.ordinaryAbstraction;
-        var variables = ordinaryAbstraction.content.variables;
+        var variables = getContentValue(ordinaryAbstraction, 'variables');
         var varLen = variables.length;
 
         var guards = guardLineContent.guards || [];
@@ -280,18 +280,18 @@ var runOrdinaryAbstraction = function(sourceAbstraction, paramsRet) {
 
     if (isOrdinaryAbstractionReducible(abstraction)) {
         // take out all variables
-        var variables = abstraction.content.variables;
-        var fillMap = abstraction.content.fillMap;
+        var variables = getContentValue(abstraction, 'variables');
+        var fillMap = getContentValue(abstraction, 'fillMap');
         var variableMap = {};
         for (var j = 0; j < variables.length; j++) {
-            var variableName = variables[j].content[0];
+            var variableName = getContentValue(variables[j], 'variableName');
             variableMap[variableName] = fillMap[j];
         }
         // attach variables to context
-        var newCtx = new Context(variableMap, sourceAbstraction.content.context);
+        var newCtx = new Context(variableMap, getContentValue(sourceAbstraction, 'context'));
 
         // run body expression with new context
-        var body = abstraction.content.body;
+        var body = getContentValue(abstraction, 'body');
         if (isType(body, STATEMENTS)) {
             return runProgram(body, newCtx);
         } else {

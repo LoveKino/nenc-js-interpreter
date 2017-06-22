@@ -30,14 +30,7 @@ function Context(variableMap, parent) {
 }
 
 function ordinaryAbstraction(variables, bodyExp, context) {
-    return BasicContainer(ORDINARY_ABSTRACTION, {
-        fillMap: {},
-        context: context || null,
-        variables,
-        body: bodyExp,
-        indexMap: {},
-        fillCount: 0
-    });
+    return BasicContainer(ORDINARY_ABSTRACTION, [variables, bodyExp, context || null, {}, {}, 0]);
 }
 
 module.exports = {

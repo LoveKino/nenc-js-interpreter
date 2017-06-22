@@ -18,10 +18,15 @@ var ordinaryAbstraction = dataContainer.ordinaryAbstraction;
  * fill param value at specific position
  */
 var fillOrdinaryAbstractionVariable = function(abstraction, index, value) {
-    abstraction.content.fillMap[index] = value;
-    if (!abstraction.content.indexMap[index]) {
-        abstraction.content.indexMap[index] = true;
-        abstraction.content.fillCount++;
+    let fillMap = getContentValue(abstraction, 'fillMap');
+    let indexMap = getContentValue(abstraction, 'indexMap');
+    let fillCount = getContentValue(abstraction, 'fillCount')
+
+    fillMap[index] = value;
+
+    if (!indexMap[index]) {
+        indexMap[index] = true;
+        setContentValue(abstraction, 'fillCount', ++fillCount)
     }
 };
 
@@ -29,19 +34,22 @@ var fillOrdinaryAbstractionVariable = function(abstraction, index, value) {
  * when all variables are assigned, this abstraction will become reducible
  */
 var isOrdinaryAbstractionReducible = function(abstraction) {
-    return abstraction.content.variables.length <= abstraction.content.fillCount;
+    let fillCount = getContentValue(abstraction, 'fillCount')
+    let variables = getContentValue(abstraction, 'variables');
+    return variables.length <= fillCount;
 };
 
 var updateAbstractionContext = function(abstraction, ctx) {
-    abstraction.content.context = ctx;
+    setContentValue(abstraction, 'context', ctx);
     return abstraction;
 };
 
 var cloneOrdinaryAbstraction = function(source) {
     var content = source.content;
-    return ordinaryAbstraction(content.variables,
-        content.body,
-        content.context);
+    let variables = getContentValue(source, 'variables');
+    let body = getContentValue(source, 'body');
+    let context = getContentValue(source, 'context');
+    return ordinaryAbstraction(variables, body, context);
 };
 
 var lookupVariable = function(ctx, variableName) {
@@ -105,12 +113,32 @@ let getContentValue = (v, prop) => {
         let {
             name
         } = typeContents[i];
+
+        //console.log(prop, name, name === prop)
         if (name === prop) {
             return content[i];
         }
     }
 
-    throw new Error(`unexpected prop ${prop}`);
+    throw new Error(`unexpected prop ${prop} for ${v}`);
+};
+
+let setContentValue = (v, prop, value) => {
+    let type = v.type;
+    let content = v.content;
+    let typeContents = dataTypes[type].content;
+
+    for (let i = 0; i < typeContents.length; i++) {
+        let {
+            name
+        } = typeContents[i];
+        if (name === prop) {
+            content[i] = value;
+            return v;
+        }
+    }
+
+    throw new Error(`unexpected prop ${prop} for ${v}`);
 };
 
 module.exports = {
@@ -123,5 +151,6 @@ module.exports = {
     isType,
     getType,
     isCallerType,
-    getContentValue
+    getContentValue,
+    setContentValue
 };

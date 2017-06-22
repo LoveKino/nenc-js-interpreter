@@ -5,7 +5,7 @@
  */
 
 let {
-    PAIR, VOID, DATA, EXPRESSION, APPLICATION, STATEMENTS, LET_BINDING_STATEMENT, IMPORT_STATEMENT, CONDITION_EXP, GUARDED_ABSTRACTION, GUARDED_ABSTRACTION_LINE, VARIABLE, STRING, NULL, TRUE, FALSE, NUMBER, ARRAY, OBJECT
+    PAIR, VOID, DATA, EXPRESSION, APPLICATION, STATEMENTS, LET_BINDING_STATEMENT, IMPORT_STATEMENT, CONDITION_EXP, GUARDED_ABSTRACTION, GUARDED_ABSTRACTION_LINE, VARIABLE, STRING, NULL, TRUE, FALSE, NUMBER, ARRAY, OBJECT, ORDINARY_ABSTRACTION
 } = require('./constants');
 let {
     ordinaryAbstraction, Void, BasicContainer
@@ -35,13 +35,18 @@ let typeDsl = (type) => {
     return (...args) => {
         // assert.equal(args.length, typeContents.length);
         let content = [];
-        for (let i = 0; i < args.length; i++) {
-            let arg = args[i];
+        let argLen = args.length;
+        for (let i = 0; i < typeContents.length; i++) {
             let typeContent = typeContents[i];
-            if (typeContent.type === 'collection') {
-                content.push(getParamList(arg));
+            if (i >= argLen) {
+                content.push(typeContent.def)
             } else {
-                content.push(arg);
+                let arg = args[i];
+                if (typeContent.type === 'collection') {
+                    content.push(getParamList(arg));
+                } else {
+                    content.push(arg);
+                }
             }
         }
         return BasicContainer(type, content)
@@ -96,7 +101,5 @@ module.exports = {
         });
     },
 
-    sys_ordinary_abstraction: function(params, body) {
-        return ordinaryAbstraction(getParamList(params), body);
-    }
+    sys_ordinary_abstraction: typeDsl(ORDINARY_ABSTRACTION)
 };

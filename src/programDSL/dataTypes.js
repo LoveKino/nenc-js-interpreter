@@ -83,7 +83,26 @@ module.exports = {
             type: 'collection'
         }]
     },
-    [ORDINARY_ABSTRACTION]: {},
+    [ORDINARY_ABSTRACTION]: {
+        content: [{
+            name: 'variables',
+            type: 'collection'
+        }, {
+            name: 'body'
+        }, {
+            name: 'context',
+            def: null
+        }, {
+            name: 'indexMap',
+            def: {}
+        }, {
+            name: 'fillMap',
+            def: {}
+        }, {
+            name: 'fillCount',
+            def: 0
+        }]
+    },
     [VARIABLE]: {
         content: [{
             name: 'variableName'
@@ -123,7 +142,6 @@ module.exports = {
             name: 'option2Exp'
         }]
     },
-    [GUARDED_ABSTRACTION_LINE]: {
-    },
+    [GUARDED_ABSTRACTION_LINE]: {},
     [GUARDED_ABSTRACTION]: {}
 };
