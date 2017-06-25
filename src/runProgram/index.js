@@ -11,7 +11,9 @@ var systemContextMap = require('../systemContextMap');
 
 var {
     DATA, VOID, META_METHOD, APPLICATION, ORDINARY_ABSTRACTION, VARIABLE, STATEMENTS, EXPRESSION, GUARDED_ABSTRACTION, LET_BINDING_STATEMENT, CONDITION_EXP, IMPORT_STATEMENT,
-    NULL, ARRAY, OBJECT, NUMBER, STRING, TRUE, FALSE
+    NULL, ARRAY, OBJECT, NUMBER, STRING, TRUE, FALSE,
+
+    IMPORT_STATEMENT_MIDDLE
 }= require('../programDSL/constants');
 
 var {applyMethod, slice}= require('../util/hostLangApis');
@@ -52,9 +54,10 @@ var defineModule = function(name, moduleCode) {
     };
 };
 
-/****************************************************
- * run program
- *****************************************************/
+/**
+ *
+ * run program at specific context
+ */
 var runProgram = function(programData, ctx) {
     switch(getType(programData)) {
     case STATEMENTS:
@@ -64,20 +67,29 @@ var runProgram = function(programData, ctx) {
     // expression
     case EXPRESSION:
         return runProgram(getContentValue(programData, 'expression'), ctx);
+    case CONDITION_EXP:
+        return runConditionExp(programData, ctx);
+
     case VARIABLE:
         return lookupVariable(ctx, getContentValue(programData, 'variableName'));
+    // define a guard abstraction
     case GUARDED_ABSTRACTION:
         // update context
         return updateAbstractionContext(programData, ctx);
+    // define ordinary abstraction
     case ORDINARY_ABSTRACTION:
         return updateAbstractionContext(programData, ctx);
     case APPLICATION:
         return runApplication(programData, ctx);
+
+    // middle program structure
+
+    case IMPORT_STATEMENT_MIDDLE:
+        return runImportStatement(programData, ctx);
+
+    // data
     case DATA:
         return runProgram(getContentValue(programData, 'data'), ctx);
-    case CONDITION_EXP:
-        return runConditionExp(programData, ctx);
-    // data
     case NULL:
         return null;
     case TRUE:
@@ -126,7 +138,8 @@ let runStatements = (program, ctx) => {
 
         switch (getType(statement)) {
         case IMPORT_STATEMENT:
-            return runImportStatement(statement, slice(statements, i + 1), ctx); // re-arrange rest statements
+            // re-arrange rest statements
+            return runProgram(BasicContainer(IMPORT_STATEMENT_MIDDLE, [statement, slice(statements, i + 1)]), ctx);
         case LET_BINDING_STATEMENT:
             return letBindingArrangement(statement, slice(statements, i + 1), ctx); // re-arrange rest statements
         }
@@ -141,7 +154,10 @@ let runStatements = (program, ctx) => {
     return value;
 };
 
-var runImportStatement = (statement, nextStatements, ctx) => {
+var runImportStatement = (programData, ctx) => {
+    let statement = getContentValue(programData, 'importStatement');
+    let nextStatements = getContentValue(programData, 'restStatements');
+
     var modulePath = getContentValue(statement, 'modulePath');
     var variable = getContentValue(statement, 'variable');
 

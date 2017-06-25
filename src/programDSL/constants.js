@@ -23,5 +23,7 @@ module.exports = {
     ABSTRACTION: 'abstraction',
     CONDITION_EXP: 'condition',
     GUARDED_ABSTRACTION_LINE: 'guarded_abstraction_line',
-    GUARDED_ABSTRACTION: 'guarded_abstraction'
+    GUARDED_ABSTRACTION: 'guarded_abstraction',
+
+    IMPORT_STATEMENT_MIDDLE: 'import_statement_middle'
 };

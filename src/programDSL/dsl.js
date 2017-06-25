@@ -8,7 +8,7 @@ let {
     VOID, PAIR
 } = require('./constants');
 let {
-    ordinaryAbstraction, Void, BasicContainer
+    BasicContainer
 } = require('./dataContainer');
 let {
     isType, getPairValueList
@@ -32,6 +32,7 @@ var dataTypes = require('./dataTypes');
 
 let typeDsl = (type) => {
     let typeContents = dataTypes[type].content;
+
     return (...args) => {
         // assert.equal(args.length, typeContents.length);
         let content = [];
@@ -39,7 +40,7 @@ let typeDsl = (type) => {
         for (let i = 0; i < typeContents.length; i++) {
             let typeContent = typeContents[i];
             if (i >= argLen) {
-                content.push(typeContent.def)
+                content.push(typeContent.def);
             } else {
                 let arg = args[i];
                 if (typeContent.type === 'collection') {
@@ -49,12 +50,12 @@ let typeDsl = (type) => {
                 }
             }
         }
-        return BasicContainer(type, content)
+        return BasicContainer(type, content);
     };
 };
 
 let dslApi = {};
-for(let type in dataTypes) {
+for (let type in dataTypes) {
     dslApi['sys_' + type] = typeDsl(type);
 }
 

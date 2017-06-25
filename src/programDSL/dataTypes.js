@@ -22,7 +22,9 @@ let {
     IMPORT_STATEMENT,
     CONDITION_EXP,
     GUARDED_ABSTRACTION_LINE,
-    GUARDED_ABSTRACTION
+    GUARDED_ABSTRACTION,
+
+    IMPORT_STATEMENT_MIDDLE
 } = require('./constants');
 
 module.exports = {
@@ -155,6 +157,14 @@ module.exports = {
         }, {
             name: 'context',
             def: null
+        }]
+    },
+
+    [IMPORT_STATEMENT_MIDDLE]: {
+        content: [{
+            name: 'importStatement'
+        }, {
+            name: 'restStatements'
         }]
     }
 };
