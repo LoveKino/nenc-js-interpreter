@@ -15,10 +15,16 @@ var {
 }= require('../programDSL/constants');
 
 var {applyMethod, slice}= require('../util/hostLangApis');
-var {Context, BasicContainer, ordinaryAbstraction}= require('../programDSL/dataContainer');
-var {
-    fillOrdinaryAbstractionVariable, isOrdinaryAbstractionReducible, lookupVariable, updateAbstractionContext, isType, getType, isCallerType, cloneOrdinaryAbstraction, getContentValue
-}= require('../dslBehavior');
+var {BasicContainer, ordinaryAbstraction}= require('../programDSL/dataContainer');
+let {
+    isType, getType, getContentValue
+} = require('../dslBehavior');
+
+let {
+    fillOrdinaryAbstractionVariable, isOrdinaryAbstractionReducible, updateAbstractionContext, isCallerType, cloneOrdinaryAbstraction, createAbstractionBodyContext
+}= require('./abstraction');
+
+let {Context, lookupVariable} = require('./context');
 
 var nencModules = {};
 
@@ -49,7 +55,68 @@ var defineModule = function(name, moduleCode) {
 /****************************************************
  * run program
  *****************************************************/
-var runProgram = function(program, ctx) {
+var runProgram = function(programData, ctx) {
+    switch(getType(programData)) {
+    case STATEMENTS:
+        return runStatements(programData, ctx);
+    case VOID:
+        return null;
+    // expression
+    case EXPRESSION:
+        return runProgram(getContentValue(programData, 'expression'), ctx);
+    case VARIABLE:
+        return lookupVariable(ctx, getContentValue(programData, 'variableName'));
+    case GUARDED_ABSTRACTION:
+        // update context
+        return updateAbstractionContext(programData, ctx);
+    case ORDINARY_ABSTRACTION:
+        return updateAbstractionContext(programData, ctx);
+    case APPLICATION:
+        return runApplication(programData, ctx);
+    case DATA:
+        return runProgram(getContentValue(programData, 'data'), ctx);
+    case CONDITION_EXP:
+        return runConditionExp(programData, ctx);
+    // data
+    case NULL:
+        return null;
+    case TRUE:
+        return true;
+    case FALSE:
+        return false;
+    case NUMBER:
+        return Number(getContentValue(programData, 'data'));
+    case ARRAY: //eslint-disable-line
+        let arrList = null, array = null, arrLen = 0, j = 0;
+        arrList = getContentValue(programData, 'list');
+        array = [];
+        arrLen = arrList.length;
+        for(j = 0; j < arrLen; j++) {
+            array[j] = runProgram(arrList[j], ctx);
+        }
+        return array;
+    case STRING:
+        return getContentValue(programData, 'data');
+    case OBJECT: // eslint-disable-line
+        let list = null, result = null, i = 0, len = 0;
+        list = getContentValue(programData, 'list');
+        if(!list.length) return {};
+        result = {};
+        len = list.length;
+        while(i < len) {
+            let key = list[i];
+            let value = list[i + 1];
+            result[key.content.data] = runProgram(value, ctx);
+            i += 2;
+        }
+        return result;
+
+    default:
+        throw new Error('unexpect type of program dsl data');
+    }
+};
+
+let runStatements = (program, ctx) => {
     var statements = getContentValue(program, 'statements');
 
     var value = null;
@@ -64,7 +131,7 @@ var runProgram = function(program, ctx) {
             return letBindingArrangement(statement, slice(statements, i + 1), ctx); // re-arrange rest statements
         }
 
-        var ret = runStatement(statement, ctx);
+        var ret = runProgram(statement, ctx);
 
         if (!isType(statement, VOID)) {
             value = ret;
@@ -104,96 +171,22 @@ var letBindingArrangement = function(letStatement, nextStatements, ctx) {
     return runOrdinaryAbstraction(abstraction, resolveExpList(bodys, ctx));
 };
 
-var runStatement = function(statement, ctx) {
-    switch (getType(statement)) {
-    case VOID:
-        return null;
-    case EXPRESSION:
-        return runExp(getContentValue(statement, 'expression'), ctx);
-    default:
-        throw new Error('unrecognized statement: ' + JSON.stringify(statement));
-    }
-};
-
-var runExp = (exp, ctx) => {
-    switch (getType(exp)) {
-    case VARIABLE:
-        return lookupVariable(ctx, getContentValue(exp, 'variableName'));
-    case GUARDED_ABSTRACTION:
-        // update context
-        return updateAbstractionContext(exp, ctx);
-    case ORDINARY_ABSTRACTION:
-        return updateAbstractionContext(exp, ctx);
-    case APPLICATION:
-        return runApplication(exp, ctx);
-    case DATA:
-        return runDataExp(exp, ctx);
-    case CONDITION_EXP:
-        return runConditionExp(exp, ctx);
-    default:
-        throw new Error('unrecognized expression: ' + JSON.stringify(exp));
-    }
-};
-
-var runDataExp = function(exp, ctx) {
-    var data = getContentValue(exp, 'data');
-
-    let arrList = null, array = null, arrLen = 0, j = 0;
-
-    let list = null, result = null, i = 0, len = 0;
-
-    switch(getType(data)) {
-    case NULL:
-        return null;
-    case TRUE:
-        return true;
-    case FALSE:
-        return false;
-    case NUMBER:
-        return Number(getContentValue(data, 'data'));
-    case ARRAY:
-        arrList = getContentValue(data, 'list');
-        array = [];
-        arrLen = arrList.length;
-        for(j = 0; j < arrLen; j++) {
-            array[j] = runProgram(arrList[j], ctx);
-        }
-        return array;
-    case STRING:
-        return getContentValue(data, 'data');
-    case OBJECT:
-        list = getContentValue(data, 'list');
-        if(!list.length) return {};
-        result = {};
-        len = list.length;
-        while(i < len) {
-            let key = list[i];
-            let value = list[i + 1];
-            result[key.content.data] = runProgram(value, ctx);
-            i += 2;
-        }
-        return result;
-    default:
-        throw new Error(`unexpect data type ${getType(data)}`);
-    }
-};
-
 var runConditionExp = function(exp, ctx) {
     var conditionExp = getContentValue(exp, 'conditionExp');
     var option1Exp = getContentValue(exp, 'option1Exp');
     var option2Exp = getContentValue(exp, 'option2Exp');
 
-    var conditionResult = runExp(conditionExp, ctx);
+    var conditionResult = runProgram(conditionExp, ctx);
 
     if (conditionResult) {
-        return runExp(option1Exp, ctx);
+        return runProgram(option1Exp, ctx);
     } else {
-        return runExp(option2Exp, ctx);
+        return runProgram(option2Exp, ctx);
     }
 };
 
 var runApplication = function(application, ctx) {
-    var callerRet = runExp(getContentValue(application, 'caller'), ctx);
+    var callerRet = runProgram(getContentValue(application, 'caller'), ctx);
 
     if (!isCallerType(callerRet)) {
         throw new Error('Expect function to run application, but got ' + callerRet);
@@ -240,7 +233,7 @@ var runGuardedAbstraction = function(callerRet, paramsRet) {
                 curContext[variableName] = paramRet === undefined ? null : paramRet;
             }
 
-            var ret = runExp(guard, new Context(curContext, ctx));
+            var ret = runProgram(guard, new Context(curContext, ctx));
 
             if (ret === false || ret === null || ret === 0 || ret === undefined) {
                 finded = false;
@@ -266,13 +259,13 @@ var resolveExpList = function(params, ctx) {
     var paramsRet = [];
     var len = params.length;
     for (var i = 0; i < len; i++) {
-        paramsRet.push(runExp(params[i], ctx));
+        paramsRet.push(runProgram(params[i], ctx));
     }
 
     return paramsRet;
 };
 
-var runOrdinaryAbstraction = function(sourceAbstraction, paramsRet) {
+let runOrdinaryAbstraction = function(sourceAbstraction, paramsRet) {
     // create a new abstraction
     var abstraction = cloneOrdinaryAbstraction(sourceAbstraction);
 
@@ -282,23 +275,14 @@ var runOrdinaryAbstraction = function(sourceAbstraction, paramsRet) {
     }
 
     if (isOrdinaryAbstractionReducible(abstraction)) {
-        // take out all variables
-        var variables = getContentValue(abstraction, 'variables');
-        var fillMap = getContentValue(abstraction, 'fillMap');
-        var variableMap = {};
-        for (var j = 0; j < variables.length; j++) {
-            var variableName = getContentValue(variables[j], 'variableName');
-            variableMap[variableName] = fillMap[j];
-        }
-        // attach variables to context
-        var newCtx = new Context(variableMap, getContentValue(sourceAbstraction, 'context'));
+        var newCtx = createAbstractionBodyContext(abstraction);
 
         // run body expression with new context
         var body = getContentValue(abstraction, 'body');
         if (isType(body, STATEMENTS)) {
             return runProgram(body, newCtx);
         } else {
-            return runExp(body, newCtx);
+            return runProgram(body, newCtx);
         }
     }
 

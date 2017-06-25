@@ -24,11 +24,6 @@ function BasicContainer(type, content) {
     };
 }
 
-function Context(variableMap, parent) {
-    this.parent = parent;
-    this.variableMap = variableMap;
-}
-
 function ordinaryAbstraction(variables, bodyExp, context) {
     return BasicContainer(ORDINARY_ABSTRACTION, [variables, bodyExp, context || null, {}, {}, 0]);
 }
@@ -37,8 +32,6 @@ module.exports = {
     Void,
 
     BasicContainer,
-
-    Context,
 
     ordinaryAbstraction
 };
