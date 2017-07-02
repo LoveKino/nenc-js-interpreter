@@ -27,6 +27,8 @@ module.exports = {
 
     // middle
     IMPORT_STATEMENT_MIDDLE: 'import_statement_middle',
+    LET_STATEMENT_MIDDLE: 'let_statement_middle',
+
     APPLY_GUARDED_ABSTRACTION: 'apply_guarded_abstraction',
 
     APPLY_ORDINARY_ABSTRACTION: 'apply_ordinary_abstraction',

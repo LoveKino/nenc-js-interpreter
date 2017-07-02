@@ -10,29 +10,33 @@
 var systemContextMap = require('../systemContextMap');
 
 var {
-    VOID, META_METHOD, APPLICATION, ORDINARY_ABSTRACTION, VARIABLE, STATEMENTS, GUARDED_ABSTRACTION, LET_BINDING_STATEMENT, CONDITION_EXP, IMPORT_STATEMENT,
+    VOID, VARIABLE, STATEMENTS, LET_BINDING_STATEMENT, IMPORT_STATEMENT,
     ARRAY, OBJECT, NUMBER, STRING,
 
-    IMPORT_STATEMENT_MIDDLE, APPLY_GUARDED_ABSTRACTION, APPLY_ORDINARY_ABSTRACTION, APPLY_META_METHOD
+    LET_STATEMENT_MIDDLE, IMPORT_STATEMENT_MIDDLE, APPLY_GUARDED_ABSTRACTION, APPLY_ORDINARY_ABSTRACTION, APPLY_META_METHOD
 }= require('../programDSL/constants');
 
 var {applyMethod, slice}= require('../util/hostLangApis');
-var {BasicContainer, ordinaryAbstraction}= require('../programDSL/dataContainer');
+var {BasicContainer}= require('../programDSL/dataContainer');
 let {
     isType, getType, getContentValue, getContentValues
 } = require('../dslBehavior');
 
 let {
-    fillOrdinaryAbstractionVariable, isOrdinaryAbstractionReducible, updateAbstractionContext, isCallerType, cloneOrdinaryAbstraction, createAbstractionBodyContext
+    fillOrdinaryAbstractionVariable, isOrdinaryAbstractionReducible, updateAbstractionContext, cloneOrdinaryAbstraction, createAbstractionBodyContext
 }= require('./abstraction');
 
 let {Context, lookupVariable} = require('./context');
 
 let transltorConfig = require('./translatorConfig');
 
-var nencModules = {};
+let rewriteMap = require('./translator/rewrite');
 
-var importModule = function(name) {
+let transformMap = require('./translator/transform');
+
+let nencModules = {};
+
+let importModule = function(name) {
     if (!nencModules[name]) {
         throw new Error(`missing module ${name}`);
     }
@@ -49,7 +53,7 @@ var importModule = function(name) {
     }
 };
 
-var defineModule = function(name, moduleCode) {
+let defineModule = function(name, moduleCode) {
     nencModules[name] = {
         moduleCode: moduleCode,
         resolved: false
@@ -59,7 +63,7 @@ var defineModule = function(name, moduleCode) {
 /**
  * run program at specific context
  */
-var runProgram = function(programData, ctx) {
+let runProgram = function(programData, ctx) {
     let programType = getType(programData);
     let config = transltorConfig[programType];
     if(!config) {
@@ -75,8 +79,10 @@ var runProgram = function(programData, ctx) {
         return bindContext(programData, ctx);
     } else {
         let programParams = getContentValues(programData);
-        if (config.type === 'transfrom') {
-            return runProgram(transfromMap[programType](programParams, ctx), ctx);
+        if (config.type === 'transform') {
+            return runProgram(transformMap[programType](programParams, ctx, runProgram), ctx);
+        } else if(config.type === 'rewrite') {
+            return runProgram(rewriteMap[programType](programParams, ctx), ctx);
         } else {
             return runProgramMap[programType](programParams, ctx);
         }
@@ -136,9 +142,16 @@ let runStatements = ([statements], ctx) => {
         switch (getType(statement)) {
         case IMPORT_STATEMENT:
             // re-arrange rest statements to construct middle import statements
-            return runProgram(BasicContainer(IMPORT_STATEMENT_MIDDLE, [statement, slice(statements, i + 1)]), ctx);
+            return runProgram(BasicContainer(IMPORT_STATEMENT_MIDDLE, [
+                importModule(getContentValue(statement, 'modulePath')),
+                getContentValue(statement, 'variable'),
+                slice(statements, i + 1)
+            ]), ctx);
         case LET_BINDING_STATEMENT:
-            return letBindingArrangement(statement, slice(statements, i + 1), ctx); // re-arrange rest statements
+            return runProgram(BasicContainer(LET_STATEMENT_MIDDLE, [
+                statement,
+                slice(statements, i + 1)
+            ]), ctx);
         }
 
         var ret = runProgram(statement, ctx);
@@ -151,68 +164,9 @@ let runStatements = ([statements], ctx) => {
     return value;
 };
 
-let runImportStatement = ([statement, nextStatements], ctx) => {
-    let modulePath = getContentValue(statement, 'modulePath');
-    let variable = getContentValue(statement, 'variable');
-
-    let abstraction = ordinaryAbstraction([variable],
-        BasicContainer(STATEMENTS, [nextStatements]),
-        ctx);
-
-    return runOrdinaryAbstraction([abstraction, [importModule(modulePath)]]);
-};
-
-var letBindingArrangement = function(letStatement, nextStatements, ctx) {
-    var bindings = getContentValue(letStatement, 'bindings');
-
-    var variables = [],
-        bodys = [];
-
-    for (var j = 0; j < bindings.length; j = j + 2) {
-        variables[j] = bindings[j];
-        bodys[j] = bindings[j + 1];
-    }
-
-    var abstraction = ordinaryAbstraction(variables,
-        BasicContainer(STATEMENTS, [nextStatements]),
-
-        ctx);
-
-    return runOrdinaryAbstraction([abstraction, resolveExpList(bodys, ctx)]);
-};
-
-var transformConditionExp = function([conditionExp, option1Exp, option2Exp], ctx) {
-    // run condition
-    var conditionResult = runProgram(conditionExp, ctx);
-
-    if (conditionResult) {
-        return option1Exp;
-    } else {
-        return option2Exp;
-    }
-};
-
-let transfromApplication = function([caller, params], ctx) {
-    let paramsRet = resolveExpList(params, ctx);
-    let callerRet = runProgram(caller, ctx);
-
-    if (!isCallerType(callerRet)) {
-        throw new Error('Expect function to run application, but got ' + callerRet);
-    }
-
-    // run abstraction
-    switch (getType(callerRet)) {
-    case GUARDED_ABSTRACTION:
-        return BasicContainer(APPLY_GUARDED_ABSTRACTION, [callerRet, paramsRet]);
-    case ORDINARY_ABSTRACTION:
-        return BasicContainer(APPLY_ORDINARY_ABSTRACTION, [callerRet, paramsRet]);
-    case META_METHOD:
-        return BasicContainer(APPLY_META_METHOD, [callerRet, paramsRet]);
-    }
-};
-
-let runGuardedAbstraction = function([callerRet, paramsRet]) {
+let runGuardedAbstraction = function([callerRet, params]) {
     let ctx = getContentValue(callerRet, 'ctx');
+    let paramsRet = resolveExpList(params, ctx);
     let guardLines = getContentValue(callerRet, 'guardLines');
     let len = guardLines.length;
 
@@ -246,32 +200,35 @@ let runGuardedAbstraction = function([callerRet, paramsRet]) {
 
         if (finded) {
             updateAbstractionContext(ordinaryAbstraction, ctx);
-            return runOrdinaryAbstraction([ordinaryAbstraction, paramsRet]);
+            return runOrdinaryAbstraction([ordinaryAbstraction, paramsRet], ctx);
         }
     }
 
     throw new Error('could not find guard for params');
 };
 
-var runMetaMethod = function([metaMethod, paramsRet]) {
+var runMetaMethod = function([metaMethod, params], ctx) {
+    let paramsRet = resolveExpList(params, ctx);
     // TODO check some restraints
     return applyMethod(metaMethod.content.method, paramsRet);
 };
 
-let runOrdinaryAbstraction = function([sourceAbstraction, paramsRet]) {
+let runOrdinaryAbstraction = function([sourceAbstraction, params], ctx) {
+    let paramsRet = resolveExpList(params, ctx);
+
     // create a new abstraction
-    var abstraction = cloneOrdinaryAbstraction(sourceAbstraction);
+    let abstraction = cloneOrdinaryAbstraction(sourceAbstraction);
 
     // fill with some params
-    for (var i = 0; i < paramsRet.length; i++) {
+    for (let i = 0; i < paramsRet.length; i++) {
         fillOrdinaryAbstractionVariable(abstraction, i, paramsRet[i]);
     }
 
     if (isOrdinaryAbstractionReducible(abstraction)) {
-        var newCtx = createAbstractionBodyContext(abstraction);
+        let newCtx = createAbstractionBodyContext(abstraction);
 
         // run body expression with new context
-        var body = getContentValue(abstraction, 'body');
+        let body = getContentValue(abstraction, 'body');
         return runProgram(body, newCtx);
     }
 
@@ -288,15 +245,9 @@ var resolveExpList = function(params, ctx) {
     return paramsRet;
 };
 
-let transfromMap = {
-    [CONDITION_EXP]: transformConditionExp,
-    [APPLICATION]: transfromApplication
-};
-
 let runProgramMap = {
     [STATEMENTS]: runStatements,
     [VARIABLE]: runVariable,
-    [IMPORT_STATEMENT_MIDDLE]: runImportStatement,
 
     [APPLY_GUARDED_ABSTRACTION]: runGuardedAbstraction,
     [APPLY_ORDINARY_ABSTRACTION]: runOrdinaryAbstraction,
