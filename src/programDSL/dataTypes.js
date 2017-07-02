@@ -24,7 +24,8 @@ let {
     GUARDED_ABSTRACTION_LINE,
     GUARDED_ABSTRACTION,
 
-    IMPORT_STATEMENT_MIDDLE
+    IMPORT_STATEMENT_MIDDLE,
+    APPLY_GUARDED_ABSTRACTION
 } = require('./constants');
 
 module.exports = {
@@ -160,11 +161,20 @@ module.exports = {
         }]
     },
 
+    // middle code
     [IMPORT_STATEMENT_MIDDLE]: {
         content: [{
             name: 'importStatement'
         }, {
             name: 'restStatements'
+        }]
+    },
+
+    [APPLY_GUARDED_ABSTRACTION]: {
+        content: [{
+            name: 'caller'
+        }, {
+            name: 'params'
         }]
     }
 };

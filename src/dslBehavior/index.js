@@ -39,6 +39,10 @@ var getType = function(v) {
 
 var dataTypes = require('../programDSL/dataTypes');
 
+let getContentValues = (v) => {
+    return v.content;
+};
+
 let getContentValue = (v, prop) => {
     let type = v.type;
     let content = v.content;
@@ -81,5 +85,6 @@ module.exports = {
     isType,
     getType,
     getContentValue,
-    setContentValue
+    setContentValue,
+    getContentValues
 };

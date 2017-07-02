@@ -25,5 +25,11 @@ module.exports = {
     GUARDED_ABSTRACTION_LINE: 'guarded_abstraction_line',
     GUARDED_ABSTRACTION: 'guarded_abstraction',
 
-    IMPORT_STATEMENT_MIDDLE: 'import_statement_middle'
+    // middle
+    IMPORT_STATEMENT_MIDDLE: 'import_statement_middle',
+    APPLY_GUARDED_ABSTRACTION: 'apply_guarded_abstraction',
+
+    APPLY_ORDINARY_ABSTRACTION: 'apply_ordinary_abstraction',
+
+    APPLY_META_METHOD: 'apply_meta_method'
 };

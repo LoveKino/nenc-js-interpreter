@@ -10,16 +10,16 @@
 var systemContextMap = require('../systemContextMap');
 
 var {
-    DATA, VOID, META_METHOD, APPLICATION, ORDINARY_ABSTRACTION, VARIABLE, STATEMENTS, EXPRESSION, GUARDED_ABSTRACTION, LET_BINDING_STATEMENT, CONDITION_EXP, IMPORT_STATEMENT,
-    NULL, ARRAY, OBJECT, NUMBER, STRING, TRUE, FALSE,
+    VOID, META_METHOD, APPLICATION, ORDINARY_ABSTRACTION, VARIABLE, STATEMENTS, GUARDED_ABSTRACTION, LET_BINDING_STATEMENT, CONDITION_EXP, IMPORT_STATEMENT,
+    ARRAY, OBJECT, NUMBER, STRING,
 
-    IMPORT_STATEMENT_MIDDLE
+    IMPORT_STATEMENT_MIDDLE, APPLY_GUARDED_ABSTRACTION, APPLY_ORDINARY_ABSTRACTION, APPLY_META_METHOD
 }= require('../programDSL/constants');
 
 var {applyMethod, slice}= require('../util/hostLangApis');
 var {BasicContainer, ordinaryAbstraction}= require('../programDSL/dataContainer');
 let {
-    isType, getType, getContentValue
+    isType, getType, getContentValue, getContentValues
 } = require('../dslBehavior');
 
 let {
@@ -27,6 +27,8 @@ let {
 }= require('./abstraction');
 
 let {Context, lookupVariable} = require('./context');
+
+let transltorConfig = require('./translatorConfig');
 
 var nencModules = {};
 
@@ -55,82 +57,77 @@ var defineModule = function(name, moduleCode) {
 };
 
 /**
- *
  * run program at specific context
  */
 var runProgram = function(programData, ctx) {
-    switch(getType(programData)) {
-    case STATEMENTS:
-        return runStatements(programData, ctx);
-    case VOID:
-        return null;
-    // expression
-    case EXPRESSION:
-        return runProgram(getContentValue(programData, 'expression'), ctx);
-    case CONDITION_EXP:
-        return runConditionExp(programData, ctx);
-
-    case VARIABLE:
-        return lookupVariable(ctx, getContentValue(programData, 'variableName'));
-    // define a guard abstraction
-    case GUARDED_ABSTRACTION:
-        // update context
-        return updateAbstractionContext(programData, ctx);
-    // define ordinary abstraction
-    case ORDINARY_ABSTRACTION:
-        return updateAbstractionContext(programData, ctx);
-    case APPLICATION:
-        return runApplication(programData, ctx);
-
-    // middle program structure
-
-    case IMPORT_STATEMENT_MIDDLE:
-        return runImportStatement(programData, ctx);
-
-    // data
-    case DATA:
-        return runProgram(getContentValue(programData, 'data'), ctx);
-    case NULL:
-        return null;
-    case TRUE:
-        return true;
-    case FALSE:
-        return false;
-    case NUMBER:
-        return Number(getContentValue(programData, 'data'));
-    case ARRAY: //eslint-disable-line
-        let arrList = null, array = null, arrLen = 0, j = 0;
-        arrList = getContentValue(programData, 'list');
-        array = [];
-        arrLen = arrList.length;
-        for(j = 0; j < arrLen; j++) {
-            array[j] = runProgram(arrList[j], ctx);
-        }
-        return array;
-    case STRING:
-        return getContentValue(programData, 'data');
-    case OBJECT: // eslint-disable-line
-        let list = null, result = null, i = 0, len = 0;
-        list = getContentValue(programData, 'list');
-        if(!list.length) return {};
-        result = {};
-        len = list.length;
-        while(i < len) {
-            let key = list[i];
-            let value = list[i + 1];
-            result[key.content.data] = runProgram(value, ctx);
-            i += 2;
-        }
-        return result;
-
-    default:
+    let programType = getType(programData);
+    let config = transltorConfig[programType];
+    if(!config) {
         throw new Error('unexpect type of program dsl data');
+    }
+
+    if(config.type === 'atom') {
+        return config.value;
+    } else if(config.type === 'bypass') {
+        return bypass(programData, ctx);
+    } else if(config.type === 'bind_context') {
+        // update context
+        return bindContext(programData, ctx);
+    } else {
+        let programParams = getContentValues(programData);
+        if (config.type === 'transfrom') {
+            return runProgram(transfromMap[programType](programParams, ctx), ctx);
+        } else {
+            return runProgramMap[programType](programParams, ctx);
+        }
     }
 };
 
-let runStatements = (program, ctx) => {
-    var statements = getContentValue(program, 'statements');
+let bindContext = (programData, ctx) => {
+    return updateAbstractionContext(programData, ctx);
+};
 
+let runVariable = ([variableName], ctx) => {
+    return lookupVariable(ctx, [variableName]);
+};
+
+let bypass = (programData, ctx) => {
+    return runProgram(getContentValues(programData)[0], ctx);
+};
+
+let runString = ([data]) => {
+    return data;
+};
+
+let runNumber = ([number]) => {
+    return Number(number);
+};
+
+let runObject = ([list], ctx) => {
+    let result = null, i = 0, len = 0;
+    if(!list.length) return {};
+    result = {};
+    len = list.length;
+    while(i < len) {
+        let key = list[i];
+        let value = list[i + 1];
+        result[key.content.data] = runProgram(value, ctx);
+        i += 2;
+    }
+    return result;
+};
+
+let runArray = ([arrList], ctx) => {
+    let array = null, arrLen = 0, j = 0;
+    array = [];
+    arrLen = arrList.length;
+    for(j = 0; j < arrLen; j++) {
+        array[j] = runProgram(arrList[j], ctx);
+    }
+    return array;
+};
+
+let runStatements = ([statements], ctx) => {
     var value = null;
 
     for (var i = 0; i < statements.length; i++) {
@@ -138,7 +135,7 @@ let runStatements = (program, ctx) => {
 
         switch (getType(statement)) {
         case IMPORT_STATEMENT:
-            // re-arrange rest statements
+            // re-arrange rest statements to construct middle import statements
             return runProgram(BasicContainer(IMPORT_STATEMENT_MIDDLE, [statement, slice(statements, i + 1)]), ctx);
         case LET_BINDING_STATEMENT:
             return letBindingArrangement(statement, slice(statements, i + 1), ctx); // re-arrange rest statements
@@ -154,18 +151,15 @@ let runStatements = (program, ctx) => {
     return value;
 };
 
-var runImportStatement = (programData, ctx) => {
-    let statement = getContentValue(programData, 'importStatement');
-    let nextStatements = getContentValue(programData, 'restStatements');
+let runImportStatement = ([statement, nextStatements], ctx) => {
+    let modulePath = getContentValue(statement, 'modulePath');
+    let variable = getContentValue(statement, 'variable');
 
-    var modulePath = getContentValue(statement, 'modulePath');
-    var variable = getContentValue(statement, 'variable');
-
-    var abstraction = ordinaryAbstraction([variable],
+    let abstraction = ordinaryAbstraction([variable],
         BasicContainer(STATEMENTS, [nextStatements]),
         ctx);
 
-    return runOrdinaryAbstraction(abstraction, [importModule(modulePath)]);
+    return runOrdinaryAbstraction([abstraction, [importModule(modulePath)]]);
 };
 
 var letBindingArrangement = function(letStatement, nextStatements, ctx) {
@@ -184,72 +178,65 @@ var letBindingArrangement = function(letStatement, nextStatements, ctx) {
 
         ctx);
 
-    return runOrdinaryAbstraction(abstraction, resolveExpList(bodys, ctx));
+    return runOrdinaryAbstraction([abstraction, resolveExpList(bodys, ctx)]);
 };
 
-var runConditionExp = function(exp, ctx) {
-    var conditionExp = getContentValue(exp, 'conditionExp');
-    var option1Exp = getContentValue(exp, 'option1Exp');
-    var option2Exp = getContentValue(exp, 'option2Exp');
-
+var transformConditionExp = function([conditionExp, option1Exp, option2Exp], ctx) {
+    // run condition
     var conditionResult = runProgram(conditionExp, ctx);
 
     if (conditionResult) {
-        return runProgram(option1Exp, ctx);
+        return option1Exp;
     } else {
-        return runProgram(option2Exp, ctx);
+        return option2Exp;
     }
 };
 
-var runApplication = function(application, ctx) {
-    var callerRet = runProgram(getContentValue(application, 'caller'), ctx);
+let transfromApplication = function([caller, params], ctx) {
+    let paramsRet = resolveExpList(params, ctx);
+    let callerRet = runProgram(caller, ctx);
 
     if (!isCallerType(callerRet)) {
         throw new Error('Expect function to run application, but got ' + callerRet);
     }
 
-    var params = getContentValue(application, 'params');
-    var paramsRet = resolveExpList(params, ctx);
-
     // run abstraction
     switch (getType(callerRet)) {
     case GUARDED_ABSTRACTION:
-        return runGuardedAbstraction(callerRet, paramsRet);
+        return BasicContainer(APPLY_GUARDED_ABSTRACTION, [callerRet, paramsRet]);
     case ORDINARY_ABSTRACTION:
-        return runOrdinaryAbstraction(callerRet, paramsRet);
+        return BasicContainer(APPLY_ORDINARY_ABSTRACTION, [callerRet, paramsRet]);
     case META_METHOD:
-        return runMetaMethod(callerRet, paramsRet);
-    default:
-        throw new Error('Expect function to run application, but got ' + callerRet);
+        return BasicContainer(APPLY_META_METHOD, [callerRet, paramsRet]);
     }
 };
 
-var runGuardedAbstraction = function(callerRet, paramsRet) {
-    var ctx = getContentValue(callerRet, 'ctx');
-    var guardLines = getContentValue(callerRet, 'guardLines');
-    var len = guardLines.length;
+let runGuardedAbstraction = function([callerRet, paramsRet]) {
+    let ctx = getContentValue(callerRet, 'ctx');
+    let guardLines = getContentValue(callerRet, 'guardLines');
+    let len = guardLines.length;
 
-    for (var i = 0; i < len; i++) {
-        var guardLine = guardLines[i];
-        var ordinaryAbstraction = getContentValue(guardLine, 'ordinaryAbstraction');
-        var guards = getContentValue(guardLine, 'guards') || [];
-        var variables = getContentValue(ordinaryAbstraction, 'variables');
+    for (let i = 0; i < len; i++) {
+        let guardLine = guardLines[i];
+        let ordinaryAbstraction = getContentValue(guardLine, 'ordinaryAbstraction');
+        let guards = getContentValue(guardLine, 'guards') || [];
+        let variables = getContentValue(ordinaryAbstraction, 'variables');
 
-        var varLen = variables.length;
-        var guardLen = guards.length;
+        let varLen = variables.length;
+        let guardLen = guards.length;
 
-        var finded = true;
-        for (var j = 0; j < guardLen; j++) {
-            var guard = guards[j];
-            var curContext = {};
+        let finded = true;
+        for (let j = 0; j < guardLen; j++) {
+            let guard = guards[j];
+            let curContext = {};
 
-            for (var k = 0; k < varLen; k++) {
-                var paramRet = paramsRet[k];
-                var variableName = getContentValue(variables[k], 'variableName');
+            for (let k = 0; k < varLen; k++) {
+                let paramRet = paramsRet[k];
+                let variableName = getContentValue(variables[k], 'variableName');
                 curContext[variableName] = paramRet === undefined ? null : paramRet;
             }
 
-            var ret = runProgram(guard, new Context(curContext, ctx));
+            let ret = runProgram(guard, new Context(curContext, ctx));
 
             if (ret === false || ret === null || ret === 0 || ret === undefined) {
                 finded = false;
@@ -259,29 +246,19 @@ var runGuardedAbstraction = function(callerRet, paramsRet) {
 
         if (finded) {
             updateAbstractionContext(ordinaryAbstraction, ctx);
-            return runOrdinaryAbstraction(ordinaryAbstraction, paramsRet);
+            return runOrdinaryAbstraction([ordinaryAbstraction, paramsRet]);
         }
     }
 
     throw new Error('could not find guard for params');
 };
 
-var runMetaMethod = function(metaMethod, paramsRet) {
+var runMetaMethod = function([metaMethod, paramsRet]) {
     // TODO check some restraints
     return applyMethod(metaMethod.content.method, paramsRet);
 };
 
-var resolveExpList = function(params, ctx) {
-    var paramsRet = [];
-    var len = params.length;
-    for (var i = 0; i < len; i++) {
-        paramsRet.push(runProgram(params[i], ctx));
-    }
-
-    return paramsRet;
-};
-
-let runOrdinaryAbstraction = function(sourceAbstraction, paramsRet) {
+let runOrdinaryAbstraction = function([sourceAbstraction, paramsRet]) {
     // create a new abstraction
     var abstraction = cloneOrdinaryAbstraction(sourceAbstraction);
 
@@ -295,14 +272,40 @@ let runOrdinaryAbstraction = function(sourceAbstraction, paramsRet) {
 
         // run body expression with new context
         var body = getContentValue(abstraction, 'body');
-        if (isType(body, STATEMENTS)) {
-            return runProgram(body, newCtx);
-        } else {
-            return runProgram(body, newCtx);
-        }
+        return runProgram(body, newCtx);
     }
 
     return abstraction;
+};
+
+var resolveExpList = function(params, ctx) {
+    var paramsRet = [];
+    var len = params.length;
+    for (var i = 0; i < len; i++) {
+        paramsRet.push(runProgram(params[i], ctx));
+    }
+
+    return paramsRet;
+};
+
+let transfromMap = {
+    [CONDITION_EXP]: transformConditionExp,
+    [APPLICATION]: transfromApplication
+};
+
+let runProgramMap = {
+    [STATEMENTS]: runStatements,
+    [VARIABLE]: runVariable,
+    [IMPORT_STATEMENT_MIDDLE]: runImportStatement,
+
+    [APPLY_GUARDED_ABSTRACTION]: runGuardedAbstraction,
+    [APPLY_ORDINARY_ABSTRACTION]: runOrdinaryAbstraction,
+    [APPLY_META_METHOD]: runMetaMethod,
+
+    [NUMBER]: runNumber,
+    [ARRAY]: runArray,
+    [STRING]: runString,
+    [OBJECT]: runObject
 };
 
 module.exports = {
