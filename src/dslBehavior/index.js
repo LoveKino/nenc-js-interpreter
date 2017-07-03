@@ -46,12 +46,12 @@ let getContentValues = (v) => {
 let getContentValue = (v, prop) => {
     let type = v.type;
     let content = v.content;
-    let typeContents = dataTypes[type].content;
+    let typeParams = dataTypes[type].params;
 
-    for (let i = 0; i < typeContents.length; i++) {
+    for (let i = 0; i < typeParams.length; i++) {
         let {
             name
-        } = typeContents[i];
+        } = typeParams[i];
 
         //console.log(prop, name, name === prop)
         if (name === prop) {
@@ -65,12 +65,12 @@ let getContentValue = (v, prop) => {
 let setContentValue = (v, prop, value) => {
     let type = v.type;
     let content = v.content;
-    let typeContents = dataTypes[type].content;
+    let typeParams = dataTypes[type].params;
 
-    for (let i = 0; i < typeContents.length; i++) {
+    for (let i = 0; i < typeParams.length; i++) {
         let {
             name
-        } = typeContents[i];
+        } = typeParams[i];
         if (name === prop) {
             content[i] = value;
             return v;

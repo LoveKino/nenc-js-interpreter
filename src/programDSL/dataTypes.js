@@ -20,54 +20,88 @@ let {
     STATEMENTS,
     LET_BINDING_STATEMENT,
     IMPORT_STATEMENT,
+    IMPORT_STATEMENT_MIDDLE,
     CONDITION_EXP,
     GUARDED_ABSTRACTION_LINE,
-    GUARDED_ABSTRACTION
+    GUARDED_ABSTRACTION,
+
+    LET_STATEMENT_MIDDLE,
+    APPLY_GUARDED_ABSTRACTION,
+    APPLY_ORDINARY_ABSTRACTION,
+    APPLY_META_METHOD
 } = require('./constants');
 
 module.exports = {
     [PAIR]: {
-        content: [{
+        params: [{
             name: 'v1'
         }, {
             name: 'v2'
         }]
     },
     [VOID]: {
-        content: []
+        params: [],
+        parser: {
+            type: 'atom',
+            value: null
+        }
     },
+
     [DATA]: {
-        content: [{
+        params: [{
             name: 'data'
-        }]
+        }],
+
+        parser: {
+            type: 'bypass'
+        }
     },
     [NUMBER]: {
-        content: [{
+        params: [{
             name: 'data'
-        }]
+        }],
+
+        parser: {
+            type: 'atomFun'
+        }
     },
     [NULL]: {
-        content: []
+        params: [],
+        parser: {
+            type: 'atom',
+            value: null
+        }
     },
     [TRUE]: {
-        content: []
+        params: [],
+        parser: {
+            type: 'atom',
+            value: true
+        }
     },
     [FALSE]: {
-        content: []
+        params: [],
+        parser: {
+            type: 'atom',
+            value: false
+        }
     },
     [STRING]: {
-        content: [{
+        params: [{
             name: 'data'
-        }]
+        }],
+        parser: {
+            type: 'atomFun'
+        }
     },
     [ARRAY]: {
-        content: [{
+        params: [{
             name: 'list',
             type: 'collection'
         }]
     },
     [OBJECT]: {
-        content: [{
+        params: [{
             name: 'list',
             type: 'collection'
         }]
@@ -75,15 +109,19 @@ module.exports = {
 
     [META_METHOD]: {},
     [APPLICATION]: {
-        content: [{
+        params: [{
             name: 'caller'
         }, {
             name: 'params',
             type: 'collection'
-        }]
+        }],
+
+        parser: {
+            type: 'transform'
+        }
     },
     [ORDINARY_ABSTRACTION]: {
-        content: [{
+        params: [{
             name: 'variables',
             type: 'collection'
         }, {
@@ -100,48 +138,59 @@ module.exports = {
         }, {
             name: 'fillCount',
             def: 0
-        }]
+        }],
+
+        parser: {
+            type: 'bind_context'
+        }
     },
     [VARIABLE]: {
-        content: [{
+        params: [{
             name: 'variableName'
         }]
     },
     [EXPRESSION]: {
-        content: [{
+        params: [{
             name: 'expression'
-        }]
+        }],
+        parser: {
+            type: 'bypass'
+        }
     },
     [STATEMENTS]: {
-        content: [{
+        params: [{
             name: 'statements',
             type: 'collection'
         }]
     },
     [LET_BINDING_STATEMENT]: {
-        content: [{
+        params: [{
             name: 'bindings',
             type: 'collection'
         }]
     },
     [IMPORT_STATEMENT]: {
-        content: [{
+        params: [{
             name: 'modulePath'
         }, {
             name: 'variable'
         }]
     },
     [CONDITION_EXP]: {
-        content: [{
+        params: [{
             name: 'conditionExp'
         }, {
             name: 'option1Exp'
         }, {
             name: 'option2Exp'
-        }]
+        }],
+
+        parser: {
+            type: 'transform'
+        }
     },
     [GUARDED_ABSTRACTION_LINE]: {
-        content: [{
+        params: [{
             name: 'ordinaryAbstraction'
         }, {
             name: 'guards',
@@ -149,12 +198,34 @@ module.exports = {
         }]
     },
     [GUARDED_ABSTRACTION]: {
-        content: [{
+        params: [{
             name: 'guardLines',
             type: 'collection'
         }, {
             name: 'context',
             def: null
-        }]
-    }
+        }],
+        parser: {
+            type: 'bind_context'
+        }
+    },
+
+    // middle
+    [IMPORT_STATEMENT_MIDDLE]: {
+        parser: {
+            type: 'rewrite'
+        }
+    },
+
+    [LET_STATEMENT_MIDDLE]: {
+        parser: {
+            type: 'rewrite'
+        }
+    },
+
+    [APPLY_GUARDED_ABSTRACTION]: {},
+
+    [APPLY_ORDINARY_ABSTRACTION]: {},
+
+    [APPLY_META_METHOD]: {}
 };

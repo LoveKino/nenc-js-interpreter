@@ -13,9 +13,10 @@ let {
 let {
     isType, getPairValueList
 } = require('../dslBehavior');
+let dataTypes = require('./dataTypes');
 
 let getParamList = (v) => {
-    var list = [];
+    let list = [];
 
     if (!isType(v, VOID)) {
         if (isType(v, PAIR)) {
@@ -28,22 +29,20 @@ let getParamList = (v) => {
     return list;
 };
 
-var dataTypes = require('./dataTypes');
-
 let typeDsl = (type) => {
-    let typeContents = dataTypes[type].content;
+    let typeParams = dataTypes[type].params;
 
     return (...args) => {
-        // assert.equal(args.length, typeContents.length);
+        // assert.equal(args.length, typeParams.length);
         let content = [];
         let argLen = args.length;
-        for (let i = 0; i < typeContents.length; i++) {
-            let typeContent = typeContents[i];
+        for (let i = 0; i < typeParams.length; i++) {
+            let typeParam = typeParams[i];
             if (i >= argLen) {
-                content.push(typeContent.def);
+                content.push(typeParam.def);
             } else {
                 let arg = args[i];
-                if (typeContent.type === 'collection') {
+                if (typeParam.type === 'collection') {
                     content.push(getParamList(arg));
                 } else {
                     content.push(arg);

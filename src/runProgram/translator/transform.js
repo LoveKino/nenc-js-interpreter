@@ -21,7 +21,7 @@ let {
     isCallerType
 } = require('../abstraction');
 
-let transformConditionExp = function([conditionExp, option1Exp, option2Exp], ctx, runProgram) {
+let transformConditionExp = ([conditionExp, option1Exp, option2Exp], ctx, runProgram) => {
     // run condition
     let conditionResult = runProgram(conditionExp, ctx);
 
@@ -32,7 +32,7 @@ let transformConditionExp = function([conditionExp, option1Exp, option2Exp], ctx
     }
 };
 
-let transformApplication = function([caller, params], ctx, runProgram) {
+let transformApplication = ([caller, params], ctx, runProgram) => {
     let callerRet = runProgram(caller, ctx);
 
     if (!isCallerType(callerRet)) {
