@@ -24,6 +24,7 @@ let {
     CONDITION_EXP,
     GUARDED_ABSTRACTION_LINE,
     GUARDED_ABSTRACTION,
+    IDENTITY,
 
     LET_STATEMENT_MIDDLE,
     APPLY_GUARDED_ABSTRACTION,
@@ -207,6 +208,12 @@ module.exports = {
         }],
         parser: {
             type: 'bind_context'
+        }
+    },
+
+    [IDENTITY]: {
+        parser: {
+            type: 'id'
         }
     },
 

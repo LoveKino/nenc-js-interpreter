@@ -2,7 +2,7 @@
 
 let {
     VOID, VARIABLE, STATEMENTS, LET_BINDING_STATEMENT, IMPORT_STATEMENT,
-    ARRAY, OBJECT,
+    ARRAY, OBJECT, IDENTITY,
 
     LET_STATEMENT_MIDDLE, IMPORT_STATEMENT_MIDDLE, APPLY_GUARDED_ABSTRACTION, APPLY_ORDINARY_ABSTRACTION, APPLY_META_METHOD
 } = require('../../programDSL/constants');
@@ -11,11 +11,9 @@ let {
     applyMethod, slice
 } = require('../../util/hostLangApis');
 let {
-    BasicContainer
-} = require('../../programDSL/dataContainer');
-let {
+    BasicContainer,
     isType, getType, getContentValue
-} = require('../../dslBehavior');
+} = require('../../programDSL/dataContainer');
 
 let {
     fillOrdinaryAbstractionVariable, isOrdinaryAbstractionReducible, updateAbstractionContext, cloneOrdinaryAbstraction, createAbstractionBodyContext
@@ -67,7 +65,9 @@ let runStatements = ([statements], ctx, runProgram, importModule) => {
         if (stateType === IMPORT_STATEMENT) {
             // re-arrange rest statements to construct middle import statements
             return runProgram(BasicContainer(IMPORT_STATEMENT_MIDDLE, [
-                importModule(getContentValue(statement, 'modulePath')),
+                // wrap with id function
+                BasicContainer(IDENTITY, [importModule(getContentValue(statement, 'modulePath'))]),
+
                 getContentValue(statement, 'variable'),
                 slice(statements, i + 1)
             ]), ctx);
@@ -126,7 +126,7 @@ let runGuardedAbstraction = ([callerRet, params], _, runProgram) => {
 
         if (finded) {
             updateAbstractionContext(ordinaryAbstraction, ctx);
-            return runOrdinaryAbstraction([ordinaryAbstraction, paramsRet], ctx);
+            return runOrdinaryAbstractionWithParamRets(ordinaryAbstraction, paramsRet, runProgram);
         }
     }
 
@@ -142,6 +142,10 @@ let runMetaMethod = ([metaMethod, params], ctx, runProgram) => {
 let runOrdinaryAbstraction = ([sourceAbstraction, params], ctx, runProgram) => {
     let paramsRet = resolveExpList(params, ctx, runProgram);
 
+    return runOrdinaryAbstractionWithParamRets(sourceAbstraction, paramsRet, runProgram);
+};
+
+let runOrdinaryAbstractionWithParamRets = (sourceAbstraction, paramsRet, runProgram) => {
     // create a new abstraction
     let abstraction = cloneOrdinaryAbstraction(sourceAbstraction);
 

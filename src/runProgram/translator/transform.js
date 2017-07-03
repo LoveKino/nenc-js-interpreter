@@ -11,11 +11,9 @@ let {
 } = require('../../programDSL/constants');
 
 let {
-    BasicContainer
-} = require('../../programDSL/dataContainer');
-let {
+    BasicContainer,
     getType
-} = require('../../dslBehavior');
+} = require('../../programDSL/dataContainer');
 
 let {
     isCallerType

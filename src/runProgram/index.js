@@ -11,7 +11,7 @@ let systemContextMap = require('../systemContextMap');
 
 let {
     getType, getContentValues
-} = require('../dslBehavior');
+} = require('../programDSL/dataContainer');
 
 let {
     updateAbstractionContext
@@ -68,6 +68,8 @@ let runProgram = (programData, ctx) => {
         return config.value;
     } else if (config.type === 'bypass') {
         return bypass(programData, ctx);
+    } else if (config.type === 'id') {
+        return id(programData);
     } else if (config.type === 'bind_context') {
         // update context
         return bindContext(programData, ctx);
@@ -91,6 +93,10 @@ let bindContext = (programData, ctx) => {
 
 let bypass = (programData, ctx) => {
     return runProgram(getContentValues(programData)[0], ctx);
+};
+
+let id = (programData) => {
+    return getContentValues(programData)[0];
 };
 
 module.exports = {

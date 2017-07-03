@@ -3,18 +3,17 @@
 let {
     Context
 } = require('./context');
-let dataContainer = require('../programDSL/dataContainer');
-let CONSTANTS = require('../programDSL/constants');
-
+let {
+    ordinaryAbstraction
+} = require('../programDSL/dataContainer');
+let {
+    GUARDED_ABSTRACTION,
+    META_METHOD,
+    ORDINARY_ABSTRACTION
+} = require('../programDSL/constants');
 let {
     isType, getContentValue, setContentValue
-} = require('../dslBehavior');
-
-let GUARDED_ABSTRACTION = CONSTANTS.GUARDED_ABSTRACTION,
-    META_METHOD = CONSTANTS.META_METHOD,
-    ORDINARY_ABSTRACTION = CONSTANTS.ORDINARY_ABSTRACTION;
-
-var ordinaryAbstraction = dataContainer.ordinaryAbstraction;
+} = require('../programDSL/dataContainer');
 
 /**
  * fill param value at specific position

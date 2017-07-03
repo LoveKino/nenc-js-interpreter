@@ -4,14 +4,16 @@
  * rewrite program statement without running any nenc code
  */
 
-var {
+let {
     STATEMENTS, APPLY_ORDINARY_ABSTRACTION, LET_STATEMENT_MIDDLE, IMPORT_STATEMENT_MIDDLE
-}= require('../../programDSL/constants');
+} = require('../../programDSL/constants');
 
-var {BasicContainer, ordinaryAbstraction}= require('../../programDSL/dataContainer');
+let {
+    BasicContainer, ordinaryAbstraction
+} = require('../../programDSL/dataContainer');
 let {
     getContentValue
-} = require('../../dslBehavior');
+} = require('../../programDSL/dataContainer');
 
 let rewriteImportStatement = ([module, variable, nextStatements], ctx) => {
     let abstraction = ordinaryAbstraction([variable],

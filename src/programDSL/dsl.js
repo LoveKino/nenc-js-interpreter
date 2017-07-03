@@ -8,11 +8,9 @@ let {
     VOID, PAIR
 } = require('./constants');
 let {
-    BasicContainer
-} = require('./dataContainer');
-let {
+    BasicContainer,
     isType, getPairValueList
-} = require('../dslBehavior');
+} = require('./dataContainer');
 let dataTypes = require('./dataTypes');
 
 let getParamList = (v) => {
@@ -55,7 +53,7 @@ let typeDsl = (type) => {
 
 let dslApi = {};
 for (let type in dataTypes) {
-    dslApi['sys_' + type] = typeDsl(type);
+    dslApi[type] = typeDsl(type);
 }
 
 module.exports = dslApi;
