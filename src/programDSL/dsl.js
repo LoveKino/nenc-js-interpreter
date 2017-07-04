@@ -5,19 +5,19 @@
  */
 
 let {
-    VOID, PAIR
-} = require('./constants');
+    SYS_VOID, SYS_PAIR
+} = require('../../res/idlConstants');
 let {
     BasicContainer,
     isType, getPairValueList
 } = require('./dataContainer');
-let dataTypes = require('./dataTypes');
+let dataTypes = require('../../res/idlDataTypes');
 
 let getParamList = (v) => {
     let list = [];
 
-    if (!isType(v, VOID)) {
-        if (isType(v, PAIR)) {
+    if (!isType(v, SYS_VOID)) {
+        if (isType(v, SYS_PAIR)) {
             list = getPairValueList(v);
         } else {
             list = [v];

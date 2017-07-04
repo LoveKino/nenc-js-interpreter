@@ -21,7 +21,7 @@ let {
     Context
 } = require('./context');
 
-let dataTypes = require('../programDSL/dataTypes');
+let dataTypes = require('../../res/idlDataTypes');
 
 let rewriteMap = require('./translator/rewrite');
 let runProgramMap = require('./translator/runMap');

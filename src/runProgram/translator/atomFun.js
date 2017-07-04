@@ -1,8 +1,8 @@
 'use strict';
 
 let {
-    NUMBER, STRING
-} = require('../../programDSL/constants');
+    SYS_NUMBER, SYS_STRING
+} = require('../../../res/idlConstants');
 
 let runString = ([data]) => {
     return data;
@@ -13,6 +13,6 @@ let runNumber = ([number]) => {
 };
 
 module.exports = {
-    [NUMBER]: runNumber,
-    [STRING]: runString
+    [SYS_NUMBER]: runNumber,
+    [SYS_STRING]: runString
 };

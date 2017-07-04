@@ -1,12 +1,14 @@
 'use strict';
 
 let {
-    ORDINARY_ABSTRACTION, VOID, PAIR
-} = require('./constants');
+    SYS_ORDINARY_ABSTRACTION, SYS_VOID, SYS_PAIR
+} = require('../../res/idlConstants.js');
 
 let {
     concat, push
 } = require('../util/hostLangApis');
+
+let dataTypes = require('../../res/idlDataTypes');
 
 /**************************************************************
  * basic data container
@@ -18,7 +20,7 @@ let {
  *
  **************************************************************/
 let Void = {
-    type: VOID
+    type: SYS_VOID
 };
 
 function BasicContainer(type, content) {
@@ -29,7 +31,7 @@ function BasicContainer(type, content) {
 }
 
 function ordinaryAbstraction(variables, bodyExp, context) {
-    return BasicContainer(ORDINARY_ABSTRACTION, [variables, bodyExp, context || null, {}, {},
+    return BasicContainer(SYS_ORDINARY_ABSTRACTION, [variables, bodyExp, context || null, {}, {},
         0
     ]);
 }
@@ -40,13 +42,13 @@ var getPairValueList = function(pair) {
     var v1 = content[0],
         v2 = content[1];
 
-    if (isType(v1, PAIR)) {
+    if (isType(v1, SYS_PAIR)) {
         result = getPairValueList(v1);
     } else {
         result = [v1];
     }
 
-    if (isType(v2, PAIR)) {
+    if (isType(v2, SYS_PAIR)) {
         result = concat(result, getPairValueList(v2));
     } else {
         result = push(result, v2);
@@ -62,8 +64,6 @@ var isType = function(v, type) {
 var getType = function(v) {
     return v && typeof v === 'object' && v.type;
 };
-
-var dataTypes = require('../programDSL/dataTypes');
 
 let getContentValues = (v) => {
     return v.content;
@@ -85,7 +85,7 @@ let getContentValue = (v, prop) => {
         }
     }
 
-    throw new Error(`unexpected prop ${prop} for ${v}`);
+    throw new Error(`unexpected prop "${prop}" for ${JSON.stringify(dataTypes[type], null, 4)}`);
 };
 
 let setContentValue = (v, prop, value) => {
@@ -103,7 +103,7 @@ let setContentValue = (v, prop, value) => {
         }
     }
 
-    throw new Error(`unexpected prop ${prop} for ${v}`);
+    throw new Error(`unexpected prop "${prop}" for ${JSON.stringify(dataTypes[type], null, 4)}`);
 };
 
 module.exports = {

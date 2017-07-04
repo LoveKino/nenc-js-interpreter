@@ -5,10 +5,10 @@
  */
 
 let {
-    META_METHOD, APPLICATION, ORDINARY_ABSTRACTION, GUARDED_ABSTRACTION, CONDITION_EXP,
+    SYS_METAMETHOD, SYS_APPLICATION, SYS_ORDINARY_ABSTRACTION, SYS_GUARDED_ABSTRACTION, SYS_CONDITION_EXP,
 
-    APPLY_GUARDED_ABSTRACTION, APPLY_ORDINARY_ABSTRACTION, APPLY_META_METHOD
-} = require('../../programDSL/constants');
+    SYS_APPLY_GUARDED_ABSTRACTION, SYS_APPLY_ORDINARY_ABSTRACTION, SYS_APPLY_META_METHOD
+} = require('../../../res/idlConstants');
 
 let {
     BasicContainer,
@@ -39,16 +39,16 @@ let transformApplication = ([caller, params], ctx, runProgram) => {
 
     // run abstraction
     switch (getType(callerRet)) {
-    case GUARDED_ABSTRACTION:
-        return BasicContainer(APPLY_GUARDED_ABSTRACTION, [callerRet, params]);
-    case ORDINARY_ABSTRACTION:
-        return BasicContainer(APPLY_ORDINARY_ABSTRACTION, [callerRet, params]);
-    case META_METHOD:
-        return BasicContainer(APPLY_META_METHOD, [callerRet, params]);
+    case SYS_GUARDED_ABSTRACTION:
+        return BasicContainer(SYS_APPLY_GUARDED_ABSTRACTION, [callerRet, params]);
+    case SYS_ORDINARY_ABSTRACTION:
+        return BasicContainer(SYS_APPLY_ORDINARY_ABSTRACTION, [callerRet, params]);
+    case SYS_METAMETHOD:
+        return BasicContainer(SYS_APPLY_META_METHOD, [callerRet, params]);
     }
 };
 
 module.exports = {
-    [CONDITION_EXP]: transformConditionExp,
-    [APPLICATION]: transformApplication
+    [SYS_CONDITION_EXP]: transformConditionExp,
+    [SYS_APPLICATION]: transformApplication
 };

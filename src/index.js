@@ -9,10 +9,16 @@
  **************************************************************/
 
 var programDSL = require('./programDSL/dsl');
-var {BasicContainer}= require('./programDSL/dataContainer');
+var {
+    BasicContainer
+} = require('./programDSL/dataContainer');
 var systemContextMap = require('./systemContextMap');
-var {importModule, defineModule}= require('./runProgram');
-var {META_METHOD}= require('./programDSL/constants');
+var {
+    importModule, defineModule
+} = require('./runProgram');
+var {
+    SYS_METAMETHOD
+} = require('../res/idlConstants');
 
 module.exports = {
     sys_runProgram: function(name) {
@@ -24,7 +30,7 @@ module.exports = {
     },
 
     addMetaMethod: function(name, method) {
-        systemContextMap[name] = BasicContainer(META_METHOD, {
+        systemContextMap[name] = BasicContainer(SYS_METAMETHOD, {
             method: method
         });
     },

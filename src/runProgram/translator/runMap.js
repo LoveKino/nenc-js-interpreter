@@ -1,11 +1,14 @@
 'use strict';
 
 let {
-    VOID, VARIABLE, STATEMENTS, LET_BINDING_STATEMENT, IMPORT_STATEMENT,
-    ARRAY, OBJECT, IDENTITY,
+    SYS_VOID, SYS_VARIABLE, SYS_STATEMENTS, SYS_LETBINDING, SYS_IMPORT,
 
-    LET_STATEMENT_MIDDLE, IMPORT_STATEMENT_MIDDLE, APPLY_GUARDED_ABSTRACTION, APPLY_ORDINARY_ABSTRACTION, APPLY_META_METHOD
-} = require('../../programDSL/constants');
+    SYS_ARRAY, SYS_OBJECT, SYS_IDENTITY,
+
+    SYS_LET_STATEMENT_MIDDLE, SYS_IMPORT_STATEMENT_MIDDLE, SYS_APPLY_GUARDED_ABSTRACTION,
+
+    SYS_APPLY_ORDINARY_ABSTRACTION, SYS_APPLY_META_METHOD
+} = require('../../../res/idlConstants');
 
 let {
     applyMethod, slice
@@ -62,18 +65,18 @@ let runStatements = ([statements], ctx, runProgram, importModule) => {
         let statement = statements[i];
         let stateType = getType(statement);
 
-        if (stateType === IMPORT_STATEMENT) {
+        if (stateType === SYS_IMPORT) {
             // re-arrange rest statements to construct middle import statements
-            return runProgram(BasicContainer(IMPORT_STATEMENT_MIDDLE, [
+            return runProgram(BasicContainer(SYS_IMPORT_STATEMENT_MIDDLE, [
                 // wrap with id function
-                BasicContainer(IDENTITY, [importModule(getContentValue(statement, 'modulePath'))]),
+                BasicContainer(SYS_IDENTITY, [importModule(getContentValue(statement, 'modulePath'))]),
 
                 getContentValue(statement, 'variable'),
                 slice(statements, i + 1)
             ]), ctx);
 
-        } else if (stateType === LET_BINDING_STATEMENT) {
-            return runProgram(BasicContainer(LET_STATEMENT_MIDDLE, [
+        } else if (stateType === SYS_LETBINDING) {
+            return runProgram(BasicContainer(SYS_LET_STATEMENT_MIDDLE, [
                 statement,
                 slice(statements, i + 1)
             ]), ctx);
@@ -82,7 +85,7 @@ let runStatements = ([statements], ctx, runProgram, importModule) => {
 
         let ret = runProgram(statement, ctx);
 
-        if (!isType(statement, VOID)) {
+        if (!isType(statement, SYS_VOID)) {
             value = ret;
         }
     }
@@ -176,13 +179,13 @@ let resolveExpList = (params, ctx, runProgram) => {
 };
 
 module.exports = {
-    [STATEMENTS]: runStatements,
-    [VARIABLE]: runVariable,
+    [SYS_STATEMENTS]: runStatements,
+    [SYS_VARIABLE]: runVariable,
 
-    [APPLY_GUARDED_ABSTRACTION]: runGuardedAbstraction,
-    [APPLY_ORDINARY_ABSTRACTION]: runOrdinaryAbstraction,
+    [SYS_APPLY_GUARDED_ABSTRACTION]: runGuardedAbstraction,
+    [SYS_APPLY_ORDINARY_ABSTRACTION]: runOrdinaryAbstraction,
 
-    [APPLY_META_METHOD]: runMetaMethod,
-    [ARRAY]: runArray,
-    [OBJECT]: runObject
+    [SYS_APPLY_META_METHOD]: runMetaMethod,
+    [SYS_ARRAY]: runArray,
+    [SYS_OBJECT]: runObject
 };
