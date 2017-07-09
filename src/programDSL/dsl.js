@@ -5,49 +5,49 @@
  */
 
 let {
-    SYS_VOID, SYS_PAIR
-} = require('../../res/idlConstants');
+    SYS_VOID
+} = require('../../res/funNameConstants');
 let {
-    BasicContainer,
     isType, getPairValueList
 } = require('./dataContainer');
+let {
+    BasicContainer, Pair
+} = require('../../res/models');
 let dataTypes = require('../../res/idlDataTypes');
 
 let getParamList = (v) => {
-    let list = [];
-
-    if (!isType(v, SYS_VOID)) {
-        if (isType(v, SYS_PAIR)) {
-            list = getPairValueList(v);
-        } else {
-            list = [v];
-        }
+    if (v.className === 'Pair') {
+        return getPairValueList(v);
+    } else if (!isType(v, SYS_VOID)) {
+        return [v];
+    } else {
+        return [];
     }
-
-    return list;
 };
 
 let typeDsl = (type) => {
     let typeParams = dataTypes[type].params;
+    let paramsLen = typeParams.length;
 
     return (...args) => {
         // assert.equal(args.length, typeParams.length);
         let content = [];
         let argLen = args.length;
-        for (let i = 0; i < typeParams.length; i++) {
+        for (let i = 0; i < paramsLen; i++) {
             let typeParam = typeParams[i];
             if (i >= argLen) {
+                // TODO
                 content.push(typeParam.def);
             } else {
                 let arg = args[i];
-                if (typeParam.type === 'collection') {
+                if (typeParam.type === 'Pairs') {
                     content.push(getParamList(arg));
                 } else {
                     content.push(arg);
                 }
             }
         }
-        return BasicContainer(type, content);
+        return new BasicContainer(type, content);
     };
 };
 
@@ -55,5 +55,7 @@ let dslApi = {};
 for (let type in dataTypes) {
     dslApi[type] = typeDsl(type);
 }
+
+dslApi.sys_pair = (v1, v2) => new Pair(v1, v2);
 
 module.exports = dslApi;

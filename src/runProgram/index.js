@@ -26,7 +26,17 @@ let dataTypes = require('../../res/idlDataTypes');
 let rewriteMap = require('./translator/rewrite');
 let runProgramMap = require('./translator/runMap');
 let transformMap = require('./translator/transform');
-let atomFunMap = require('./translator/atomFun');
+let atom_funMap = require('./translator/atom_fun');
+
+let {
+    ATOM,
+    BYPASS,
+    ID,
+    BIND_CONTEXT,
+    ATOM_FUN,
+    TRANSFORM,
+    REWRITE
+} = require('../../res/parserTypeConstants');
 
 let nencModules = {};
 
@@ -64,39 +74,59 @@ let runProgram = (programData, ctx) => {
         throw new Error('unexpect type of program dsl data');
     }
 
-    if (config.type === 'atom') {
-        return config.value;
-    } else if (config.type === 'bypass') {
-        return bypass(programData, ctx);
-    } else if (config.type === 'id') {
-        return id(programData);
-    } else if (config.type === 'bind_context') {
-        // update context
-        return bindContext(programData, ctx);
+    let parserType = config.type;
+
+    let parser = parserMap[parserType];
+    if (parser) {
+        return parser(programData, ctx, config);
     } else {
-        let programParams = getContentValues(programData);
-        if (config.type === 'atomFun') {
-            return atomFunMap[programType](programParams, ctx);
-        } else if (config.type === 'transform') {
-            return runProgram(transformMap[programType](programParams, ctx, runProgram), ctx);
-        } else if (config.type === 'rewrite') {
-            return runProgram(rewriteMap[programType](programParams, ctx), ctx);
-        } else {
-            return runProgramMap[programType](programParams, ctx, runProgram, importModule);
-        }
+        return defaultParser(programData, ctx);
     }
 };
 
-let bindContext = (programData, ctx) => {
-    return updateAbstractionContext(programData, ctx);
+let parserMap = {
+    [ATOM]: (programData, ctx, config) => {
+        return config.value;
+    },
+
+    [ID]: (programData) => {
+        return getContentValues(programData)[0];
+    },
+
+    [BIND_CONTEXT]: (programData, ctx) => {
+        return updateAbstractionContext(programData, ctx);
+    },
+
+    [BYPASS]: (programData, ctx) => {
+        return runProgram(getContentValues(programData)[0], ctx);
+    },
+
+    [TRANSFORM]: (programData, ctx) => {
+        let programType = getType(programData);
+        let programParams = getContentValues(programData);
+
+        return runProgram(transformMap[programType](programParams, ctx, runProgram), ctx);
+    },
+
+    [ATOM_FUN]: (programData, ctx) => {
+        let programType = getType(programData);
+        let programParams = getContentValues(programData);
+        return atom_funMap[programType](programParams, ctx);
+    },
+
+    [REWRITE]: (programData, ctx) => {
+        let programType = getType(programData);
+        let programParams = getContentValues(programData);
+
+        return runProgram(rewriteMap[programType](programParams, ctx), ctx);
+    }
 };
 
-let bypass = (programData, ctx) => {
-    return runProgram(getContentValues(programData)[0], ctx);
-};
+let defaultParser = (programData, ctx) => {
+    let programType = getType(programData);
+    let programParams = getContentValues(programData);
 
-let id = (programData) => {
-    return getContentValues(programData)[0];
+    return runProgramMap[programType](programParams, ctx, runProgram, importModule);
 };
 
 module.exports = {

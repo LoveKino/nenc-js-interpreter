@@ -10,7 +10,7 @@ let {
     SYS_ORDINARY_ABSTRACTION,
     SYS_GUARDED_ABSTRACTION,
     SYS_METAMETHOD
-} = require('../../res/idlConstants');
+} = require('../../res/funNameConstants');
 
 let {
     isType, getContentValue, setContentValue

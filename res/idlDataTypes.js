@@ -34,7 +34,7 @@ module.exports = {
             }
         ],
         "parser": {
-            "type": "atomFun"
+            "type": "atom_fun"
         }
     },
     "sys_null": {
@@ -65,14 +65,14 @@ module.exports = {
             }
         ],
         "parser": {
-            "type": "atomFun"
+            "type": "atom_fun"
         }
     },
     "sys_array": {
         "params": [
             {
                 "name": "list",
-                "type": "collection"
+                "type": "Pairs"
             }
         ],
         "parser": {}
@@ -81,7 +81,7 @@ module.exports = {
         "params": [
             {
                 "name": "list",
-                "type": "collection"
+                "type": "Pairs"
             }
         ],
         "parser": {}
@@ -97,7 +97,7 @@ module.exports = {
             },
             {
                 "name": "params",
-                "type": "collection"
+                "type": "Pairs"
             }
         ],
         "parser": {
@@ -108,7 +108,7 @@ module.exports = {
         "params": [
             {
                 "name": "variables",
-                "type": "collection"
+                "type": "Pairs"
             },
             {
                 "name": "body"
@@ -156,7 +156,7 @@ module.exports = {
         "params": [
             {
                 "name": "statements",
-                "type": "collection"
+                "type": "Pairs"
             }
         ],
         "parser": {}
@@ -165,7 +165,7 @@ module.exports = {
         "params": [
             {
                 "name": "bindings",
-                "type": "collection"
+                "type": "Pairs"
             }
         ],
         "parser": {}
@@ -204,7 +204,7 @@ module.exports = {
             },
             {
                 "name": "guards",
-                "type": "collection"
+                "type": "Pairs"
             }
         ],
         "parser": {}
@@ -213,7 +213,7 @@ module.exports = {
         "params": [
             {
                 "name": "guardLines",
-                "type": "collection"
+                "type": "Pairs"
             },
             {
                 "def": null,

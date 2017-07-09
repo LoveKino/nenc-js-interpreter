@@ -6,19 +6,23 @@
 
 let {
     SYS_STATEMENTS, SYS_APPLY_ORDINARY_ABSTRACTION, SYS_LET_STATEMENT_MIDDLE, SYS_IMPORT_STATEMENT_MIDDLE
-} = require('../../../res/idlConstants');
+} = require('../../../res/funNameConstants');
 
 let {
-    BasicContainer, ordinaryAbstraction,
+    ordinaryAbstraction,
     getContentValue
 } = require('../../programDSL/dataContainer');
 
+let {
+    BasicContainer
+} = require('../../../res/models');
+
 let rewriteImportStatement = ([module, variable, nextStatements], ctx) => {
     let abstraction = ordinaryAbstraction([variable],
-        BasicContainer(SYS_STATEMENTS, [nextStatements]),
+        new BasicContainer(SYS_STATEMENTS, [nextStatements]),
         ctx);
 
-    return BasicContainer(SYS_APPLY_ORDINARY_ABSTRACTION, [abstraction, [module]]);
+    return new BasicContainer(SYS_APPLY_ORDINARY_ABSTRACTION, [abstraction, [module]]);
 };
 
 let rewriteLetStatement = ([letStatement, nextStatements], ctx) => {
@@ -33,11 +37,11 @@ let rewriteLetStatement = ([letStatement, nextStatements], ctx) => {
     }
 
     let abstraction = ordinaryAbstraction(variables,
-        BasicContainer(SYS_STATEMENTS, [nextStatements]),
+        new BasicContainer(SYS_STATEMENTS, [nextStatements]),
 
         ctx);
 
-    return BasicContainer(SYS_APPLY_ORDINARY_ABSTRACTION, [abstraction, bodys]);
+    return new BasicContainer(SYS_APPLY_ORDINARY_ABSTRACTION, [abstraction, bodys]);
 };
 
 module.exports = {

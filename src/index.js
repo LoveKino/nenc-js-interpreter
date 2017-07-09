@@ -18,7 +18,7 @@ var {
 } = require('./runProgram');
 var {
     SYS_METAMETHOD
-} = require('../res/idlConstants');
+} = require('../res/funNameConstants');
 
 module.exports = {
     sys_runProgram: function(name) {

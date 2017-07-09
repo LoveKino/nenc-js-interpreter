@@ -2,7 +2,7 @@
 
 let {
     SYS_NUMBER, SYS_STRING
-} = require('../../../res/idlConstants');
+} = require('../../../res/funNameConstants');
 
 let runString = ([data]) => {
     return data;

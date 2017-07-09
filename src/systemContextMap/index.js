@@ -1,14 +1,15 @@
 'use strict';
 
-let dataContainer = require('../programDSL/dataContainer');
 let {
     SYS_METAMETHOD
-} = require('../../res/idlConstants');
+} = require('../../res/funNameConstants');
 
-var BasicContainer = dataContainer.BasicContainer;
+let {
+    BasicContainer
+} = require('../../res/models');
 
 var MetaMethod = function(method) {
-    return BasicContainer(SYS_METAMETHOD, {
+    return new BasicContainer(SYS_METAMETHOD, {
         method: method
     });
 };

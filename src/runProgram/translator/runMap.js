@@ -8,15 +8,18 @@ let {
     SYS_LET_STATEMENT_MIDDLE, SYS_IMPORT_STATEMENT_MIDDLE, SYS_APPLY_GUARDED_ABSTRACTION,
 
     SYS_APPLY_ORDINARY_ABSTRACTION, SYS_APPLY_META_METHOD
-} = require('../../../res/idlConstants');
+} = require('../../../res/funNameConstants');
 
 let {
     applyMethod, slice
 } = require('../../util/hostLangApis');
 let {
-    BasicContainer,
     isType, getType, getContentValue
 } = require('../../programDSL/dataContainer');
+
+let {
+    BasicContainer
+} = require('../../../res/models');
 
 let {
     fillOrdinaryAbstractionVariable, isOrdinaryAbstractionReducible, updateAbstractionContext, cloneOrdinaryAbstraction, createAbstractionBodyContext
@@ -27,7 +30,7 @@ let {
 } = require('../context');
 
 let runVariable = ([variableName], ctx) => {
-    return lookupVariable(ctx, [variableName]);
+    return lookupVariable(ctx, variableName);
 };
 
 let runObject = ([list], ctx, runProgram) => {
@@ -67,16 +70,16 @@ let runStatements = ([statements], ctx, runProgram, importModule) => {
 
         if (stateType === SYS_IMPORT) {
             // re-arrange rest statements to construct middle import statements
-            return runProgram(BasicContainer(SYS_IMPORT_STATEMENT_MIDDLE, [
+            return runProgram(new BasicContainer(SYS_IMPORT_STATEMENT_MIDDLE, [
                 // wrap with id function
-                BasicContainer(SYS_IDENTITY, [importModule(getContentValue(statement, 'modulePath'))]),
+                new BasicContainer(SYS_IDENTITY, [importModule(getContentValue(statement, 'modulePath'))]),
 
                 getContentValue(statement, 'variable'),
                 slice(statements, i + 1)
             ]), ctx);
 
         } else if (stateType === SYS_LETBINDING) {
-            return runProgram(BasicContainer(SYS_LET_STATEMENT_MIDDLE, [
+            return runProgram(new BasicContainer(SYS_LET_STATEMENT_MIDDLE, [
                 statement,
                 slice(statements, i + 1)
             ]), ctx);
@@ -139,7 +142,7 @@ let runGuardedAbstraction = ([callerRet, params], _, runProgram) => {
 let runMetaMethod = ([metaMethod, params], ctx, runProgram) => {
     let paramsRet = resolveExpList(params, ctx, runProgram);
     // TODO check some restraints
-    return applyMethod(metaMethod.content.method, paramsRet);
+    return applyMethod(metaMethod.getContent().method, paramsRet);
 };
 
 let runOrdinaryAbstraction = ([sourceAbstraction, params], ctx, runProgram) => {

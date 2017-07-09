@@ -1,14 +1,20 @@
 'use strict';
 
 let {
-    SYS_ORDINARY_ABSTRACTION, SYS_VOID, SYS_PAIR
-} = require('../../res/idlConstants.js');
+    SYS_ORDINARY_ABSTRACTION, SYS_VOID
+} = require('../../res/funNameConstants.js');
 
 let {
     concat, push
 } = require('../util/hostLangApis');
 
 let dataTypes = require('../../res/idlDataTypes');
+
+let typeParamsIndexMap = require('../../res/typeParamsIndexMap');
+
+let {
+    BasicContainer
+} = require('../../res/models');
 
 /**************************************************************
  * basic data container
@@ -23,32 +29,25 @@ let Void = {
     type: SYS_VOID
 };
 
-function BasicContainer(type, content) {
-    return {
-        type: type,
-        content: content
-    };
-}
-
 function ordinaryAbstraction(variables, bodyExp, context) {
-    return BasicContainer(SYS_ORDINARY_ABSTRACTION, [variables, bodyExp, context || null, {}, {},
+    return new BasicContainer(SYS_ORDINARY_ABSTRACTION, [variables, bodyExp, context, {}, {},
         0
     ]);
 }
 
-var getPairValueList = function(pair) {
-    var result = [];
-    var content = pair.content;
-    var v1 = content[0],
-        v2 = content[1];
+let getPairValueList = function(pair) {
+    let result = [];
 
-    if (isType(v1, SYS_PAIR)) {
+    let v1 = pair.getV1(),
+        v2 = pair.getV2();
+
+    if (v1.className === 'Pair') {
         result = getPairValueList(v1);
     } else {
         result = [v1];
     }
 
-    if (isType(v2, SYS_PAIR)) {
+    if (v2.className === 'Pair') {
         result = concat(result, getPairValueList(v2));
     } else {
         result = push(result, v2);
@@ -57,50 +56,37 @@ var getPairValueList = function(pair) {
     return result;
 };
 
-var isType = function(v, type) {
-    return v && typeof v === 'object' && v.type === type;
+let isType = (v, type) => {
+    return v.equalType(type);
 };
 
-var getType = function(v) {
-    return v && typeof v === 'object' && v.type;
+let getType = (v) => {
+    return v.getType(v);
 };
 
 let getContentValues = (v) => {
-    return v.content;
+    return v.getContent();
 };
 
 let getContentValue = (v, prop) => {
-    let type = v.type;
-    let content = v.content;
-    let typeParams = dataTypes[type].params;
-
-    for (let i = 0; i < typeParams.length; i++) {
-        let {
-            name
-        } = typeParams[i];
-
-        //console.log(prop, name, name === prop)
-        if (name === prop) {
-            return content[i];
-        }
-    }
-
-    throw new Error(`unexpected prop "${prop}" for ${JSON.stringify(dataTypes[type], null, 4)}`);
+    let content = v.getContent();
+    let index = getParamIndex(v, prop);
+    return content[index];
 };
 
 let setContentValue = (v, prop, value) => {
-    let type = v.type;
-    let content = v.content;
-    let typeParams = dataTypes[type].params;
+    let content = v.getContent();
 
-    for (let i = 0; i < typeParams.length; i++) {
-        let {
-            name
-        } = typeParams[i];
-        if (name === prop) {
-            content[i] = value;
-            return v;
-        }
+    let index = getParamIndex(v, prop);
+    content[index] = value;
+};
+
+let getParamIndex = (v, prop) => {
+    let type = v.getType();
+
+    let index = typeParamsIndexMap[type][prop];
+    if (index !== undefined) {
+        return index;
     }
 
     throw new Error(`unexpected prop "${prop}" for ${JSON.stringify(dataTypes[type], null, 4)}`);
@@ -108,7 +94,6 @@ let setContentValue = (v, prop, value) => {
 
 module.exports = {
     Void,
-    BasicContainer,
     ordinaryAbstraction,
     getPairValueList,
     isType,
@@ -116,5 +101,4 @@ module.exports = {
     getContentValue,
     setContentValue,
     getContentValues
-
 };

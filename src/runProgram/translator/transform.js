@@ -8,12 +8,15 @@ let {
     SYS_METAMETHOD, SYS_APPLICATION, SYS_ORDINARY_ABSTRACTION, SYS_GUARDED_ABSTRACTION, SYS_CONDITION_EXP,
 
     SYS_APPLY_GUARDED_ABSTRACTION, SYS_APPLY_ORDINARY_ABSTRACTION, SYS_APPLY_META_METHOD
-} = require('../../../res/idlConstants');
+} = require('../../../res/funNameConstants');
 
 let {
-    BasicContainer,
     getType
 } = require('../../programDSL/dataContainer');
+
+let {
+    BasicContainer
+} = require('../../../res/models');
 
 let {
     isCallerType
@@ -30,6 +33,10 @@ let transformConditionExp = ([conditionExp, option1Exp, option2Exp], ctx, runPro
     }
 };
 
+/**
+ * 1. resolve caller first
+ * 2. apply caller
+ */
 let transformApplication = ([caller, params], ctx, runProgram) => {
     let callerRet = runProgram(caller, ctx);
 
@@ -40,11 +47,11 @@ let transformApplication = ([caller, params], ctx, runProgram) => {
     // run abstraction
     switch (getType(callerRet)) {
     case SYS_GUARDED_ABSTRACTION:
-        return BasicContainer(SYS_APPLY_GUARDED_ABSTRACTION, [callerRet, params]);
+        return new BasicContainer(SYS_APPLY_GUARDED_ABSTRACTION, [callerRet, params]);
     case SYS_ORDINARY_ABSTRACTION:
-        return BasicContainer(SYS_APPLY_ORDINARY_ABSTRACTION, [callerRet, params]);
+        return new BasicContainer(SYS_APPLY_ORDINARY_ABSTRACTION, [callerRet, params]);
     case SYS_METAMETHOD:
-        return BasicContainer(SYS_APPLY_META_METHOD, [callerRet, params]);
+        return new BasicContainer(SYS_APPLY_META_METHOD, [callerRet, params]);
     }
 };
 
