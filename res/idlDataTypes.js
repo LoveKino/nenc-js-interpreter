@@ -1,22 +1,4 @@
 module.exports = {
-    "sys_pair": {
-        "params": [
-            {
-                "name": "v1"
-            },
-            {
-                "name": "v2"
-            }
-        ],
-        "parser": {}
-    },
-    "sys_void": {
-        "params": [],
-        "parser": {
-            "type": "atom",
-            "value": null
-        }
-    },
     "sys_data": {
         "params": [
             {

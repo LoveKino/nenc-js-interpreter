@@ -1,9 +1,4 @@
 module.exports = {
-    "sys_pair": {
-        "v1": 0,
-        "v2": 1
-    },
-    "sys_void": {},
     "sys_data": {
         "data": 0
     },

@@ -1,7 +1,7 @@
 'use strict';
 
 let {
-    SYS_VOID, SYS_VARIABLE, SYS_STATEMENTS, SYS_LETBINDING, SYS_IMPORT,
+    SYS_VARIABLE, SYS_STATEMENTS, SYS_LETBINDING, SYS_IMPORT,
 
     SYS_ARRAY, SYS_OBJECT, SYS_IDENTITY,
 
@@ -88,7 +88,7 @@ let runStatements = ([statements], ctx, runProgram, importModule) => {
 
         let ret = runProgram(statement, ctx);
 
-        if (!isType(statement, SYS_VOID)) {
+        if (statement.className !== 'Void') {
             value = ret;
         }
     }

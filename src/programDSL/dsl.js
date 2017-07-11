@@ -11,14 +11,16 @@ let {
     isType, getPairValueList
 } = require('./dataContainer');
 let {
-    BasicContainer, Pair
+    BasicContainer, sys_pair, sys_void, sys_data,
+    sys_number, sys_null, sys_true, sys_false,
+    sys_string, sys_array, sys_object
 } = require('../../res/models');
 let dataTypes = require('../../res/idlDataTypes');
 
 let getParamList = (v) => {
-    if (v.className === 'Pair') {
+    if (v.className === 'sys_pair') {
         return getPairValueList(v);
-    } else if (!isType(v, SYS_VOID)) {
+    } else if (v.className !== 'sys_void') {
         return [v];
     } else {
         return [];
@@ -51,11 +53,4 @@ let typeDsl = (type) => {
     };
 };
 
-let dslApi = {};
-for (let type in dataTypes) {
-    dslApi[type] = typeDsl(type);
-}
-
-dslApi.sys_pair = (v1, v2) => new Pair(v1, v2);
-
-module.exports = dslApi;
+module.exports = require('../../res/models');

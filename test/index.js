@@ -8,6 +8,8 @@ let {
     sys_data, sys_exp, sys_application, sys_variable, sys_pair, sys_statements,
     sys_ordinary_abstraction, sys_letBinding, sys_import,
 
+    sys_void,
+
     sys_null, sys_number, sys_false, sys_true, sys_string
 } = sys_programDSL;
 
@@ -22,6 +24,10 @@ let runCode = (code) => {
 
 describe('index', () => {
     it('base', () => {
+        assert.deepEqual(runCode(
+            sys_statements(sys_void())
+        ), null);
+
         assert.deepEqual(runCode(
             sys_statements(sys_exp(sys_data(sys_null())))
         ), null);

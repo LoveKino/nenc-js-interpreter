@@ -3,32 +3,35 @@
 let {
     Context
 } = require('./context');
-let {
-    ordinaryAbstraction
-} = require('../programDSL/dataContainer');
-let {
-    SYS_ORDINARY_ABSTRACTION,
-    SYS_GUARDED_ABSTRACTION,
-    SYS_METAMETHOD
-} = require('../../res/funNameConstants');
 
 let {
-    isType, getContentValue, setContentValue
-} = require('../programDSL/dataContainer');
+    getAllLeafs
+} = require('pfc-idl-model-translator/library/js');
+
+let {
+    sys_ordinary_abstraction
+} = require('../../res/models');
+
+let getParamList = (list) => {
+    return getAllLeafs(list, {
+        branchClasses: ['sys_pair'],
+        ignoreClasses: ['sys_void']
+    });
+};
 
 /**
  * fill param value at specific position
  */
 let fillOrdinaryAbstractionVariable = (abstraction, index, value) => {
-    let fillMap = getContentValue(abstraction, 'fillMap');
-    let indexMap = getContentValue(abstraction, 'indexMap');
-    let fillCount = getContentValue(abstraction, 'fillCount');
+    let fillMap = abstraction.getFillMap() || {};
+    let indexMap = abstraction.getIndexMap() || {};
+    let fillCount = abstraction.getFillCount() || 0;
 
     fillMap[index] = value;
 
     if (!indexMap[index]) {
         indexMap[index] = true;
-        setContentValue(abstraction, 'fillCount', ++fillCount);
+        abstraction.setFillCount(fillCount + 1);
     }
 };
 
@@ -36,41 +39,40 @@ let fillOrdinaryAbstractionVariable = (abstraction, index, value) => {
  * when all variables are assigned, this abstraction will become reducible
  */
 let isOrdinaryAbstractionReducible = (abstraction) => {
-    let fillCount = getContentValue(abstraction, 'fillCount');
-    let variables = getContentValue(abstraction, 'variables');
+    let fillCount = abstraction.getFillCount() || 0;
+    // TODO opt this
+    let variables = getParamList(abstraction.getVariables());
+
     return variables.length <= fillCount;
 };
 
 let updateAbstractionContext = (abstraction, ctx) => {
-    setContentValue(abstraction, 'context', ctx);
+    abstraction.setContext(ctx);
     return abstraction;
 };
 
 let cloneOrdinaryAbstraction = (source) => {
-    let variables = getContentValue(source, 'variables');
-    let body = getContentValue(source, 'body');
-    let context = getContentValue(source, 'context');
-    return ordinaryAbstraction(variables, body, context);
+    return sys_ordinary_abstraction(source.getVariables(),
+        source.getBody(),
+        source.getContext(),
+        Object.assign(source.getIndexMap(), {}),
+        Object.assign(source.getFillMap(), {}),
+        source.getFillCount());
 };
 
 let createAbstractionBodyContext = (abstraction) => {
     // take out all variables
-    let ctx = getContentValue(abstraction, 'context');
-    let variables = getContentValue(abstraction, 'variables');
-    let fillMap = getContentValue(abstraction, 'fillMap');
+    let ctx = abstraction.getContext();
+    let variables = abstraction.getVariables();
+    let fillMap = abstraction.getFillMap();
     let variableMap = {};
+
     for (let j = 0; j < variables.length; j++) {
-        let variableName = getContentValue(variables[j], 'variableName');
+        let variableName = variables[j].getVariableName();
         variableMap[variableName] = fillMap[j];
     }
     // attach variables to context
-    return new Context(variableMap, ctx);
-};
-
-let isCallerType = (v) => {
-    return isType(v, SYS_GUARDED_ABSTRACTION) ||
-        isType(v, SYS_METAMETHOD) ||
-        isType(v, SYS_ORDINARY_ABSTRACTION);
+    return Context(variableMap, ctx);
 };
 
 module.exports = {
@@ -78,6 +80,5 @@ module.exports = {
     isOrdinaryAbstractionReducible,
     updateAbstractionContext,
     cloneOrdinaryAbstraction,
-    createAbstractionBodyContext,
-    isCallerType
+    createAbstractionBodyContext
 };

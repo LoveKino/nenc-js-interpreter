@@ -20,6 +20,6 @@
     "mocha": "^3.4.2"
   },
   "dependencies": {
-    "pfc-idl-model-translator": "0.0.3"
+    "pfc-idl-model-translator": "0.0.5"
   }
 }
