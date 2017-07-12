@@ -946,47 +946,47 @@ _middle_applyMetaMethod.prototype.params = function() {
 _middle_applyMetaMethod.prototype.instanceModel = true;
 var MODEL_CLASS_NAME_MIDDLE_APPLYMETAMETHOD = 'middle_applyMetaMethod';
 _middle_applyMetaMethod.prototype.className = MODEL_CLASS_NAME_MIDDLE_APPLYMETAMETHOD;
-// construcor for Context
-var Context = function(variableMap, parent) {
-    return new _Context(variableMap, parent);
+// construcor for middle_context
+var middle_context = function(variableMap, parent) {
+    return new _middle_context(variableMap, parent);
 };
 // private inner class
-var _Context = function(variableMap, parent) {
+var _middle_context = function(variableMap, parent) {
     this._params = [variableMap, parent];
 };
 // get method for attribute variableMap
-_Context.prototype.getVariableMap = function() {
+_middle_context.prototype.getVariableMap = function() {
     return this._params[0];
 };
 
 // get method for attribute parent
-_Context.prototype.getParent = function() {
+_middle_context.prototype.getParent = function() {
     return this._params[1];
 };
 // set method for attribute variableMap
-_Context.prototype.setVariableMap = function(v) {
+_middle_context.prototype.setVariableMap = function(v) {
     this._params[0] = v;
 };
 
 // set method for attribute parent
-_Context.prototype.setParent = function(v) {
+_middle_context.prototype.setParent = function(v) {
     this._params[1] = v;
 };
 // equal method for attribute variableMap
-_Context.prototype.equalVariableMap = function(v) {
+_middle_context.prototype.equalVariableMap = function(v) {
     return this._params[0] === v;
 };
 
 // equal method for attribute parent
-_Context.prototype.equalParent = function(v) {
+_middle_context.prototype.equalParent = function(v) {
     return this._params[1] === v;
 };
-// some meta methods for model Context
-_Context.prototype.params = function() {
+// some meta methods for model middle_context
+_middle_context.prototype.params = function() {
     return this._params;
 };
-_Context.prototype.instanceModel = true;
-var MODEL_CLASS_NAME_CONTEXT = 'Context';
-_Context.prototype.className = MODEL_CLASS_NAME_CONTEXT;
+_middle_context.prototype.instanceModel = true;
+var MODEL_CLASS_NAME_MIDDLE_CONTEXT = 'middle_context';
+_middle_context.prototype.className = MODEL_CLASS_NAME_MIDDLE_CONTEXT;
 
-module.exports = {sys_pair, sys_void, sys_data, sys_number, sys_null, sys_true, sys_false, sys_string, sys_array, sys_object, sys_metaMethod, sys_application, sys_ordinary_abstraction, sys_variable, sys_exp, sys_statements, sys_letBinding, sys_import, sys_condition, sys_guardedAbstractionLine, sys_guardedAbstraction, middle_ordinary_abstraction, middle_statements_list, middle_identity, middle_importStatement, middle_letStatement, middle_applyGuardedAbstraction, middle_applyOrdinaryAbstraction, middle_applyMetaMethod, Context};
+module.exports = {sys_pair, sys_void, sys_data, sys_number, sys_null, sys_true, sys_false, sys_string, sys_array, sys_object, sys_metaMethod, sys_application, sys_ordinary_abstraction, sys_variable, sys_exp, sys_statements, sys_letBinding, sys_import, sys_condition, sys_guardedAbstractionLine, sys_guardedAbstraction, middle_ordinary_abstraction, middle_statements_list, middle_identity, middle_importStatement, middle_letStatement, middle_applyGuardedAbstraction, middle_applyOrdinaryAbstraction, middle_applyMetaMethod, middle_context};

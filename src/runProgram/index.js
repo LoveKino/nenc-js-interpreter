@@ -10,7 +10,7 @@
 let systemContextMap = require('../systemContextMap');
 let translatorMap = require('./translatorMap');
 let {
-    Context
+    middle_context
 } = require('../../res/models');
 
 let nencModules = {};
@@ -21,7 +21,7 @@ let importModule = (name) => {
     }
     if (!nencModules[name].resolved) {
         let moduleCode = nencModules[name].moduleCode;
-        let module = runProgram(moduleCode, new Context(systemContextMap, null));
+        let module = runProgram(moduleCode, new middle_context(systemContextMap, null));
 
         nencModules[name].module = module;
         nencModules[name].resolved = true;

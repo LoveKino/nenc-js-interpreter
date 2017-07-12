@@ -12,10 +12,8 @@ let {
     middle_identity,
     middle_letStatement,
     middle_statements_list,
-
     middle_ordinary_abstraction,
-
-    Context
+    middle_context
 } = require('../../res/models');
 
 let {
@@ -41,7 +39,7 @@ module.exports = {
         return middle_ordinary_abstraction(
             variableList,
             programData.getBody(),
-            passContext(ctx, variableList, []));
+            passmiddle_context(ctx, variableList, []));
     },
 
     'sys_variable': (programData, ctx) => {
@@ -136,7 +134,7 @@ module.exports = {
         // resolve
         let paramsRet = resolveExpList(paramExps, ctx, runProgram);
 
-        let newCtx = passContext(context, variableList, paramsRet);
+        let newCtx = passmiddle_context(context, variableList, paramsRet);
 
         let newFun = middle_ordinary_abstraction(slice(variableList, paramsRet.length), body, newCtx);
 
@@ -229,7 +227,7 @@ let pairToList = (list) => {
 /**
  * create a new context with params results
  */
-let passContext = (ctx, variableList, paramsRet) => {
+let passmiddle_context = (ctx, variableList, paramsRet) => {
     // take out all variables
     let variableMap = {};
 
@@ -244,7 +242,7 @@ let passContext = (ctx, variableList, paramsRet) => {
     }
 
     // attach variables to context
-    return Context(variableMap, ctx);
+    return middle_context(variableMap, ctx);
 };
 
 let lookupVariable = function(ctx, variableName) {
