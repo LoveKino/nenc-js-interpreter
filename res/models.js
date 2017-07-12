@@ -1,87 +1,3 @@
-// construcor for BasicContainer
-var BasicContainer = function(type, content) {
-    return new _BasicContainer(type, content);
-};
-// private inner class
-var _BasicContainer = function(type, content) {
-    this._params = [type, content];
-};
-// get method for attribute type
-_BasicContainer.prototype.getType = function() {
-    return this._params[0];
-};
-
-// get method for attribute content
-_BasicContainer.prototype.getContent = function() {
-    return this._params[1];
-};
-// set method for attribute type
-_BasicContainer.prototype.setType = function(v) {
-    this._params[0] = v;
-};
-
-// set method for attribute content
-_BasicContainer.prototype.setContent = function(v) {
-    this._params[1] = v;
-};
-// equal method for attribute type
-_BasicContainer.prototype.equalType = function(v) {
-    return this._params[0] === v;
-};
-
-// equal method for attribute content
-_BasicContainer.prototype.equalContent = function(v) {
-    return this._params[1] === v;
-};
-// some meta methods for model BasicContainer
-_BasicContainer.prototype.params = function() {
-    return this._params;
-};
-_BasicContainer.prototype.instanceModel = true;
-var MODEL_CLASS_NAME_BASICCONTAINER = 'BasicContainer';
-_BasicContainer.prototype.className = MODEL_CLASS_NAME_BASICCONTAINER;
-// construcor for Context
-var Context = function(variableMap, parent) {
-    return new _Context(variableMap, parent);
-};
-// private inner class
-var _Context = function(variableMap, parent) {
-    this._params = [variableMap, parent];
-};
-// get method for attribute variableMap
-_Context.prototype.getVariableMap = function() {
-    return this._params[0];
-};
-
-// get method for attribute parent
-_Context.prototype.getParent = function() {
-    return this._params[1];
-};
-// set method for attribute variableMap
-_Context.prototype.setVariableMap = function(v) {
-    this._params[0] = v;
-};
-
-// set method for attribute parent
-_Context.prototype.setParent = function(v) {
-    this._params[1] = v;
-};
-// equal method for attribute variableMap
-_Context.prototype.equalVariableMap = function(v) {
-    return this._params[0] === v;
-};
-
-// equal method for attribute parent
-_Context.prototype.equalParent = function(v) {
-    return this._params[1] === v;
-};
-// some meta methods for model Context
-_Context.prototype.params = function() {
-    return this._params;
-};
-_Context.prototype.instanceModel = true;
-var MODEL_CLASS_NAME_CONTEXT = 'Context';
-_Context.prototype.className = MODEL_CLASS_NAME_CONTEXT;
 // construcor for sys_pair
 var sys_pair = function(v1, v2) {
     return new _sys_pair(v1, v2);
@@ -430,63 +346,6 @@ _sys_ordinary_abstraction.prototype.params = function() {
 _sys_ordinary_abstraction.prototype.instanceModel = true;
 var MODEL_CLASS_NAME_SYS_ORDINARY_ABSTRACTION = 'sys_ordinary_abstraction';
 _sys_ordinary_abstraction.prototype.className = MODEL_CLASS_NAME_SYS_ORDINARY_ABSTRACTION;
-// construcor for sys_ordinary_abstraction_middle
-var sys_ordinary_abstraction_middle = function(variableList, body, context) {
-    return new _sys_ordinary_abstraction_middle(variableList, body, context);
-};
-// private inner class
-var _sys_ordinary_abstraction_middle = function(variableList, body, context) {
-    this._params = [variableList, body, context];
-};
-// get method for attribute variableList
-_sys_ordinary_abstraction_middle.prototype.getVariableList = function() {
-    return this._params[0];
-};
-
-// get method for attribute body
-_sys_ordinary_abstraction_middle.prototype.getBody = function() {
-    return this._params[1];
-};
-
-// get method for attribute context
-_sys_ordinary_abstraction_middle.prototype.getContext = function() {
-    return this._params[2];
-};
-// set method for attribute variableList
-_sys_ordinary_abstraction_middle.prototype.setVariableList = function(v) {
-    this._params[0] = v;
-};
-
-// set method for attribute body
-_sys_ordinary_abstraction_middle.prototype.setBody = function(v) {
-    this._params[1] = v;
-};
-
-// set method for attribute context
-_sys_ordinary_abstraction_middle.prototype.setContext = function(v) {
-    this._params[2] = v;
-};
-// equal method for attribute variableList
-_sys_ordinary_abstraction_middle.prototype.equalVariableList = function(v) {
-    return this._params[0] === v;
-};
-
-// equal method for attribute body
-_sys_ordinary_abstraction_middle.prototype.equalBody = function(v) {
-    return this._params[1] === v;
-};
-
-// equal method for attribute context
-_sys_ordinary_abstraction_middle.prototype.equalContext = function(v) {
-    return this._params[2] === v;
-};
-// some meta methods for model sys_ordinary_abstraction_middle
-_sys_ordinary_abstraction_middle.prototype.params = function() {
-    return this._params;
-};
-_sys_ordinary_abstraction_middle.prototype.instanceModel = true;
-var MODEL_CLASS_NAME_SYS_ORDINARY_ABSTRACTION_MIDDLE = 'sys_ordinary_abstraction_middle';
-_sys_ordinary_abstraction_middle.prototype.className = MODEL_CLASS_NAME_SYS_ORDINARY_ABSTRACTION_MIDDLE;
 // construcor for sys_variable
 var sys_variable = function(variableName) {
     return new _sys_variable(variableName);
@@ -568,33 +427,6 @@ _sys_statements.prototype.params = function() {
 _sys_statements.prototype.instanceModel = true;
 var MODEL_CLASS_NAME_SYS_STATEMENTS = 'sys_statements';
 _sys_statements.prototype.className = MODEL_CLASS_NAME_SYS_STATEMENTS;
-// construcor for sys_statements_middle
-var sys_statements_middle = function(statementList) {
-    return new _sys_statements_middle(statementList);
-};
-// private inner class
-var _sys_statements_middle = function(statementList) {
-    this._params = [statementList];
-};
-// get method for attribute statementList
-_sys_statements_middle.prototype.getStatementList = function() {
-    return this._params[0];
-};
-// set method for attribute statementList
-_sys_statements_middle.prototype.setStatementList = function(v) {
-    this._params[0] = v;
-};
-// equal method for attribute statementList
-_sys_statements_middle.prototype.equalStatementList = function(v) {
-    return this._params[0] === v;
-};
-// some meta methods for model sys_statements_middle
-_sys_statements_middle.prototype.params = function() {
-    return this._params;
-};
-_sys_statements_middle.prototype.instanceModel = true;
-var MODEL_CLASS_NAME_SYS_STATEMENTS_MIDDLE = 'sys_statements_middle';
-_sys_statements_middle.prototype.className = MODEL_CLASS_NAME_SYS_STATEMENTS_MIDDLE;
 // construcor for sys_letBinding
 var sys_letBinding = function(bindings) {
     return new _sys_letBinding(bindings);
@@ -805,230 +637,356 @@ _sys_guardedAbstraction.prototype.params = function() {
 _sys_guardedAbstraction.prototype.instanceModel = true;
 var MODEL_CLASS_NAME_SYS_GUARDEDABSTRACTION = 'sys_guardedAbstraction';
 _sys_guardedAbstraction.prototype.className = MODEL_CLASS_NAME_SYS_GUARDEDABSTRACTION;
-// construcor for sys_identity
-var sys_identity = function(value) {
-    return new _sys_identity(value);
+// construcor for middle_ordinary_abstraction
+var middle_ordinary_abstraction = function(variableList, body, context) {
+    return new _middle_ordinary_abstraction(variableList, body, context);
 };
 // private inner class
-var _sys_identity = function(value) {
+var _middle_ordinary_abstraction = function(variableList, body, context) {
+    this._params = [variableList, body, context];
+};
+// get method for attribute variableList
+_middle_ordinary_abstraction.prototype.getVariableList = function() {
+    return this._params[0];
+};
+
+// get method for attribute body
+_middle_ordinary_abstraction.prototype.getBody = function() {
+    return this._params[1];
+};
+
+// get method for attribute context
+_middle_ordinary_abstraction.prototype.getContext = function() {
+    return this._params[2];
+};
+// set method for attribute variableList
+_middle_ordinary_abstraction.prototype.setVariableList = function(v) {
+    this._params[0] = v;
+};
+
+// set method for attribute body
+_middle_ordinary_abstraction.prototype.setBody = function(v) {
+    this._params[1] = v;
+};
+
+// set method for attribute context
+_middle_ordinary_abstraction.prototype.setContext = function(v) {
+    this._params[2] = v;
+};
+// equal method for attribute variableList
+_middle_ordinary_abstraction.prototype.equalVariableList = function(v) {
+    return this._params[0] === v;
+};
+
+// equal method for attribute body
+_middle_ordinary_abstraction.prototype.equalBody = function(v) {
+    return this._params[1] === v;
+};
+
+// equal method for attribute context
+_middle_ordinary_abstraction.prototype.equalContext = function(v) {
+    return this._params[2] === v;
+};
+// some meta methods for model middle_ordinary_abstraction
+_middle_ordinary_abstraction.prototype.params = function() {
+    return this._params;
+};
+_middle_ordinary_abstraction.prototype.instanceModel = true;
+var MODEL_CLASS_NAME_MIDDLE_ORDINARY_ABSTRACTION = 'middle_ordinary_abstraction';
+_middle_ordinary_abstraction.prototype.className = MODEL_CLASS_NAME_MIDDLE_ORDINARY_ABSTRACTION;
+// construcor for middle_statements_list
+var middle_statements_list = function(statementList) {
+    return new _middle_statements_list(statementList);
+};
+// private inner class
+var _middle_statements_list = function(statementList) {
+    this._params = [statementList];
+};
+// get method for attribute statementList
+_middle_statements_list.prototype.getStatementList = function() {
+    return this._params[0];
+};
+// set method for attribute statementList
+_middle_statements_list.prototype.setStatementList = function(v) {
+    this._params[0] = v;
+};
+// equal method for attribute statementList
+_middle_statements_list.prototype.equalStatementList = function(v) {
+    return this._params[0] === v;
+};
+// some meta methods for model middle_statements_list
+_middle_statements_list.prototype.params = function() {
+    return this._params;
+};
+_middle_statements_list.prototype.instanceModel = true;
+var MODEL_CLASS_NAME_MIDDLE_STATEMENTS_LIST = 'middle_statements_list';
+_middle_statements_list.prototype.className = MODEL_CLASS_NAME_MIDDLE_STATEMENTS_LIST;
+// construcor for middle_identity
+var middle_identity = function(value) {
+    return new _middle_identity(value);
+};
+// private inner class
+var _middle_identity = function(value) {
     this._params = [value];
 };
 // get method for attribute value
-_sys_identity.prototype.getValue = function() {
+_middle_identity.prototype.getValue = function() {
     return this._params[0];
 };
 // set method for attribute value
-_sys_identity.prototype.setValue = function(v) {
+_middle_identity.prototype.setValue = function(v) {
     this._params[0] = v;
 };
 // equal method for attribute value
-_sys_identity.prototype.equalValue = function(v) {
+_middle_identity.prototype.equalValue = function(v) {
     return this._params[0] === v;
 };
-// some meta methods for model sys_identity
-_sys_identity.prototype.params = function() {
+// some meta methods for model middle_identity
+_middle_identity.prototype.params = function() {
     return this._params;
 };
-_sys_identity.prototype.instanceModel = true;
-var MODEL_CLASS_NAME_SYS_IDENTITY = 'sys_identity';
-_sys_identity.prototype.className = MODEL_CLASS_NAME_SYS_IDENTITY;
-// construcor for sys_importStatementMiddle
-var sys_importStatementMiddle = function(module, variable, nextStatements) {
-    return new _sys_importStatementMiddle(module, variable, nextStatements);
+_middle_identity.prototype.instanceModel = true;
+var MODEL_CLASS_NAME_MIDDLE_IDENTITY = 'middle_identity';
+_middle_identity.prototype.className = MODEL_CLASS_NAME_MIDDLE_IDENTITY;
+// construcor for middle_importStatement
+var middle_importStatement = function(module, variable, nextStatements) {
+    return new _middle_importStatement(module, variable, nextStatements);
 };
 // private inner class
-var _sys_importStatementMiddle = function(module, variable, nextStatements) {
+var _middle_importStatement = function(module, variable, nextStatements) {
     this._params = [module, variable, nextStatements];
 };
 // get method for attribute module
-_sys_importStatementMiddle.prototype.getModule = function() {
+_middle_importStatement.prototype.getModule = function() {
     return this._params[0];
 };
 
 // get method for attribute variable
-_sys_importStatementMiddle.prototype.getVariable = function() {
+_middle_importStatement.prototype.getVariable = function() {
     return this._params[1];
 };
 
 // get method for attribute nextStatements
-_sys_importStatementMiddle.prototype.getNextStatements = function() {
+_middle_importStatement.prototype.getNextStatements = function() {
     return this._params[2];
 };
 // set method for attribute module
-_sys_importStatementMiddle.prototype.setModule = function(v) {
+_middle_importStatement.prototype.setModule = function(v) {
     this._params[0] = v;
 };
 
 // set method for attribute variable
-_sys_importStatementMiddle.prototype.setVariable = function(v) {
+_middle_importStatement.prototype.setVariable = function(v) {
     this._params[1] = v;
 };
 
 // set method for attribute nextStatements
-_sys_importStatementMiddle.prototype.setNextStatements = function(v) {
+_middle_importStatement.prototype.setNextStatements = function(v) {
     this._params[2] = v;
 };
 // equal method for attribute module
-_sys_importStatementMiddle.prototype.equalModule = function(v) {
+_middle_importStatement.prototype.equalModule = function(v) {
     return this._params[0] === v;
 };
 
 // equal method for attribute variable
-_sys_importStatementMiddle.prototype.equalVariable = function(v) {
+_middle_importStatement.prototype.equalVariable = function(v) {
     return this._params[1] === v;
 };
 
 // equal method for attribute nextStatements
-_sys_importStatementMiddle.prototype.equalNextStatements = function(v) {
+_middle_importStatement.prototype.equalNextStatements = function(v) {
     return this._params[2] === v;
 };
-// some meta methods for model sys_importStatementMiddle
-_sys_importStatementMiddle.prototype.params = function() {
+// some meta methods for model middle_importStatement
+_middle_importStatement.prototype.params = function() {
     return this._params;
 };
-_sys_importStatementMiddle.prototype.instanceModel = true;
-var MODEL_CLASS_NAME_SYS_IMPORTSTATEMENTMIDDLE = 'sys_importStatementMiddle';
-_sys_importStatementMiddle.prototype.className = MODEL_CLASS_NAME_SYS_IMPORTSTATEMENTMIDDLE;
-// construcor for sys_letStatementMiddle
-var sys_letStatementMiddle = function(letStatement, nextStatements) {
-    return new _sys_letStatementMiddle(letStatement, nextStatements);
+_middle_importStatement.prototype.instanceModel = true;
+var MODEL_CLASS_NAME_MIDDLE_IMPORTSTATEMENT = 'middle_importStatement';
+_middle_importStatement.prototype.className = MODEL_CLASS_NAME_MIDDLE_IMPORTSTATEMENT;
+// construcor for middle_letStatement
+var middle_letStatement = function(letStatement, nextStatements) {
+    return new _middle_letStatement(letStatement, nextStatements);
 };
 // private inner class
-var _sys_letStatementMiddle = function(letStatement, nextStatements) {
+var _middle_letStatement = function(letStatement, nextStatements) {
     this._params = [letStatement, nextStatements];
 };
 // get method for attribute letStatement
-_sys_letStatementMiddle.prototype.getLetStatement = function() {
+_middle_letStatement.prototype.getLetStatement = function() {
     return this._params[0];
 };
 
 // get method for attribute nextStatements
-_sys_letStatementMiddle.prototype.getNextStatements = function() {
+_middle_letStatement.prototype.getNextStatements = function() {
     return this._params[1];
 };
 // set method for attribute letStatement
-_sys_letStatementMiddle.prototype.setLetStatement = function(v) {
+_middle_letStatement.prototype.setLetStatement = function(v) {
     this._params[0] = v;
 };
 
 // set method for attribute nextStatements
-_sys_letStatementMiddle.prototype.setNextStatements = function(v) {
+_middle_letStatement.prototype.setNextStatements = function(v) {
     this._params[1] = v;
 };
 // equal method for attribute letStatement
-_sys_letStatementMiddle.prototype.equalLetStatement = function(v) {
+_middle_letStatement.prototype.equalLetStatement = function(v) {
     return this._params[0] === v;
 };
 
 // equal method for attribute nextStatements
-_sys_letStatementMiddle.prototype.equalNextStatements = function(v) {
+_middle_letStatement.prototype.equalNextStatements = function(v) {
     return this._params[1] === v;
 };
-// some meta methods for model sys_letStatementMiddle
-_sys_letStatementMiddle.prototype.params = function() {
+// some meta methods for model middle_letStatement
+_middle_letStatement.prototype.params = function() {
     return this._params;
 };
-_sys_letStatementMiddle.prototype.instanceModel = true;
-var MODEL_CLASS_NAME_SYS_LETSTATEMENTMIDDLE = 'sys_letStatementMiddle';
-_sys_letStatementMiddle.prototype.className = MODEL_CLASS_NAME_SYS_LETSTATEMENTMIDDLE;
-// construcor for sys_applyGuardedAbstraction
-var sys_applyGuardedAbstraction = function() {
-    return new _sys_applyGuardedAbstraction();
+_middle_letStatement.prototype.instanceModel = true;
+var MODEL_CLASS_NAME_MIDDLE_LETSTATEMENT = 'middle_letStatement';
+_middle_letStatement.prototype.className = MODEL_CLASS_NAME_MIDDLE_LETSTATEMENT;
+// construcor for middle_applyGuardedAbstraction
+var middle_applyGuardedAbstraction = function() {
+    return new _middle_applyGuardedAbstraction();
 };
 // private inner class
-var _sys_applyGuardedAbstraction = function() {
+var _middle_applyGuardedAbstraction = function() {
     this._params = [];
 };
-// some meta methods for model sys_applyGuardedAbstraction
-_sys_applyGuardedAbstraction.prototype.params = function() {
+// some meta methods for model middle_applyGuardedAbstraction
+_middle_applyGuardedAbstraction.prototype.params = function() {
     return this._params;
 };
-_sys_applyGuardedAbstraction.prototype.instanceModel = true;
-var MODEL_CLASS_NAME_SYS_APPLYGUARDEDABSTRACTION = 'sys_applyGuardedAbstraction';
-_sys_applyGuardedAbstraction.prototype.className = MODEL_CLASS_NAME_SYS_APPLYGUARDEDABSTRACTION;
-// construcor for sys_applyOrdinaryAbstraction
-var sys_applyOrdinaryAbstraction = function(abstractionMiddle, params) {
-    return new _sys_applyOrdinaryAbstraction(abstractionMiddle, params);
+_middle_applyGuardedAbstraction.prototype.instanceModel = true;
+var MODEL_CLASS_NAME_MIDDLE_APPLYGUARDEDABSTRACTION = 'middle_applyGuardedAbstraction';
+_middle_applyGuardedAbstraction.prototype.className = MODEL_CLASS_NAME_MIDDLE_APPLYGUARDEDABSTRACTION;
+// construcor for middle_applyOrdinaryAbstraction
+var middle_applyOrdinaryAbstraction = function(abstractionMiddle, params) {
+    return new _middle_applyOrdinaryAbstraction(abstractionMiddle, params);
 };
 // private inner class
-var _sys_applyOrdinaryAbstraction = function(abstractionMiddle, params) {
+var _middle_applyOrdinaryAbstraction = function(abstractionMiddle, params) {
     this._params = [abstractionMiddle, params];
 };
 // get method for attribute abstractionMiddle
-_sys_applyOrdinaryAbstraction.prototype.getAbstractionMiddle = function() {
+_middle_applyOrdinaryAbstraction.prototype.getAbstractionMiddle = function() {
     return this._params[0];
 };
 
 // get method for attribute params
-_sys_applyOrdinaryAbstraction.prototype.getParams = function() {
+_middle_applyOrdinaryAbstraction.prototype.getParams = function() {
     return this._params[1];
 };
 // set method for attribute abstractionMiddle
-_sys_applyOrdinaryAbstraction.prototype.setAbstractionMiddle = function(v) {
+_middle_applyOrdinaryAbstraction.prototype.setAbstractionMiddle = function(v) {
     this._params[0] = v;
 };
 
 // set method for attribute params
-_sys_applyOrdinaryAbstraction.prototype.setParams = function(v) {
+_middle_applyOrdinaryAbstraction.prototype.setParams = function(v) {
     this._params[1] = v;
 };
 // equal method for attribute abstractionMiddle
-_sys_applyOrdinaryAbstraction.prototype.equalAbstractionMiddle = function(v) {
+_middle_applyOrdinaryAbstraction.prototype.equalAbstractionMiddle = function(v) {
     return this._params[0] === v;
 };
 
 // equal method for attribute params
-_sys_applyOrdinaryAbstraction.prototype.equalParams = function(v) {
+_middle_applyOrdinaryAbstraction.prototype.equalParams = function(v) {
     return this._params[1] === v;
 };
-// some meta methods for model sys_applyOrdinaryAbstraction
-_sys_applyOrdinaryAbstraction.prototype.params = function() {
+// some meta methods for model middle_applyOrdinaryAbstraction
+_middle_applyOrdinaryAbstraction.prototype.params = function() {
     return this._params;
 };
-_sys_applyOrdinaryAbstraction.prototype.instanceModel = true;
-var MODEL_CLASS_NAME_SYS_APPLYORDINARYABSTRACTION = 'sys_applyOrdinaryAbstraction';
-_sys_applyOrdinaryAbstraction.prototype.className = MODEL_CLASS_NAME_SYS_APPLYORDINARYABSTRACTION;
-// construcor for sys_applyMetaMethod
-var sys_applyMetaMethod = function(metaMethod, params) {
-    return new _sys_applyMetaMethod(metaMethod, params);
+_middle_applyOrdinaryAbstraction.prototype.instanceModel = true;
+var MODEL_CLASS_NAME_MIDDLE_APPLYORDINARYABSTRACTION = 'middle_applyOrdinaryAbstraction';
+_middle_applyOrdinaryAbstraction.prototype.className = MODEL_CLASS_NAME_MIDDLE_APPLYORDINARYABSTRACTION;
+// construcor for middle_applyMetaMethod
+var middle_applyMetaMethod = function(metaMethod, params) {
+    return new _middle_applyMetaMethod(metaMethod, params);
 };
 // private inner class
-var _sys_applyMetaMethod = function(metaMethod, params) {
+var _middle_applyMetaMethod = function(metaMethod, params) {
     this._params = [metaMethod, params];
 };
 // get method for attribute metaMethod
-_sys_applyMetaMethod.prototype.getMetaMethod = function() {
+_middle_applyMetaMethod.prototype.getMetaMethod = function() {
     return this._params[0];
 };
 
 // get method for attribute params
-_sys_applyMetaMethod.prototype.getParams = function() {
+_middle_applyMetaMethod.prototype.getParams = function() {
     return this._params[1];
 };
 // set method for attribute metaMethod
-_sys_applyMetaMethod.prototype.setMetaMethod = function(v) {
+_middle_applyMetaMethod.prototype.setMetaMethod = function(v) {
     this._params[0] = v;
 };
 
 // set method for attribute params
-_sys_applyMetaMethod.prototype.setParams = function(v) {
+_middle_applyMetaMethod.prototype.setParams = function(v) {
     this._params[1] = v;
 };
 // equal method for attribute metaMethod
-_sys_applyMetaMethod.prototype.equalMetaMethod = function(v) {
+_middle_applyMetaMethod.prototype.equalMetaMethod = function(v) {
     return this._params[0] === v;
 };
 
 // equal method for attribute params
-_sys_applyMetaMethod.prototype.equalParams = function(v) {
+_middle_applyMetaMethod.prototype.equalParams = function(v) {
     return this._params[1] === v;
 };
-// some meta methods for model sys_applyMetaMethod
-_sys_applyMetaMethod.prototype.params = function() {
+// some meta methods for model middle_applyMetaMethod
+_middle_applyMetaMethod.prototype.params = function() {
     return this._params;
 };
-_sys_applyMetaMethod.prototype.instanceModel = true;
-var MODEL_CLASS_NAME_SYS_APPLYMETAMETHOD = 'sys_applyMetaMethod';
-_sys_applyMetaMethod.prototype.className = MODEL_CLASS_NAME_SYS_APPLYMETAMETHOD;
+_middle_applyMetaMethod.prototype.instanceModel = true;
+var MODEL_CLASS_NAME_MIDDLE_APPLYMETAMETHOD = 'middle_applyMetaMethod';
+_middle_applyMetaMethod.prototype.className = MODEL_CLASS_NAME_MIDDLE_APPLYMETAMETHOD;
+// construcor for Context
+var Context = function(variableMap, parent) {
+    return new _Context(variableMap, parent);
+};
+// private inner class
+var _Context = function(variableMap, parent) {
+    this._params = [variableMap, parent];
+};
+// get method for attribute variableMap
+_Context.prototype.getVariableMap = function() {
+    return this._params[0];
+};
 
-module.exports = {BasicContainer, Context, sys_pair, sys_void, sys_data, sys_number, sys_null, sys_true, sys_false, sys_string, sys_array, sys_object, sys_metaMethod, sys_application, sys_ordinary_abstraction, sys_ordinary_abstraction_middle, sys_variable, sys_exp, sys_statements, sys_statements_middle, sys_letBinding, sys_import, sys_condition, sys_guardedAbstractionLine, sys_guardedAbstraction, sys_identity, sys_importStatementMiddle, sys_letStatementMiddle, sys_applyGuardedAbstraction, sys_applyOrdinaryAbstraction, sys_applyMetaMethod};
+// get method for attribute parent
+_Context.prototype.getParent = function() {
+    return this._params[1];
+};
+// set method for attribute variableMap
+_Context.prototype.setVariableMap = function(v) {
+    this._params[0] = v;
+};
+
+// set method for attribute parent
+_Context.prototype.setParent = function(v) {
+    this._params[1] = v;
+};
+// equal method for attribute variableMap
+_Context.prototype.equalVariableMap = function(v) {
+    return this._params[0] === v;
+};
+
+// equal method for attribute parent
+_Context.prototype.equalParent = function(v) {
+    return this._params[1] === v;
+};
+// some meta methods for model Context
+_Context.prototype.params = function() {
+    return this._params;
+};
+_Context.prototype.instanceModel = true;
+var MODEL_CLASS_NAME_CONTEXT = 'Context';
+_Context.prototype.className = MODEL_CLASS_NAME_CONTEXT;
+
+module.exports = {sys_pair, sys_void, sys_data, sys_number, sys_null, sys_true, sys_false, sys_string, sys_array, sys_object, sys_metaMethod, sys_application, sys_ordinary_abstraction, sys_variable, sys_exp, sys_statements, sys_letBinding, sys_import, sys_condition, sys_guardedAbstractionLine, sys_guardedAbstraction, middle_ordinary_abstraction, middle_statements_list, middle_identity, middle_importStatement, middle_letStatement, middle_applyGuardedAbstraction, middle_applyOrdinaryAbstraction, middle_applyMetaMethod, Context};
